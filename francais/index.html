@@ -32,6 +32,8 @@
   }
   * { box-sizing: border-box; }
   [hidden]{display:none!important}
+  .wchips { margin-top: 6px; } .wchip { font: inherit; font-size: 19px; margin: 4px; padding: 8px 14px; border-radius: 999px; border: 2px solid var(--accent); background: var(--card); color: var(--ink); cursor: pointer; touch-action: manipulation; }
+
   button, input, textarea, select, .bin, .bank span, [role="button"] { touch-action: manipulation; }
   body { margin: 0; background: var(--bg); color: var(--ink); font: 17px/1.65 Arial, Helvetica, sans-serif; letter-spacing: .01em; }
   main { max-width: 900px; margin: 0 auto; padding: 20px 16px 60px; }
@@ -491,6 +493,23 @@ Object.keys(DEFS).forEach(id => {
       html += '</div><div class="row noprint"><button class="btn" type="button" data-a="ck">✔️ Vérifier</button><button class="btn ghost" type="button" data-a="hint">💡 Indice</button></div><div class="msg"></div>';
       body.innerHTML = html;
       const msg = body.querySelector('.msg'), inputs = [...body.querySelectorAll('.gap')];
+      /* Étiquettes : taper un mot le met dans la case (sans clavier) */
+      let focusGap = null;
+      inputs.forEach(x => x.addEventListener('focus', () => { focusGap = x; }));
+      const pool = [...new Set(Object.values(DEFS).flatMap(dd => dd.gaps))].filter(w => !inputs.some(x => x.dataset.w === w));
+      const words = shuffle(inputs.map(x => x.dataset.w).concat(shuffle(pool).slice(0, 2)));
+      const chipRow = document.createElement('div');
+      chipRow.className = 'wchips';
+      chipRow.innerHTML = '<p style="margin:8px 0 4px">👆 <b>Tape sur un mot</b> pour le mettre dans la case, ou écris-le toi-même.</p>' + words.map(w => '<button type="button" class="wchip">' + w + '</button>').join('');
+      body.querySelector('.gapline').after(chipRow);
+      chipRow.querySelectorAll('.wchip').forEach(c => c.addEventListener('click', e => {
+        e.preventDefault();
+        let target = (focusGap && !focusGap.classList.contains('ok') && !focusGap.value) ? focusGap : inputs.find(x => !x.value);
+        if (!target) target = inputs.find(x => !x.classList.contains('ok')) || inputs[0];
+        target.value = c.textContent; target.classList.remove('no');
+        const nextEmpty = inputs.find(x => !x.value); focusGap = nextEmpty || null;
+      }));
+
       inputs.forEach(x => x.addEventListener('keydown', e => { if (e.key === 'Enter') body.querySelector('[data-a="ck"]').click(); }));
       body.querySelector('[data-a="hint"]').onclick = () => { const f = inputs.find(x => nz(x.value) !== nz(x.dataset.w)); if (f) { f.value = f.dataset.w.slice(0, Math.min(f.dataset.w.length, f.value.length + 1)); f.focus(); } };
       body.querySelector('[data-a="ck"]').onclick = () => {

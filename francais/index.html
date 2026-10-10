@@ -32,6 +32,7 @@
   }
   * { box-sizing: border-box; }
   [hidden]{display:none!important}
+  button, input, textarea, select, .bin, .bank span, [role="button"] { touch-action: manipulation; }
   body { margin: 0; background: var(--bg); color: var(--ink); font: 17px/1.65 Arial, Helvetica, sans-serif; letter-spacing: .01em; }
   main { max-width: 900px; margin: 0 auto; padding: 20px 16px 60px; }
   h1 { font-size: 28px; margin: 0 0 4px; }
@@ -416,7 +417,7 @@ document.querySelectorAll('.sort').forEach(box => {
   ];
   const root = document.getElementById('negList');
   root.innerHTML = NEG.map((n,i) => '<div class="box"><p class="big">' + (i+1) + '. ' + n[0] + '</p>' +
-    '<input class="wr" id="neg'+i+'" lang="fr" spellcheck="true" autocomplete="off" aria-label="Phrase à la forme négative" placeholder="Écris la phrase à la forme négative">' +
+    '<input class="wr" id="neg'+i+'" lang="fr" spellcheck="true" autocomplete="off" autocorrect="off" aria-label="Phrase à la forme négative" placeholder="Écris la phrase à la forme négative">' +
     '<div class="row noprint"><button class="btn" type="button" data-i="'+i+'">✔️ Vérifier</button><button class="btn ghost" type="button" data-l="'+i+'">🔊 Écouter ma phrase</button></div><div class="msg" id="negm'+i+'"></div></div>').join('');
   root.querySelectorAll('[data-l]').forEach(b => b.onclick = () => speak(document.getElementById('neg'+b.dataset.l).value || "Tu n'as encore rien écrit."));
   root.querySelectorAll('[data-i]').forEach(b => b.onclick = () => {
@@ -484,7 +485,7 @@ Object.keys(DEFS).forEach(id => {
       d.chunks.forEach(c => {
         let txt = c[1];
         hide.forEach(w => { const re = new RegExp("(^|[\\s'’])(" + w + ")(?=[\\s,.]|$)"); txt = txt.replace(re, (m,a,b)=> a+'§'+b+'§'); });
-        txt = txt.replace(/§([^§]+)§/g, (m,w)=>'<input class="gap" data-w="'+w+'" aria-label="mot manquant" autocomplete="off" spellcheck="false">');
+        txt = txt.replace(/§([^§]+)§/g, (m,w)=>'<input class="gap" data-w="'+w+'" aria-label="mot manquant" autocomplete="off" autocorrect="off" autocapitalize="none" spellcheck="false" inputmode="text">');
         html += '<span>'+c[0]+'</span> '+txt+' ';
       });
       html += '</div><div class="row noprint"><button class="btn" type="button" data-a="ck">✔️ Vérifier</button><button class="btn ghost" type="button" data-a="hint">💡 Indice</button></div><div class="msg"></div>';

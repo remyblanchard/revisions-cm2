@@ -30,6 +30,7 @@
   }
   * { box-sizing: border-box; }
   [hidden]{display:none!important}
+  button, input, textarea, select, .bin, .bank span, [role="button"] { touch-action: manipulation; }
   body { margin: 0; background: var(--bg); color: var(--ink); font: 17px/1.65 Arial, Helvetica, sans-serif; letter-spacing: .01em; }
   main { max-width: 900px; margin: 0 auto; padding: 20px 16px 60px; }
   h1 { font-size: 28px; margin: 0 0 4px; }
@@ -627,7 +628,7 @@ Object.keys(DEFS).forEach(id => {
       d.chunks.forEach(c => {
         let txt = c[1];
         hide.forEach(w => { const re = new RegExp('(^|\\s)('+w+')(?=[\\s,.]|$)'); txt = txt.replace(re, (m,a,b)=> a+'§'+b+'§'); });
-        txt = txt.replace(/§([^§]+)§/g, (m,w)=>'<input class="gap" data-w="'+w+'" aria-label="mot manquant" autocomplete="off" spellcheck="false">');
+        txt = txt.replace(/§([^§]+)§/g, (m,w)=>'<input class="gap" data-w="'+w+'" aria-label="mot manquant" autocomplete="off" autocorrect="off" autocapitalize="none" spellcheck="false" inputmode="text">');
         html += '<span title="'+c[1]+'">'+c[0]+'</span> '+txt+' ';
       });
       html += '</div><div class="row tools2"><button class="btn" type="button" data-a="ck">✔️ Vérifier</button><button class="btn ghost" type="button" data-a="hint">💡 Indice</button></div><div class="msg"></div>';
@@ -665,7 +666,7 @@ document.querySelectorAll('.wq').forEach((w, n) => {
   const keys = JSON.parse(w.dataset.keys), start = w.dataset.start || '';
   const id = 'wq' + n;
   w.innerHTML = '<p><b>✍️ ' + w.dataset.q + '</b> <span style="color:var(--muted)">(au clavier ou à la main)</span></p>' +
-    '<textarea class="wr" id="' + id + '" lang="fr" spellcheck="true" aria-label="Ma réponse"></textarea>' +
+    '<textarea class="wr" id="' + id + '" lang="fr" spellcheck="true" autocorrect="off" aria-label="Ma réponse"></textarea>' +
     '<div class="row tools2"><button class="btn ghost" type="button" data-a="l">🔊 Écouter ma phrase</button><button class="btn" type="button" data-a="c">✔️ Vérifier</button></div>' +
     '<div class="verdict2" hidden></div><details><summary>Voir une réponse possible</summary><p>' + w.dataset.model + '</p></details>';
   const ta = w.querySelector('textarea'), out = w.querySelector('.verdict2');

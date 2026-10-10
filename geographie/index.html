@@ -27,6 +27,7 @@
   }
   * { box-sizing: border-box; }
   [hidden]{display:none!important}
+  button, input, textarea, select, .bin, .bank span, [role="button"] { touch-action: manipulation; }
   body { margin: 0; background: var(--bg); color: var(--ink); font: 17px/1.65 Arial, Helvetica, sans-serif; letter-spacing: .01em; }
   main { max-width: 900px; margin: 0 auto; padding: 20px 16px 60px; }
   h1 { font-size: 28px; margin: 0 0 4px; }
@@ -568,7 +569,7 @@ Object.keys(EX).forEach(id => {
   const cfg = EX[id];
   const ta = document.createElement('textarea');
   ta.className = 'ans'; ta.id = 'ta-'+id; ta.rows = cfg.start.includes('\n') ? 3 : 2;
-  ta.setAttribute('lang','fr'); ta.spellcheck = true; ta.setAttribute('aria-label','Ma réponse');
+  ta.setAttribute('lang','fr'); ta.spellcheck = true; ta.setAttribute('autocorrect','off'); ta.setAttribute('aria-label','Ma réponse');
   const saved = restore(id); ta.value = saved !== null ? saved : cfg.start;
   ta.addEventListener('focus', () => { lastBox = ta; });
   ta.addEventListener('input', () => store(id, ta.value));

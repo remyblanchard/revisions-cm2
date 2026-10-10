@@ -1,0 +1,712 @@
+<!DOCTYPE html>
+<html lang="fr">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Réviser La République</title>
+<style>
+  :root {
+    --bg: #fbfaf7; --card: #ffffff; --ink: #1d2433; --muted: #5a6478; --line: #dcdfe6;
+    --p1: #2f6fd0; --p1-bg: #e9f1fd;
+    --p2: #c0392b; --p2-bg: #fcebe9;
+    --p3: #8a5a14; --p3-bg: #f6eddc;
+    --ok: #1f7a4d; --ok-bg: #e3f4ea; --no: #b3261e; --no-bg: #fbe9e7;
+    --accent: #5b4bc4;
+    --emp: #6b5ca5; --mon: #2f6fd0; --rep: #c0392b;
+  }
+  @media (prefers-color-scheme: dark) {
+    :root:not([data-theme="light"]) {
+      --bg: #14181f; --card: #1c222c; --ink: #e9edf3; --muted: #a5aec0; --line: #2f3746;
+      --p1: #7fb0f5; --p1-bg: #1a2a42; --p2: #f28b82; --p2-bg: #3a1d1b; --p3: #e0b36a; --p3-bg: #33281a;
+      --ok: #73d39f; --ok-bg: #173126; --no: #f28b82; --no-bg: #3a1d1b; --accent: #a99cf5;
+      --emp: #a99cf5; --mon: #7fb0f5; --rep: #f28b82;
+    }
+  }
+  :root[data-theme="dark"] {
+    --bg: #14181f; --card: #1c222c; --ink: #e9edf3; --muted: #a5aec0; --line: #2f3746;
+    --p1: #7fb0f5; --p1-bg: #1a2a42; --p2: #f28b82; --p2-bg: #3a1d1b; --p3: #e0b36a; --p3-bg: #33281a;
+    --ok: #73d39f; --ok-bg: #173126; --no: #f28b82; --no-bg: #3a1d1b; --accent: #a99cf5;
+    --emp: #a99cf5; --mon: #7fb0f5; --rep: #f28b82;
+  }
+  * { box-sizing: border-box; }
+  [hidden]{display:none!important}
+  body { margin: 0; background: var(--bg); color: var(--ink); font: 17px/1.65 Arial, Helvetica, sans-serif; letter-spacing: .01em; }
+  main { max-width: 900px; margin: 0 auto; padding: 20px 16px 60px; }
+  h1 { font-size: 28px; margin: 0 0 4px; }
+  h2 { font-size: 22px; margin: 36px 0 12px; padding-top: 8px; border-top: 3px solid var(--line); }
+  h3 { font-size: 19px; margin: 0 0 8px; }
+  p { margin: 6px 0; }
+  ul, ol { margin: 6px 0; padding-left: 22px; }
+  li { margin: 4px 0; }
+  .sub { color: var(--muted); margin: 0 0 16px; }
+  nav { display: flex; flex-wrap: wrap; gap: 8px; margin: 14px 0 6px; }
+  nav a { text-decoration: none; color: var(--ink); background: var(--card); border: 1px solid var(--line); border-radius: 999px; padding: 6px 14px; font-size: 15px; }
+  .box { background: var(--card); border: 1px solid var(--line); border-radius: 12px; padding: 14px 16px; margin: 12px 0; }
+  .p1 { background: var(--p1-bg); border-left: 8px solid var(--p1); }
+  .p2 { background: var(--p2-bg); border-left: 8px solid var(--p2); }
+  .p3 { background: var(--p3-bg); border-left: 8px solid var(--p3); }
+  .p1 h3 { color: var(--p1); } .p2 h3 { color: var(--p2); } .p3 h3 { color: var(--p3); }
+  .tip { border-left: 8px solid var(--accent); }
+  .warn { background: var(--no-bg); border-left: 8px solid var(--no); }
+  table { width: 100%; border-collapse: collapse; margin: 8px 0; background: var(--card); }
+  th, td { border: 1px solid var(--line); padding: 8px 10px; text-align: left; vertical-align: top; }
+  th { background: var(--bg); }
+  .key { font-weight: 700; }
+  .def { font-size: 18px; }
+  .star { font-weight: 700; color: var(--no); }
+  .grid2 { display: grid; grid-template-columns: 1fr 1fr; gap: 12px; }
+  /* Frise */
+  .frise { display: flex; width: 100%; border: 2px solid var(--ink); border-radius: 8px; margin: 34px 0 40px; position: relative; }
+  .frise .seg:first-child { border-radius: 6px 0 0 6px; } .frise .seg:last-child { border-radius: 0 6px 6px 0; border-right: none; }
+  .seg { padding: 8px 4px; text-align: center; font-size: 14px; font-weight: 700; color: #fff; display: flex; flex-direction: column; justify-content: center; min-height: 92px; border-right: 2px solid var(--bg); position: relative; }
+  .seg small { font-weight: 400; font-size: 12px; display: block; margin-top: 2px; }
+  .seg .yr { position: absolute; top: -28px; left: -16px; color: var(--ink); font-size: 14px; font-weight: 700; }
+  .s-emp { background: var(--emp); } .s-mon { background: var(--mon); } .s-rep { background: var(--rep); }
+  .seg .rev { position: absolute; bottom: -30px; left: -30px; width: 70px; color: var(--no); font-size: 12px; font-weight: 700; }
+  .legend { display: flex; flex-wrap: wrap; gap: 14px; font-size: 15px; }
+  .legend span::before { content: ""; display: inline-block; width: 14px; height: 14px; border-radius: 3px; margin-right: 6px; vertical-align: -2px; background: var(--c); }
+  .blank .seg { background: var(--card); color: var(--ink); border-right: 2px solid var(--ink); }
+  /* Flashcards */
+  .cards { width: 100%; border-collapse: collapse; }
+  .cards td { width: 50%; height: 96px; border: 2px dashed var(--muted); padding: 10px 12px; font-size: 17px; }
+  .cards td.q { font-weight: 700; }
+  .tag { display: inline-block; font-size: 12px; font-weight: 700; padding: 1px 8px; border-radius: 999px; color: #fff; margin-bottom: 4px; }
+  .t1 { background: var(--p1); } .t2 { background: var(--p2); } .t3 { background: var(--p3); }
+  /* Quiz */
+  #quiz .qcard { background: var(--card); border: 1px solid var(--line); border-radius: 12px; padding: 16px; }
+  #quiz .qtext { font-size: 20px; font-weight: 700; margin: 6px 0 12px; }
+  .choices { display: grid; gap: 10px; }
+  .choice { text-align: left; font: inherit; font-size: 18px; padding: 12px 14px; border-radius: 10px; border: 2px solid var(--line); background: var(--bg); color: var(--ink); cursor: pointer; }
+  .choice:hover { border-color: var(--accent); }
+  .choice.right { background: var(--ok-bg); border-color: var(--ok); }
+  .choice.wrong { background: var(--no-bg); border-color: var(--no); }
+  .btn { font: inherit; font-size: 16px; padding: 10px 16px; border-radius: 10px; border: none; background: var(--accent); color: #fff; cursor: pointer; }
+  .btn.ghost { background: transparent; color: var(--ink); border: 2px solid var(--line); }
+  .row { display: flex; flex-wrap: wrap; gap: 10px; align-items: center; margin-top: 12px; }
+  .feedback { margin-top: 12px; padding: 10px 12px; border-radius: 10px; display: none; }
+  .feedback.ok { display: block; background: var(--ok-bg); }
+  .feedback.no { display: block; background: var(--no-bg); }
+  .progress { height: 10px; background: var(--line); border-radius: 999px; overflow: hidden; margin: 8px 0 12px; }
+  .progress > div { height: 100%; background: var(--accent); width: 0; transition: width .3s; }
+  select { font: inherit; font-size: 16px; padding: 8px; border-radius: 8px; border: 1px solid var(--line); background: var(--card); color: var(--ink); }
+  .line { border-bottom: 2px dotted var(--muted); display: inline-block; min-width: 180px; }
+  .atl { background: var(--card); border: 1px solid var(--line); border-radius: 14px; padding: 16px; margin: 14px 0; }
+  .steps { display: flex; flex-wrap: wrap; gap: 6px; margin: 8px 0 12px; }
+  .steps button { font: inherit; font-size: 15px; padding: 6px 12px; border-radius: 999px; border: 2px solid var(--line); background: var(--bg); color: var(--ink); cursor: pointer; }
+  .steps button[aria-pressed="true"] { background: var(--ink); color: var(--bg); border-color: var(--ink); }
+  .chunks { display: flex; flex-wrap: wrap; gap: 8px; }
+  .chunk { font: inherit; font-size: 19px; padding: 10px 12px; border-radius: 12px; border: 2px solid var(--line); background: var(--bg); color: var(--ink); text-align: center; min-width: 96px; }
+  .chunk .ic { display: block; font-size: 28px; line-height: 1.2; }
+  button.chunk { cursor: pointer; }
+  .chunk.done { border-color: var(--ok); background: var(--ok-bg); }
+  .chunk.oops { border-color: var(--no); background: var(--no-bg); }
+  .built { min-height: 3em; margin: 10px 0; padding: 10px 12px; border: 2px dashed var(--line); border-radius: 12px; font-size: 20px; }
+  .gapline { font-size: 21px; line-height: 2.4; }
+  .gap { font: inherit; font-size: 20px; width: 8.5em; padding: 2px 8px; border: 2px solid var(--line); border-radius: 8px; background: var(--bg); color: var(--ink); }
+  .gap.ok { border-color: var(--ok); background: var(--ok-bg); }
+  .gap.no { border-color: var(--no); background: var(--no-bg); }
+  .msg { margin-top: 10px; font-weight: 700; }
+  .gesture td:first-child { font-size: 26px; text-align: center; width: 56px; }
+  @media print { .atl .steps, .atl .tools2 { display: none; } }
+  .mod { background: var(--card); border: 1px solid var(--line); border-radius: 14px; padding: 16px; margin: 16px 0; }
+  .mod h3 { margin-bottom: 4px; }
+  .mod .goal { color: var(--muted); margin: 0 0 10px; }
+  .story { display: grid; grid-template-columns: repeat(auto-fit, minmax(150px, 1fr)); gap: 10px; margin: 10px 0; }
+  .case { border: 2px solid var(--line); border-radius: 12px; padding: 10px; background: var(--bg); }
+  .case .ic { font-size: 30px; display: block; }
+  .case b { display: block; font-size: 14px; letter-spacing: .05em; text-transform: uppercase; color: var(--muted); }
+  .memo { display: inline-block; font-size: 22px; font-weight: 700; letter-spacing: .08em; padding: 4px 12px; border-radius: 10px; background: var(--bg); border: 2px solid var(--line); }
+  .bins { display: grid; grid-template-columns: repeat(auto-fit, minmax(150px, 1fr)); gap: 10px; margin-top: 10px; }
+  .bin { border: 2px dashed var(--line); border-radius: 12px; padding: 8px; min-height: 90px; background: var(--bg); cursor: pointer; }
+  .bin h4 { margin: 0 0 6px; font-size: 16px; }
+  .bin .chip2 { display: inline-block; margin: 3px; padding: 3px 9px; border-radius: 999px; background: var(--ok-bg); border: 1px solid var(--ok); font-size: 15px; }
+  .pool { display: flex; flex-wrap: wrap; gap: 8px; margin-top: 8px; }
+  .pool button { font: inherit; font-size: 16px; padding: 6px 12px; border-radius: 999px; border: 2px solid var(--line); background: var(--card); color: var(--ink); cursor: pointer; }
+  .pool button[aria-pressed="true"] { border-color: var(--accent); background: var(--accent); color: #fff; }
+  .wr { width: 100%; font: inherit; font-size: 19px; line-height: 1.6; padding: 10px 12px; border: 2px solid var(--line); border-radius: 10px; background: var(--bg); color: var(--ink); min-height: 4em; margin-top: 6px; }
+  .verdict2 { margin-top: 8px; padding: 10px 12px; border-radius: 10px; border: 1px solid var(--line); }
+  .verdict2 li { list-style: none; }
+  @media print { .mod .tools2, .mod .pool, .wr, .verdict2, .mod details { display: none !important; } }
+  details { margin-top: 8px; } summary { cursor: pointer; color: var(--accent); font-weight: 700; }
+  @media (max-width: 640px) { .grid2 { grid-template-columns: 1fr; } body { font-size: 16px; } .seg { font-size: 11px; } .seg small { font-size: 10px; } }
+  @media print {
+    body { background: #fff; color: #000; font-size: 13.5px; }
+    nav, #quiz-section, .noprint { display: none !important; }
+    h2 { break-before: page; border-top: none; margin-top: 0; }
+    h2.first { break-before: auto; }
+    .box, tr, .frise { break-inside: avoid; }
+    .seg { -webkit-print-color-adjust: exact; print-color-adjust: exact; }
+    .cards td { height: 80px; }
+    @page { size: A4; margin: 12mm; }
+  }
+</style>
+</head>
+<body>
+<main>
+  <p class="noprint" style="margin:0 0 10px"><a href="../" style="color:var(--accent)">← Toutes les leçons</a></p>
+  <h1>🇫🇷 Histoire : Le temps de la République</h1>
+  <p class="sub">Des outils pour réviser l'évaluation 1 · d'après la leçon et la fiche de révision de la classe</p>
+
+  <nav class="noprint">
+    <a href="#revoir">🎯 Points difficiles</a>
+    <a href="#frise">📏 La frise</a>
+    <a href="#resume">📄 Fiche résumé</a>
+    <a href="#dico">📖 Définitions par cœur</a>
+    <a href="#atelier">🧩 Atelier définitions</a>
+    <a href="#phrases">✍️ Phrases-réponses</a>
+    <a href="#quiz-section">🎯 Quiz qui parle</a>
+    <a href="#vierge">🖊️ Frise à compléter</a>
+    <a href="#cartes">✂️ Cartes à découper</a>
+    
+  </nav>
+
+  
+
+  <!-- ===================== FRISE ===================== -->
+  <div class="box tip">
+    <h3>👋 Comment réviser avec cette page</h3>
+    <ul>
+      <li><b>Essayer de se souvenir</b> (quiz, cartes, questions à l'oral) est plus efficace que relire ou recopier.</li>
+      <li><b>Plusieurs petites séances</b> de 10 minutes, sur plusieurs jours, valent mieux qu'une longue séance la veille.</li>
+      <li>Le bouton <b>🔊 Écouter</b> lit les questions à voix haute.</li>
+    </ul>
+  </div>
+  <h2 id="revoir" class="first">🎯 Les points difficiles, expliqués</h2>
+  
+
+  
+
+  <!-- Module A -->
+  <div class="mod" id="modA">
+    <h3 style="color:var(--p1)">A · La révolution de 1830 : qui ? pourquoi ?</h3>
+    <p class="goal">L'objectif de la fiche : savoir qui déclenche la révolution de 1830, et pour quelle raison.</p>
+    <p><b>La méthode : raconter l'histoire en 4 cases</b>, comme une bande dessinée.</p>
+    <div class="story">
+      <div class="case"><span class="ic">👑📰🚫</span><b>Pourquoi ?</b>Le roi <b>Charles X</b> supprime la <b>liberté de la presse</b> : la police casse les machines du journal <i>Le Temps</i>.</div>
+      <div class="case"><span class="ic">😡🖨️</span><b>Qui commence ?</b>Les <b>imprimeurs</b>, furieux, courent dans Paris pour prévenir tout le monde.</div>
+      <div class="case"><span class="ic">🧱🔫</span><b>Comment ?</b>Les <b>habitants de Paris</b> dressent des <b>barricades</b> et prennent les armes : les 27, 28 et 29 juillet 1830.</div>
+      <div class="case"><span class="ic">🏃‍♂️👑</span><b>Résultat</b>Charles X est chassé. Louis-Philippe devient roi : c'est la <b>Monarchie de Juillet</b>.</div>
+    </div>
+    <p>🎭 <b>À faire</b> : l'enfant raconte l'histoire <b>à voix haute</b>, comme une conteuse, en montrant chaque case. Puis elle répond à l'écrit :</p>
+    <div class="wq" data-q="Qui déclenche la révolution de 1830, et pourquoi ?" data-start="La révolution de 1830 est déclenchée par " data-keys='[{"l":"les imprimeurs","any":["imprim"]},{"l":"les habitants de Paris","any":["paris","habitant","parisien","peuple"]},{"l":"la liberté de la presse supprimée","any":["presse","journal","liberte"]}]' data-model="La révolution de 1830 est déclenchée par les imprimeurs et les habitants de Paris, parce que le roi Charles X a supprimé la liberté de la presse."></div>
+  </div>
+
+  <!-- Module B -->
+  <div class="mod" id="modB">
+    <h3 style="color:var(--p1)">B · Pourquoi la République ne dure pas ?</h3>
+    <p class="goal">L'objectif de la fiche : comprendre que la République ne s'installe pas définitivement, et expliquer pourquoi.</p>
+    <div class="story">
+      <div class="case"><span class="ic">🗳️</span><b>1848</b>La <b>IIᵉ République</b> commence. Les Français <b>élisent</b> un président : <b>Louis-Napoléon Bonaparte</b>.</div>
+      <div class="case"><span class="ic">🤔👑</span><b>Il veut rester</b>Il veut garder le pouvoir <b>pour toujours</b>, comme son oncle Napoléon Iᵉʳ.</div>
+      <div class="case"><span class="ic">✅❌</span><b>Le plébiscite</b>Il demande aux Français de voter <b>« oui » ou « non »</b>. Le « oui » gagne.</div>
+      <div class="case"><span class="ic">👑</span><b>1852</b>Il devient <b>empereur</b> : <b>Napoléon III</b>. C'est la fin de la République et le début du <b>Second Empire</b>.</div>
+    </div>
+    <p>💬 <b>La phrase-clé</b> : « La République ne dure pas, parce que <b>le président devient empereur</b>. »</p>
+    <div class="wq" data-q="Explique pourquoi la IIᵉ République ne s'installe pas définitivement." data-start="La IIᵉ République ne dure pas parce que " data-keys='[{"l":"Louis-Napoléon Bonaparte","any":["napoleon","bonaparte"]},{"l":"le plébiscite (vote oui / non)","any":["plebiscite","vote","oui"]},{"l":"il devient empereur (Napoléon III, Second Empire)","any":["empereur","empire","napoleon iii","napoleon 3"]}]' data-model="La IIᵉ République ne dure pas parce que Louis-Napoléon Bonaparte, le président, organise un plébiscite en 1852 et devient empereur sous le nom de Napoléon III."></div>
+  </div>
+
+  <!-- Module C -->
+  <div class="mod" id="modC">
+    <h3 style="color:var(--p3)">C · Les raisons de la colonisation : « P + 3 M »</h3>
+    <p class="goal">L'objectif de la fiche : connaître les raisons de la colonisation.</p>
+    <p>Le code à retenir : <span class="memo">P + 3 M</span></p>
+    <div class="story">
+      <div class="case"><span class="ic">🏆</span><b>P · Prestige</b>Montrer que la France est puissante, après la perte de l'Alsace-Lorraine en 1870.</div>
+      <div class="case"><span class="ic">🍫🌿</span><b>M · Matières premières</b>Le cacao, le coton, le caoutchouc, la canne à sucre.</div>
+      <div class="case"><span class="ic">🛒</span><b>M · Marché</b>Un endroit pour <b>vendre</b> les produits fabriqués en France.</div>
+      <div class="case"><span class="ic">👷</span><b>M · Main-d'œuvre</b>Des travailleurs <b>bon marché</b>, très peu payés.</div>
+    </div>
+    <p>⚠️ <b>Et une idée fausse de l'époque</b> : les Européens se croyaient <b>supérieurs</b> aux autres peuples. Cette idée est <b>raciste et fausse</b>.</p>
+    <div class="sort" data-bins='["✅ Une raison de la colonisation","❌ Pas une raison"]' data-items='[["Le prestige",0],["Les matières premières",0],["Vendre les produits français",0],["La main-d&#39;œuvre bon marché",0],["Aider les peuples à être libres",1],["Partir en vacances",1],["Apprendre leurs langues",1]]'></div>
+    <div class="wq" data-q="Donne au moins 3 raisons de la colonisation." data-start="La France colonise pour " data-keys='[{"l":"le prestige","any":["prestig","puissan"]},{"l":"les matières premières","any":["matiere","cacao","coton","caoutchouc","sucre"]},{"l":"vendre ses produits / la main-d&#39;œuvre","any":["vendre","marche","produit","main","travailleur","ouvrier"]}]' data-model="La France colonise pour le prestige, pour avoir des matières premières, pour vendre ses produits et pour avoir une main-d'œuvre bon marché."></div>
+  </div>
+
+  <!-- Module D -->
+  <div class="mod" id="modD">
+    <h3 style="color:var(--p3)">D · Les indigènes étaient maltraités : « T-M-I-I »</h3>
+    <p class="goal">L'objectif de la fiche : comprendre que les indigènes (les habitants des colonies) étaient maltraités.</p>
+    <p>Le code à retenir : <span class="memo">T-M-I-I</span></p>
+    <div class="story">
+      <div class="case"><span class="ic">⛏️</span><b>T · Travaux forcés</b>Obligés de travailler, comme sur le chantier du chemin de fer à Madagascar.</div>
+      <div class="case"><span class="ic">⚰️</span><b>M · Morts</b>Beaucoup meurent d'épuisement.</div>
+      <div class="case"><span class="ic">💰</span><b>I · Impôts</b>Ils doivent payer beaucoup d'impôts.</div>
+      <div class="case"><span class="ic">📚🚫</span><b>I · Ignorance</b>On ne leur apprend presque rien : pas d'école pour eux.</div>
+    </div>
+    <p>💬 <b>Le bilan</b> : la colonisation est une <b>catastrophe humaine</b>. La République n'a pas respecté ses principes de <b>liberté</b> et d'<b>égalité</b>.</p>
+    <div class="wq" data-q="Montre que les indigènes étaient maltraités. Donne 2 exemples." data-start="Les indigènes étaient maltraités : " data-keys='[{"l":"les travaux forcés","any":["travaux","travail","force","corvee"]},{"l":"les morts / les impôts / l&#39;ignorance","any":["mort","meur","impot","ignoran","ecole"]}]' data-model="Les indigènes étaient maltraités : ils subissaient des travaux forcés et beaucoup mouraient. Ils payaient aussi de lourds impôts et n'allaient pas à l'école."></div>
+  </div>
+
+  <!-- Module E -->
+  <div class="mod" id="modE">
+    <h3 style="color:var(--p3)">E · Comprendre la carte de la page 10</h3>
+    <p class="goal">L'objectif de la fiche : comprendre la carte « L'empire colonial français en 1914 ».</p>
+    <p><b>La méthode « T-D-L-O »</b> pour lire n'importe quelle carte :</p>
+    <ol>
+      <li><b>T</b>itre : de quoi parle la carte ? → L'empire colonial français.</li>
+      <li><b>D</b>ate : en quelle année ? → <b>1914</b>.</li>
+      <li><b>L</b>égende : que veulent dire les couleurs ? → <b>Foncé</b> = les territoires dominés <b>avant 1870</b>. <b>Clair</b> = ceux pris <b>sous la IIIᵉ République</b>.</li>
+      <li><b>O</b>ù ? → Sur <b>4 continents</b> : l'Afrique, l'Asie, l'Amérique et l'Océanie.</li>
+    </ol>
+    <p>📏 <b>2 chiffres de la carte</b> : l'empire est <b>17 fois plus grand</b> que la France, et compte <b>55 millions d'habitants</b>.</p>
+    <p>🧩 <b>Range chaque territoire sur son continent</b> (prends la carte de la page 10 à côté de toi) :</p>
+    <div class="sort" data-bins='["🌍 Afrique","🌏 Asie","🌎 Amérique","🏝️ Océanie"]' data-items='[["Algérie",0],["Maroc",0],["Sénégal",0],["Madagascar",0],["Indochine",1],["Pondichéry",1],["Guyane",2],["Martinique",2],["Guadeloupe",2],["Nouvelle-Calédonie",3]]'></div>
+    <p>Sous la IIIᵉ République, l'empire grandit <b>surtout en Afrique</b> (AOF, AEF, Madagascar…) <b>et en Asie</b> (l'Indochine).</p>
+  </div>
+
+  <h2 id="frise">📏 1. La frise à connaître</h2>
+  <div class="legend">
+    <span style="--c:var(--emp)">Empire (un empereur)</span>
+    <span style="--c:var(--mon)">Monarchie (un roi)</span>
+    <span style="--c:var(--rep)">République (un président, pas de roi)</span>
+  </div>
+  <div class="frise" role="img" aria-label="Frise : Premier Empire jusqu'en 1815, Restauration de 1815 à 1830, Monarchie de Juillet de 1830 à 1848, Deuxième République de 1848 à 1852, Second Empire de 1852 à 1870, Troisième République à partir de 1870">
+    <div class="seg s-emp" style="flex:1.2">1ᵉʳ Empire<small>Napoléon Iᵉʳ</small></div>
+    <div class="seg s-mon" style="flex:2.2"><span class="yr">1815</span>Restauration<small>Louis XVIII puis Charles X</small></div>
+    <div class="seg s-mon" style="flex:2.4"><span class="yr">1830</span><span class="rev">⚡ révolution</span>Monarchie de Juillet<small>Louis-Philippe</small></div>
+    <div class="seg s-rep" style="flex:1.1"><span class="yr">1848</span><span class="rev">⚡ révolution</span>IIᵉ Rép.<small>Louis-Napoléon Bonaparte</small></div>
+    <div class="seg s-emp" style="flex:2"><span class="yr">1852</span>Second Empire<small>Napoléon III</small></div>
+    <div class="seg s-rep" style="flex:1.6"><span class="yr">1870</span>IIIᵉ République<small>jusqu'en 1940</small></div>
+  </div>
+
+  <div class="box tip">
+    <h3>🧠 Les astuces pour retenir la frise</h3>
+    <ul>
+      <li><b>Les 4 périodes de la fiche de révision</b>, dans l'ordre : <b>Restauration → Monarchie de Juillet → IIᵉ République → Second Empire</b>.</li>
+      <li><b>Les 4 dates</b> : <b>15 – 30 – 48 – 52</b>. On peut les chanter comme un numéro de téléphone : « dix-huit-cent-quinze, trente, quarante-huit, cinquante-deux ».</li>
+      <li><b>Qui dirige ?</b> D'abord <b>des rois</b>, puis <b>un président</b>, puis <b>un empereur</b>.</li>
+      <li>Les <b>2 révolutions</b>, en <b>1830</b> et en <b>1848</b>, font changer de régime. ⚡</li>
+      <li>La <b>Restauration</b> et la <b>Monarchie de Juillet</b> sont toutes les deux des <b>monarchies constitutionnelles</b> : le roi partage le pouvoir avec les représentants du peuple.</li>
+    </ul>
+  </div>
+
+  <!-- ===================== FICHE RÉSUMÉ ===================== -->
+  <h2 id="resume">📄 2. La fiche résumé</h2>
+
+  <div class="box p1">
+    <h3>👑 Partie 1 : les régimes politiques de 1815 à 1852</h3>
+    <ul>
+      <li>En <b>1815</b>, l'Empire de Napoléon Iᵉʳ tombe. ⭐ <b>En 1815, c'est le roi Louis XVIII qui gouverne.</b></li>
+      <li>Louis XVIII accorde une <b>Charte</b> : le roi partage le pouvoir de faire les lois avec deux Chambres. C'est une <b>monarchie constitutionnelle</b>.</li>
+      <li>Puis vient Charles X (1824-1830).</li>
+      <li>⭐ <b>La révolution de 1830</b>, à <b>Paris</b>, les 27, 28 et 29 juillet :
+        <ul>
+          <li><b>Pourquoi ?</b> Charles X <b>supprime la liberté de la presse</b> : la police casse les machines du journal <i>Le Temps</i>.</li>
+          <li><b>Qui ?</b> Les <b>imprimeurs</b>, furieux, puis <b>les habitants de Paris</b>. Ils dressent des <b>barricades</b> et prennent les armes.</li>
+          <li>Charles X est chassé. Le tableau <i>La Liberté guidant le peuple</i> de Delacroix montre cette révolution.</li>
+        </ul>
+      </li>
+      <li>Louis-Philippe devient « roi des Français » : c'est la <b>Monarchie de Juillet</b> (1830-1848).</li>
+      <li><b>La révolution de 1848</b> → la <b>IIᵉ République</b>. Lamartine fait du <b>drapeau tricolore</b> le symbole de la République.</li>
+      <li>⭐ <b>En 1848, c'est Louis-Napoléon Bonaparte qui gouverne</b> : il est <b>élu président</b> de la République.</li>
+      <li>⭐ <b>Pourquoi la République ne dure pas ?</b> Louis-Napoléon Bonaparte veut garder le pouvoir. Il organise un <b>plébiscite</b> : les Français votent « oui » et il devient <b>empereur</b> sous le nom de <b>Napoléon III</b>, le <b>2 décembre 1852</b>. C'est le <b>Second Empire</b>.</li>
+    </ul>
+  </div>
+
+  <div class="box p2">
+    <h3>🇫🇷 Partie 2 : la IIIᵉ République s'installe</h3>
+    <ul>
+      <li>En <b>1870</b>, la France perd la guerre contre la Prusse. L'Empire s'écroule. La <b>IIIᵉ République</b> est proclamée le <b>4 septembre 1870</b>. Cette fois, elle <b>dure</b>.</li>
+      <li>⭐ <b>Les symboles de la République</b> :
+        <ul>
+          <li>👩 <b>Marianne</b> : une femme coiffée du <b>bonnet phrygien</b> ;</li>
+          <li>🔵⚪🔴 le <b>drapeau tricolore</b> : bleu, blanc, rouge ;</li>
+          <li>🎵 <b>La Marseillaise</b> : l'<b>hymne national</b> ;</li>
+          <li>🎆 le <b>14 juillet</b> : la <b>fête nationale</b>, en souvenir de la fête de la Fédération du 14 juillet 1790.</li>
+        </ul>
+      </li>
+      <li>⭐ <b>L'école, symbole de la République</b> : c'est l'exercice 5 de la page 8, voir l'encadré ci-dessous.</li>
+      <li>La loi de <b>Jules Ferry</b>, du <b>28 mars 1882</b>, rend l'école <b>obligatoire</b> pour les filles et les garçons de <b>6 à 13 ans</b>.</li>
+    </ul>
+  </div>
+
+  <div class="box p2 def">
+    <h3>⭐ L'exercice 5 de la page 8, à savoir refaire</h3>
+    <p>La République fonde une école <b>obligatoire</b> pour <b>tous</b> les enfants, <b>filles</b> et <b>garçons</b>. Elle a pour but de former des <b>citoyens</b> républicains. L'école devient, dès les années 1880, un symbole de la République.</p>
+    <p><i>Pour s'en souvenir, les 5 mots dans l'ordre : <b>obligatoire, tous, filles, garçons, citoyens</b>, soit « O-T-F-G-C ». Une phrase : « <b>O</b>n <b>T</b>rouve <b>F</b>acilement <b>G</b>râce au <b>C</b>ours. »</i></p>
+  </div>
+
+  <div class="box p3">
+    <h3>🌍 Partie 3 : la colonisation sous la IIIᵉ République (1870-1940)</h3>
+    <ul>
+      <li>La France conquiert de nombreux territoires. En 1914, son <b>empire colonial</b> est <b>17 fois plus grand</b> que la France et compte <b>55 millions d'habitants</b>.</li>
+      <li>⭐ <b>La carte de la page 10</b> :
+        <ul>
+          <li>en <b>foncé</b> : les territoires dominés <b>avant 1870</b> ;</li>
+          <li>en <b>clair</b> : ceux pris <b>sous la IIIᵉ République</b>.</li>
+        </ul>
+        Les colonies sont sur <b>4 continents</b> :
+        <ul>
+          <li><b>en Afrique</b> : Algérie, Tunisie, Maroc, Sénégal, Madagascar… ;</li>
+          <li><b>en Asie</b> : l'Indochine, et des villes en Inde comme Pondichéry ;</li>
+          <li><b>en Amérique</b> : la Guyane, la Guadeloupe, la Martinique ;</li>
+          <li><b>en Océanie</b> : la Nouvelle-Calédonie.</li>
+        </ul>
+        Sous la IIIᵉ République, l'empire grandit surtout en <b>Afrique</b> (AOF, AEF, Madagascar…) et en <b>Asie</b> (l'Indochine).
+      </li>
+      <li>⭐ <b>Les raisons de la colonisation</b> :
+        <ol>
+          <li>le <b>prestige</b> : se montrer puissante, après la perte de l'Alsace et d'une partie de la Lorraine en 1870 ;</li>
+          <li>les <b>matières premières</b> : canne à sucre, cacao, coton, caoutchouc ;</li>
+          <li>un endroit pour <b>vendre</b> les produits fabriqués en France ;</li>
+          <li>une <b>main-d'œuvre bon marché</b> ;</li>
+          <li>une idée <b>fausse et raciste</b> de l'époque : les Européens se croyaient <b>supérieurs</b> et pensaient devoir « éduquer » les autres peuples.</li>
+        </ol>
+      </li>
+      <li>⭐ <b>Les indigènes étaient maltraités</b> :
+        <ul>
+          <li>des <b>travaux forcés</b> et des corvées, avec beaucoup de <b>morts</b>, par exemple à Madagascar, sur le chantier du chemin de fer ;</li>
+          <li>des <b>impôts</b> lourds ;</li>
+          <li>pas d'accès aux études : ils étaient maintenus dans l'<b>ignorance</b>.</li>
+        </ul>
+      </li>
+      <li><b>Le bilan</b> : la colonisation est une <b>catastrophe humaine</b>. Elle trahit les principes de la République : la <b>liberté</b> et l'<b>égalité</b>.</li>
+    </ul>
+  </div>
+
+  
+
+  <!-- ===================== DICO ===================== -->
+  <h2 id="dico">📖 3. Les définitions</h2>
+  <div class="box p1 def"><b>⭐ La République</b> (par cœur) : c'est un <b>régime politique sans roi</b>, dans lequel le <b>peuple élit ses représentants</b> qui <b>votent les lois</b>.<br><i>Pour s'en souvenir, 3 morceaux : 1) pas de roi · 2) le peuple élit · 3) les élus votent les lois.</i></div>
+  <div class="box p3 def"><b>⭐ Une colonie</b> (par cœur) : un <b>territoire conquis, occupé, dirigé et dominé</b> par un <b>pays étranger</b>.<br><i>Pour s'en souvenir, 4 verbes : <b>C-O-D-D</b> (conquis, occupé, dirigé, dominé).</i></div>
+  <div class="box p1"><b>Monarchie constitutionnelle</b> : un régime où le <b>roi partage le pouvoir</b> avec les représentants du peuple, qui votent les lois.</div>
+  <div class="box p1"><b>Empire</b> : un régime politique dirigé par un <b>empereur</b>.</div>
+  <div class="box p1"><b>Plébiscite</b> : un vote où les citoyens répondent par <b>« oui » ou « non »</b> à une question.</div>
+  <div class="box p2"><b>Symbole</b> : un objet, une image ou un personnage qui <b>représente</b> quelque chose. · <b>Hymne national</b> : le chant qui représente un pays. · <b>Bonnet phrygien</b> : le bonnet rouge des esclaves libérés, dans l'Antiquité. Il représente la <b>liberté</b>.</div>
+  <div class="box p3"><b>Colonisation</b> : la conquête, l'occupation et la domination d'un territoire par un pays étranger. · <b>Empire colonial</b> : l'ensemble des colonies d'un pays.</div>
+
+  <!-- ===================== PHRASES ===================== -->
+  <h2 id="atelier">🧩 L'atelier des définitions par cœur</h2>
+  <div class="box tip">
+    <p><b>Comment faire.</b> Une définition par cœur, c'est une longue phrase à garder en tête. L'atelier la <b>découpe en morceaux avec une image chacun</b>, puis enlève les morceaux <b>petit à petit</b>, jusqu'à ce qu'elle la dise toute seule.</p>
+    <p>Pour chaque définition, faites les étapes dans l'ordre : <b>① Écoute → ② Remets en ordre → ③ Les trous (3 niveaux) → ④ Sans regarder</b>. Comptez 5 minutes par définition.</p>
+  </div>
+
+  <div class="atl" id="atl-rep"></div>
+  <div class="atl" id="atl-col"></div>
+
+  <div class="box">
+    <h3>🙌 Les gestes : on dit chaque morceau avec un geste</h3>
+    <div class="grid2">
+      <table class="gesture">
+        <tr><th colspan="2">La République</th></tr>
+        <tr><td>🚫👑</td><td>« sans roi » : on fait « non » avec le doigt au-dessus de sa tête, comme pour enlever une couronne</td></tr>
+        <tr><td>🗳️</td><td>« le peuple élit » : on glisse un bulletin dans une urne</td></tr>
+        <tr><td>👥</td><td>« ses représentants » : on montre plusieurs personnes devant soi</td></tr>
+        <tr><td>📜</td><td>« qui votent les lois » : on lève la main pour voter</td></tr>
+      </table>
+      <table class="gesture">
+        <tr><th colspan="2">La colonie (C-O-D-D)</th></tr>
+        <tr><td>⚔️</td><td>« <b>c</b>onquis » : on lève le poing</td></tr>
+        <tr><td>⛺</td><td>« <b>o</b>ccupé » : on pose les deux mains à plat sur la table</td></tr>
+        <tr><td>🧭</td><td>« <b>d</b>irigé » : on pointe le doigt devant soi</td></tr>
+        <tr><td>✋</td><td>« <b>d</b>ominé » : on appuie la main vers le bas</td></tr>
+      </table>
+    </div>
+  </div>
+
+  
+
+  <h2 id="phrases">✍️ 4. Les phrases-réponses toutes prêtes</h2>
+  <p>Elle les dit d'abord à l'oral, puis en écrit 2 ou 3. Une réponse courte et juste suffit.</p>
+  <table>
+    <tr><th>Si la question est…</th><th>Je peux répondre…</th></tr>
+    <tr><td>Qui gouverne en 1815 ?</td><td>« En 1815, c'est le roi <b>Louis XVIII</b>. »</td></tr>
+    <tr><td>Qui gouverne en 1848 ?</td><td>« En 1848, c'est <b>Louis-Napoléon Bonaparte</b>, élu président de la République. »</td></tr>
+    <tr><td>Qui déclenche la révolution de 1830, et pourquoi ?</td><td>« Les <b>imprimeurs</b> et les <b>habitants de Paris</b>, parce que Charles X a <b>supprimé la liberté de la presse</b>. »</td></tr>
+    <tr><td>Pourquoi la République ne s'installe-t-elle pas définitivement ?</td><td>« Parce que <b>Louis-Napoléon Bonaparte</b> organise un <b>plébiscite</b> en 1852 et devient <b>empereur</b> (Napoléon III). »</td></tr>
+    <tr><td>Quels sont les symboles de la République ?</td><td>« <b>Marianne</b>, le <b>drapeau tricolore</b>, <b>la Marseillaise</b> et le <b>14 juillet</b>. »</td></tr>
+    <tr><td>Pourquoi l'école est-elle un symbole de la République ?</td><td>« Elle est <b>obligatoire pour tous</b>, filles et garçons, pour former des <b>citoyens</b>. »</td></tr>
+    <tr><td>Pourquoi la France colonise-t-elle ?</td><td>« Pour le <b>prestige</b>, les <b>matières premières</b>, pour <b>vendre</b> ses produits et pour avoir une <b>main-d'œuvre bon marché</b>. »</td></tr>
+    <tr><td>Comment les indigènes sont-ils traités ?</td><td>« Ils sont <b>maltraités</b> : <b>travaux forcés</b>, beaucoup de <b>morts</b>, des <b>impôts</b> et pas d'<b>école</b>. »</td></tr>
+    <tr><td>Sur quels continents sont les colonies ?</td><td>« En <b>Afrique</b>, en <b>Asie</b>, en <b>Amérique</b> et en <b>Océanie</b>. »</td></tr>
+  </table>
+
+  <!-- ===================== QUIZ ===================== -->
+  <h2 id="quiz-section">🎯 5. Le quiz qui parle</h2>
+  <div class="box tip">
+    <p>Appuie sur <b>🔊 Écouter</b> pour entendre la question. Si tu te trompes, la question <b>revient à la fin</b>.</p>
+    <div class="row">
+      <label for="part">Je révise :</label>
+      <select id="part">
+        <option value="all">Tout</option>
+        <option value="1">👑 1815-1852</option>
+        <option value="2">🇫🇷 La IIIᵉ République</option>
+        <option value="3">🌍 La colonisation</option>
+        <option value="r">🎯 Points difficiles</option>
+      </select>
+      <button class="btn" id="start">▶️ Commencer</button>
+    </div>
+  </div>
+  <div id="quiz"></div>
+
+  <!-- ===================== FRISE VIERGE ===================== -->
+  <h2 id="vierge">🖊️ 6. La frise à compléter</h2>
+  <p>Imprimez cette page. L'enfant écrit le nom des 4 périodes et les 4 dates <b>sans regarder</b>. Ensuite, elle vérifie avec la frise de la partie 1.</p>
+  <div class="frise blank">
+    <div class="seg" style="flex:1"><span class="yr">….</span>&nbsp;</div>
+    <div class="seg" style="flex:1"><span class="yr">….</span>&nbsp;</div>
+    <div class="seg" style="flex:1"><span class="yr">….</span>&nbsp;</div>
+    <div class="seg" style="flex:1"><span class="yr">….</span>&nbsp;</div>
+  </div>
+  <div class="box">
+    <p>En 1815, qui gouverne ? <span class="line"></span></p>
+    <p>En 1848, qui gouverne ? <span class="line"></span></p>
+    <p>La République, c'est… <span class="line" style="min-width:60%"></span></p>
+    <p>Une colonie, c'est… <span class="line" style="min-width:60%"></span></p>
+    <p>Les 4 symboles : <span class="line" style="min-width:60%"></span></p>
+  </div>
+
+  <!-- ===================== FLASHCARDS ===================== -->
+  <h2 id="cartes">✂️ 7. Les cartes à découper</h2>
+  <p>Découpez chaque ligne et pliez-la : la question devant, la réponse derrière. Utilisez 3 piles : « je ne sais pas », « j'hésite », « je sais ».</p>
+  <table class="cards" id="cardtable"></table>
+
+  <!-- ===================== PLANNING ===================== -->
+  </main>
+
+<script>
+const Q = [
+  // Partie 1
+  {p:1, q:"Qui gouverne la France en 1815 ?", c:["Napoléon Iᵉʳ","Louis XVIII","Louis-Philippe"], a:1, e:"En 1815, l'Empire tombe et le roi Louis XVIII gouverne."},
+  {p:1, q:"Qui gouverne la France en 1848 ?", c:["Charles X","Louis-Napoléon Bonaparte, élu président","Louis XVIII"], a:1, e:"En 1848, la IIᵉ République : Louis-Napoléon Bonaparte est élu président."},
+  {p:1, q:"Quel est le bon ordre des 4 périodes ?", c:["Restauration, Monarchie de Juillet, IIᵉ République, Second Empire","Second Empire, Restauration, IIᵉ République, Monarchie de Juillet","IIᵉ République, Restauration, Second Empire, Monarchie de Juillet"], a:0, e:"Des rois, puis un président, puis un empereur."},
+  {p:1, q:"La Restauration, c'est de…", c:["1815 à 1830","1830 à 1848","1848 à 1852"], a:0, e:"1815-1830 : Louis XVIII puis Charles X."},
+  {p:1, q:"La Monarchie de Juillet, c'est de…", c:["1815 à 1830","1830 à 1848","1852 à 1870"], a:1, e:"1830-1848 : Louis-Philippe, roi des Français."},
+  {p:1, q:"La IIᵉ République, c'est de…", c:["1848 à 1852","1830 à 1848","1870 à 1940"], a:0, e:"1848-1852 : seulement 4 ans."},
+  {p:1, q:"Le Second Empire commence en…", c:["1852","1815","1830"], a:0, e:"En 1852, Louis-Napoléon Bonaparte devient l'empereur Napoléon III."},
+  {r:1, p:1, q:"Qui déclenche la révolution de 1830 ?", c:["Les imprimeurs et les habitants de Paris","Les paysans","L'armée du roi"], a:0, e:"Les imprimeurs, furieux, puis les Parisiens, qui dressent des barricades."},
+  {r:1, p:1, q:"Pourquoi éclate la révolution de 1830 ?", c:["Charles X supprime la liberté de la presse","Le pain est trop cher","La guerre contre la Prusse"], a:0, e:"La police casse les presses du journal Le Temps sur ordre de Charles X."},
+  {r:1, p:1, q:"Où et quand a lieu la révolution de 1830 ?", c:["À Paris, en juillet 1830","À Lyon, en 1848","À Paris, en 1815"], a:0, e:"Les 27, 28 et 29 juillet 1830, à Paris."},
+  {r:1, p:1, q:"La République, c'est…", c:["Un régime sans roi où le peuple élit ses représentants qui votent les lois","Un régime avec un empereur","Un régime où le roi décide seul"], a:0, e:"À savoir par cœur : sans roi, le peuple élit, les élus votent les lois."},
+  {r:1, p:1, q:"Pourquoi la IIᵉ République ne dure pas ?", c:["Louis-Napoléon Bonaparte organise un plébiscite et devient empereur","Le roi revient","La guerre contre la Prusse"], a:0, e:"En 1852, il devient Napoléon III : c'est le Second Empire."},
+  {r:1, p:1, q:"Un plébiscite, c'est…", c:["Un vote où on répond oui ou non à une question","Une révolution","Une loi du roi"], a:0, e:"Les citoyens votent oui ou non."},
+  {p:1, q:"Une monarchie constitutionnelle, c'est…", c:["Le roi partage le pouvoir avec les représentants du peuple","Le roi décide tout seul","Il n'y a pas de roi"], a:0, e:"C'est le cas sous Louis XVIII, Charles X et Louis-Philippe."},
+  // Partie 2
+  {p:2, q:"Quand la IIIᵉ République est-elle proclamée ?", c:["Le 4 septembre 1870","Le 14 juillet 1789","En 1852"], a:0, e:"Après la défaite contre la Prusse, l'Empire s'écroule."},
+  {p:2, q:"Lequel est un symbole de la République ?", c:["Marianne","La couronne","Le trône"], a:0, e:"Marianne, le drapeau tricolore, la Marseillaise, le 14 juillet."},
+  {p:2, q:"Quel est l'hymne national ?", c:["La Marseillaise","Frère Jacques","Au clair de la lune"], a:0, e:"La Marseillaise devient l'hymne national."},
+  {p:2, q:"Quelle est la fête nationale ?", c:["Le 14 juillet","Le 1ᵉʳ janvier","Le 25 décembre"], a:0, e:"En souvenir de la fête de la Fédération du 14 juillet 1790."},
+  {p:2, q:"Que porte Marianne sur la tête ?", c:["Un bonnet phrygien","Une couronne","Un casque"], a:0, e:"Le bonnet phrygien, symbole de la liberté."},
+  {p:2, q:"Complète : la République fonde une école obligatoire pour…", c:["Tous les enfants, filles et garçons","Seulement les garçons","Seulement les enfants riches"], a:0, e:"Obligatoire, pour tous, filles et garçons, pour former des citoyens."},
+  {p:2, q:"L'école de la République a pour but de former des…", c:["Citoyens","Soldats","Rois"], a:0, e:"Des citoyens républicains."},
+  {p:2, q:"Qui est le fondateur de l'école républicaine ?", c:["Jules Ferry","Napoléon III","Louis XVIII"], a:0, e:"La loi Jules Ferry de 1882 : école obligatoire de 6 à 13 ans."},
+  {p:2, q:"L'affiche « 1792-1892 » dit que la République a 100 ans. Est-ce vrai ?", c:["Non, car il y a eu des rois et des empereurs entre-temps","Oui, la République a duré 100 ans sans arrêt"], a:0, e:"La République a été interrompue par des empires et des monarchies."},
+  // Partie 3
+  {r:1, p:3, q:"Une colonie, c'est…", c:["Un territoire conquis, occupé, dirigé et dominé par un pays étranger","Un pays libre","Une ville de France"], a:0, e:"À savoir par cœur : conquis, occupé, dirigé, dominé."},
+  {r:1, p:3, q:"Une raison de la colonisation :", c:["Avoir des matières premières : coton, cacao, caoutchouc…","Partir en vacances","Apprendre les langues"], a:0, e:"Mais aussi le prestige, vendre ses produits, une main-d'œuvre bon marché."},
+  {r:1, p:3, q:"Une autre raison de la colonisation :", c:["Le prestige, après la perte de l'Alsace-Lorraine","Aider les colonisés à être libres"], a:0, e:"Posséder un grand empire, c'est prestigieux."},
+  {r:1, p:3, q:"Comment étaient traités les indigènes ?", c:["Ils étaient maltraités : travaux forcés, morts, impôts","Ils étaient bien payés","Ils allaient tous à l'école"], a:0, e:"La colonisation est une catastrophe humaine."},
+  {r:1, p:3, q:"Les Européens de l'époque pensaient être supérieurs aux autres peuples. Cette idée est…", c:["Fausse et raciste","Vraie"], a:0, e:"Tous les êtres humains sont égaux."},
+  {r:1, p:3, q:"Sur la carte de 1914, les colonies sont sur…", c:["4 continents : Afrique, Asie, Amérique, Océanie","1 seul continent : l'Europe"], a:0, e:"Exemples : l'Algérie (Afrique), l'Indochine (Asie), la Guyane (Amérique), la Nouvelle-Calédonie (Océanie)."},
+  {r:1, p:3, q:"Sous la IIIᵉ République, l'empire grandit surtout en…", c:["Afrique et en Asie","Europe","Amérique du Nord"], a:0, e:"L'AOF, l'AEF, Madagascar, l'Indochine…"},
+  {r:1, p:3, q:"Quels principes de la République la colonisation trahit-elle ?", c:["La liberté et l'égalité","La fête et le sport"], a:0, e:"La République n'a pas respecté ses propres principes."}
+];
+
+(function buildCards(){
+  const t = document.getElementById('cardtable');
+  Q.forEach(x => {
+    const tr = document.createElement('tr');
+    const tq = document.createElement('td'); tq.className = 'q';
+    tq.innerHTML = '<span class="tag t'+x.p+'">'+['','1815-1852','IIIᵉ République','Colonisation'][x.p]+'</span><br>'+x.q;
+    const ta = document.createElement('td');
+    ta.textContent = x.c[x.a] + ' — ' + x.e;
+    tr.append(tq, ta); t.appendChild(tr);
+  });
+})();
+
+function speak(text){
+  try {
+    if (!('speechSynthesis' in window)) return;
+    speechSynthesis.cancel();
+    const clean = text.replace(/Iᵉʳ/g,'premier').replace(/1ᵉʳ/g,'premier').replace(/IIIᵉ/g,'troisième').replace(/IIᵉ/g,'deuxième');
+    const u = new SpeechSynthesisUtterance(clean);
+    u.lang = 'fr-FR'; u.rate = 0.9;
+    const v = speechSynthesis.getVoices().find(v => v.lang && v.lang.startsWith('fr'));
+    if (v) u.voice = v;
+    speechSynthesis.speak(u);
+  } catch(e) {}
+}
+
+let queue = [], total = 0, done = 0, firstTry = 0, missed = new Set();
+const box = document.getElementById('quiz');
+function shuffle(a){ for(let i=a.length-1;i>0;i--){const j=Math.floor(Math.random()*(i+1));[a[i],a[j]]=[a[j],a[i]];} return a; }
+
+document.getElementById('start').onclick = () => {
+  const part = document.getElementById('part').value;
+  queue = shuffle(Q.filter(x => part==='all' || (part==='r' ? x.r : String(x.p)===part)).map(x => ({...x})));
+  total = queue.length; done = 0; firstTry = 0; missed = new Set();
+  show();
+};
+
+function show(){
+  if (!queue.length) {
+    const msg = firstTry === total ? "Tout juste du premier coup, bravo pour ta mémoire !" :
+      "Tu as tout retrouvé ! Les questions ratées sont revenues et tu les as réussies : c'est comme ça que la mémoire se construit.";
+    box.innerHTML = '<div class="qcard"><div class="qtext">🎉 Terminé !</div><p>'+firstTry+' sur '+total+' du premier coup.</p><p>'+msg+'</p><div class="row"><button class="btn" onclick="document.getElementById(\'start\').click()">🔁 Recommencer</button></div></div>';
+    speak('Terminé ! ' + msg);
+    return;
+  }
+  const x = queue[0];
+  const order = shuffle(x.c.map((c,i)=>i));
+  const tag = ['','👑 1815-1852','🇫🇷 La IIIᵉ République','🌍 La colonisation'][x.p];
+  box.innerHTML =
+    '<div class="qcard"><div class="progress"><div style="width:'+(100*done/total)+'%"></div></div>'+
+    '<span class="tag t'+x.p+'">'+tag+'</span>'+
+    '<div class="qtext">'+x.q+'</div>'+
+    '<div class="choices">'+order.map(i=>'<button class="choice" data-i="'+i+'">'+x.c[i]+'</button>').join('')+'</div>'+
+    '<div class="feedback" id="fb"></div>'+
+    '<div class="row"><button class="btn ghost" id="listen">🔊 Écouter</button><button class="btn" id="next" style="display:none">Suivant ➜</button></div></div>';
+  document.getElementById('listen').onclick = () => speak(x.q + '. ' + order.map((i,k)=>'Réponse ' + (k+1) + ' : ' + x.c[i]).join('. '));
+  box.querySelectorAll('.choice').forEach(b => b.onclick = () => answer(b, x));
+}
+
+function answer(btn, x){
+  const i = +btn.dataset.i, fb = document.getElementById('fb');
+  box.querySelectorAll('.choice').forEach(b => { b.disabled = true; if (+b.dataset.i === x.a) b.classList.add('right'); });
+  if (i === x.a) {
+    fb.className = 'feedback ok'; fb.textContent = '✅ Oui ! ' + x.e;
+    if (!missed.has(x.q)) firstTry++;
+    queue.shift(); done++;
+  } else {
+    btn.classList.add('wrong');
+    fb.className = 'feedback no'; fb.textContent = '🔁 Pas encore. La bonne réponse : ' + x.c[x.a] + '. ' + x.e + ' Cette question reviendra.';
+    missed.add(x.q);
+    queue.push(queue.shift());
+  }
+  speak(fb.textContent);
+  const n = document.getElementById('next'); n.style.display = 'inline-block'; n.onclick = show; n.focus();
+}
+
+/* ---------- Atelier des définitions ---------- */
+const DEFS = {
+  'atl-rep': { title: "⭐ La République", color: 'var(--p1)',
+    chunks: [["🏛️","un régime politique"],["🚫👑","sans roi,"],["🗳️","dans lequel le peuple élit"],["👥","ses représentants"],["📜","qui votent les lois."]],
+    gaps: ["roi","peuple","élit","représentants","lois"] },
+  'atl-col': { title: "⭐ Une colonie", color: 'var(--p3)',
+    chunks: [["🗺️","un territoire"],["⚔️","conquis,"],["⛺","occupé,"],["🧭","dirigé"],["✋","et dominé"],["🏳️","par un pays étranger."]],
+    gaps: ["territoire","conquis","occupé","dirigé","dominé","étranger"] }
+};
+const nrm = t => (t||'').toLowerCase().normalize('NFD').replace(/[̀-ͯ]/g,'').trim();
+function fullText(d){ return d.chunks.map(c=>c[1]).join(' '); }
+
+Object.keys(DEFS).forEach(id => {
+  const d = DEFS[id], root = document.getElementById(id);
+  const stepNames = ['① Écoute','② Remets en ordre','③ Trous : niveau 1','③ Niveau 2','③ Niveau 3','④ Sans regarder'];
+  root.innerHTML = '<h3 style="color:'+d.color+'">'+d.title+'</h3><div class="steps" role="group" aria-label="Étapes"></div><div class="body"></div>';
+  const stepsEl = root.querySelector('.steps'), body = root.querySelector('.body');
+  stepsEl.innerHTML = stepNames.map((n,i)=>'<button type="button" data-s="'+i+'">'+n+'</button>').join('');
+  stepsEl.querySelectorAll('button').forEach(b => b.onclick = () => go(+b.dataset.s));
+  function next(i){ return '<div class="row tools2"><button class="btn" type="button" data-next="'+i+'">Étape suivante ➜</button></div>'; }
+  function wireNext(){ const n = body.querySelector('[data-next]'); if (n) n.onclick = () => go(+n.dataset.next); }
+  function go(step){
+    stepsEl.querySelectorAll('button').forEach(b => b.setAttribute('aria-pressed', +b.dataset.s === step));
+    if (step === 0) {
+      body.innerHTML = '<p>Regarde chaque morceau et son image. Écoute, puis <b>répète à voix haute</b> en faisant les gestes.</p>'+
+        '<div class="chunks">'+d.chunks.map(c=>'<div class="chunk"><span class="ic">'+c[0]+'</span>'+c[1]+'</div>').join('')+'</div>'+
+        '<div class="row tools2"><button class="btn ghost" type="button" id="'+id+'-l">🔊 Écouter</button></div>'+next(1);
+      body.querySelector('#'+id+'-l').onclick = () => speak(d.title.replace('⭐','') + ' : ' + fullText(d));
+    }
+    if (step === 1) {
+      let k = 0; const order = shuffle(d.chunks.map((c,i)=>i));
+      body.innerHTML = '<p>Clique sur les morceaux <b>dans le bon ordre</b>.</p><div class="built" aria-live="polite"></div>'+
+        '<div class="chunks">'+order.map(i=>'<button type="button" class="chunk" data-i="'+i+'"><span class="ic">'+d.chunks[i][0]+'</span>'+d.chunks[i][1]+'</button>').join('')+'</div><div class="msg"></div>';
+      const built = body.querySelector('.built'), msg = body.querySelector('.msg');
+      body.querySelectorAll('button.chunk').forEach(b => b.onclick = () => {
+        if (b.classList.contains('done')) return;
+        if (+b.dataset.i === k) {
+          b.classList.add('done'); b.disabled = true; built.textContent += (k ? ' ' : '') + d.chunks[k][1]; k++;
+          if (k === d.chunks.length) { msg.textContent = '🎉 Bravo, la définition est dans l’ordre !'; speak(fullText(d)); body.insertAdjacentHTML('beforeend', next(2)); wireNext(); }
+        } else { b.classList.add('oops'); msg.textContent = '🔁 Pas encore : quel morceau vient juste après ?'; setTimeout(()=>b.classList.remove('oops'), 700); }
+      });
+    }
+    if (step >= 2 && step <= 4) {
+      const howMany = step === 2 ? 1 : step === 3 ? 3 : d.gaps.length;
+      const hide = new Set(shuffle(d.gaps.slice()).slice(0, howMany));
+      let html = '<p>'+(step===4 ? 'Il ne reste que les images. Écris <b>tous</b> les mots qui manquent.' : 'Écris le mot qui manque. Les accents ne comptent pas.')+'</p><div class="gapline">';
+      d.chunks.forEach(c => {
+        let txt = c[1];
+        hide.forEach(w => { const re = new RegExp('(^|\\s)('+w+')(?=[\\s,.]|$)'); txt = txt.replace(re, (m,a,b)=> a+'§'+b+'§'); });
+        txt = txt.replace(/§([^§]+)§/g, (m,w)=>'<input class="gap" data-w="'+w+'" aria-label="mot manquant" autocomplete="off" spellcheck="false">');
+        html += '<span title="'+c[1]+'">'+c[0]+'</span> '+txt+' ';
+      });
+      html += '</div><div class="row tools2"><button class="btn" type="button" data-a="ck">✔️ Vérifier</button><button class="btn ghost" type="button" data-a="hint">💡 Indice</button></div><div class="msg"></div>';
+      body.innerHTML = html;
+      const msg = body.querySelector('.msg'); const inputs = [...body.querySelectorAll('.gap')];
+      if (inputs[0]) inputs[0].focus();
+      inputs.forEach(inp => inp.addEventListener('keydown', e => { if (e.key === 'Enter') body.querySelector('[data-a="ck"]').click(); }));
+      body.querySelector('[data-a="hint"]').onclick = () => {
+        const f = inputs.find(x => nrm(x.value) !== nrm(x.dataset.w)); if (!f) return;
+        f.value = f.dataset.w.slice(0, Math.min(f.dataset.w.length, (f.value.length || 0) + 1)); f.focus();
+      };
+      body.querySelector('[data-a="ck"]').onclick = () => {
+        let all = true;
+        inputs.forEach(x => { const ok = nrm(x.value) === nrm(x.dataset.w); x.classList.toggle('ok', ok); x.classList.toggle('no', !ok); if (!ok) all = false; });
+        if (all) { msg.textContent = '🎉 Tout est juste !'; speak('Tout est juste ! ' + fullText(d)); body.insertAdjacentHTML('beforeend', next(step+1)); wireNext(); }
+        else { msg.textContent = '🔁 Les cases rouges ne sont pas encore justes. Tu peux demander un indice.'; }
+      };
+    }
+    if (step === 5) {
+      body.innerHTML = '<p><b>Cache l’écran</b> ou ferme les yeux. Dis la définition à voix haute, <b>avec les gestes</b>. Ensuite, clique pour vérifier.</p>'+
+        '<div class="row tools2"><button class="btn" type="button" data-a="show">👀 Montrer pour vérifier</button></div><div class="built" hidden></div>'+
+        '<div class="row tools2" hidden id="'+id+'-ok"><button class="btn" type="button" data-a="yes">✅ Je l’ai dite juste</button><button class="btn ghost" type="button" data-a="again">🔁 Je recommence l’étape ③</button></div><div class="msg"></div>';
+      const built = body.querySelector('.built'), row = body.querySelector('#'+id+'-ok'), msg = body.querySelector('.msg');
+      body.querySelector('[data-a="show"]').onclick = () => { built.hidden = false; built.textContent = fullText(d); row.hidden = false; };
+      body.querySelector('[data-a="yes"]').onclick = () => { msg.textContent = '🌟 Bravo ! Tu la sais par cœur. Redis-la ce soir au coucher.'; speak('Bravo ! Tu la sais par cœur.'); };
+      body.querySelector('[data-a="again"]').onclick = () => go(3);
+    }
+  }
+  go(0);
+});
+
+/* ---------- Modules ciblés : écrire + trier ---------- */
+const nz = t => (t||'').toLowerCase().normalize('NFD').replace(/[̀-ͯ]/g,'');
+document.querySelectorAll('.wq').forEach((w, n) => {
+  const keys = JSON.parse(w.dataset.keys), start = w.dataset.start || '';
+  const id = 'wq' + n;
+  w.innerHTML = '<p><b>✍️ ' + w.dataset.q + '</b> <span style="color:var(--muted)">(au clavier ou à la main)</span></p>' +
+    '<textarea class="wr" id="' + id + '" lang="fr" spellcheck="true" aria-label="Ma réponse"></textarea>' +
+    '<div class="row tools2"><button class="btn ghost" type="button" data-a="l">🔊 Écouter ma phrase</button><button class="btn" type="button" data-a="c">✔️ Vérifier</button></div>' +
+    '<div class="verdict2" hidden></div><details><summary>Voir une réponse possible</summary><p>' + w.dataset.model + '</p></details>';
+  const ta = w.querySelector('textarea'), out = w.querySelector('.verdict2');
+  let saved = null; try { saved = localStorage.getItem('his-' + id); } catch(e) {}
+  ta.value = saved !== null ? saved : start;
+  ta.addEventListener('input', () => { try { localStorage.setItem('his-' + id, ta.value); } catch(e) {} });
+  w.querySelector('[data-a="l"]').onclick = () => speak(ta.value.trim() || "Tu n'as encore rien écrit.");
+  w.querySelector('[data-a="c"]').onclick = () => {
+    const raw = ta.value.trim(), t = nz(raw);
+    if (raw.length < 5 || nz(raw) === nz(start.trim())) { out.hidden = false; out.textContent = "✏️ Écris ta réponse d'abord."; return; }
+    let ok = 0, h = '<ul>';
+    keys.forEach(k => { const g = k.any.some(a => t.includes(nz(a))); if (g) ok++; h += '<li>' + (g ? '✅ Tu parles de ' : '💡 Tu peux ajouter ') + k.l + '</li>'; });
+    const cap = /^[A-ZÀÂÉÈÊÎÔÙÛÇ]/.test(raw), dot = /[.!?]$/.test(raw);
+    h += '<li>' + (cap ? '✅' : '💡') + ' Une majuscule au début</li><li>' + (dot ? '✅' : '💡') + ' Un point à la fin</li></ul>';
+    const all = ok === keys.length && cap && dot;
+    h += all ? '<p>🎉 <b>Bravo, ta réponse est complète !</b></p>' : '<p>Complète les 💡, puis vérifie encore.</p>';
+    out.hidden = false; out.innerHTML = h;
+    speak(all ? 'Bravo, ta réponse est complète !' : 'Presque ! Regarde les ampoules.');
+  };
+});
+
+document.querySelectorAll('.sort').forEach(box => {
+  const bins = JSON.parse(box.dataset.bins), items = shuffle(JSON.parse(box.dataset.items));
+  let sel = null, placed = 0;
+  box.innerHTML = '<p style="color:var(--muted)">Clique sur une étiquette, puis sur la bonne case.</p><div class="pool"></div><div class="bins"></div><div class="msg"></div>';
+  const pool = box.querySelector('.pool'), binsEl = box.querySelector('.bins'), msg = box.querySelector('.msg');
+  items.forEach(([label, b]) => { const bt = document.createElement('button'); bt.type = 'button'; bt.innerHTML = label; bt.dataset.b = b; bt.setAttribute('aria-pressed','false'); bt.onclick = () => { pool.querySelectorAll('button').forEach(x => x.setAttribute('aria-pressed','false')); bt.setAttribute('aria-pressed','true'); sel = bt; }; pool.appendChild(bt); });
+  bins.forEach((name, i) => {
+    const d = document.createElement('div'); d.className = 'bin'; d.tabIndex = 0; d.setAttribute('role','button'); d.innerHTML = '<h4>' + name + '</h4>';
+    const drop = () => {
+      if (!sel) { msg.textContent = "👆 Choisis d'abord une étiquette."; return; }
+      if (+sel.dataset.b === i) {
+        const c = document.createElement('span'); c.className = 'chip2'; c.innerHTML = sel.innerHTML; d.appendChild(c); sel.remove(); sel = null; placed++;
+        msg.textContent = placed === items.length ? '🎉 Tout est bien rangé !' : '✅ Oui !';
+        if (placed === items.length) speak('Tout est bien rangé !');
+      } else { msg.textContent = '🔁 Pas cette case. Essaie une autre.'; }
+    };
+    d.onclick = drop; d.onkeydown = e => { if (e.key === 'Enter' || e.key === ' ') { e.preventDefault(); drop(); } };
+    binsEl.appendChild(d);
+  });
+});
+</script>
+</body>
+</html>

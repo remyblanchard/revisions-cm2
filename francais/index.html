@@ -1,0 +1,575 @@
+<!DOCTYPE html>
+<html lang="fr">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Apprendre La phrase</title>
+<style>
+  :root {
+    --bg: #fbfaf7; --card: #ffffff; --ink: #1d2433; --muted: #5a6478; --line: #dcdfe6;
+    --gs: #2563c9; --gs-bg: #e6eefc;
+    --gv: #c62f2f; --gv-bg: #fbe8e8;
+    --gc: #2e8540; --gc-bg: #e6f4e9;
+    --t1: #6b4fc4; --t1-bg: #efebfb;
+    --ok: #1f7a4d; --ok-bg: #e3f4ea; --no: #b3261e; --no-bg: #fbe9e7;
+    --accent: #5b4bc4;
+  }
+  @media (prefers-color-scheme: dark) {
+    :root:not([data-theme="light"]) {
+      --bg: #14181f; --card: #1c222c; --ink: #e9edf3; --muted: #a5aec0; --line: #2f3746;
+      --gs: #7fb0f5; --gs-bg: #1a2a42; --gv: #f28b82; --gv-bg: #3a1d1b; --gc: #79d18a; --gc-bg: #1a3322;
+      --t1: #b5a5f5; --t1-bg: #2a2342;
+      --ok: #73d39f; --ok-bg: #173126; --no: #f28b82; --no-bg: #3a1d1b; --accent: #a99cf5;
+      color-scheme: dark;
+    }
+  }
+  :root[data-theme="dark"] {
+    --bg: #14181f; --card: #1c222c; --ink: #e9edf3; --muted: #a5aec0; --line: #2f3746;
+    --gs: #7fb0f5; --gs-bg: #1a2a42; --gv: #f28b82; --gv-bg: #3a1d1b; --gc: #79d18a; --gc-bg: #1a3322;
+    --t1: #b5a5f5; --t1-bg: #2a2342;
+    --ok: #73d39f; --ok-bg: #173126; --no: #f28b82; --no-bg: #3a1d1b; --accent: #a99cf5;
+    color-scheme: dark;
+  }
+  * { box-sizing: border-box; }
+  [hidden]{display:none!important}
+  body { margin: 0; background: var(--bg); color: var(--ink); font: 17px/1.65 Arial, Helvetica, sans-serif; letter-spacing: .01em; }
+  main { max-width: 900px; margin: 0 auto; padding: 20px 16px 60px; }
+  h1 { font-size: 28px; margin: 0 0 4px; }
+  h2 { font-size: 22px; margin: 36px 0 12px; padding-top: 8px; border-top: 3px solid var(--line); }
+  h3 { font-size: 19px; margin: 0 0 8px; }
+  p { margin: 6px 0; }
+  ul, ol { margin: 6px 0; padding-left: 22px; }
+  li { margin: 4px 0; }
+  .sub { color: var(--muted); margin: 0 0 16px; }
+  nav { display: flex; flex-wrap: wrap; gap: 8px; margin: 14px 0 6px; }
+  nav a { text-decoration: none; color: var(--ink); background: var(--card); border: 1px solid var(--line); border-radius: 999px; padding: 6px 14px; font-size: 15px; }
+  .box { background: var(--card); border: 1px solid var(--line); border-radius: 12px; padding: 14px 16px; margin: 12px 0; }
+  .tip { border-left: 8px solid var(--accent); }
+  .warn { background: var(--no-bg); border-left: 8px solid var(--no); }
+  .t1 { background: var(--t1-bg); border-left: 8px solid var(--t1); } .t1 h3 { color: var(--t1); }
+  .bgs { background: var(--gs-bg); border-left: 8px solid var(--gs); } .bgs h3 { color: var(--gs); }
+  .bgv { background: var(--gv-bg); border-left: 8px solid var(--gv); } .bgv h3 { color: var(--gv); }
+  .bgc { background: var(--gc-bg); border-left: 8px solid var(--gc); } .bgc h3 { color: var(--gc); }
+  table { width: 100%; border-collapse: collapse; margin: 8px 0; background: var(--card); }
+  th, td { border: 1px solid var(--line); padding: 8px 10px; text-align: left; vertical-align: top; }
+  th { background: var(--bg); }
+  .big { font-size: 22px; line-height: 2; }
+  .gs { color: var(--gs); font-weight: 700; border-bottom: 3px solid var(--gs); }
+  .gv { color: var(--gv); font-weight: 700; border-bottom: 3px solid var(--gv); }
+  .gc { color: var(--gc); font-weight: 700; border-bottom: 3px dashed var(--gc); }
+  .lab { font-size: 12px; font-weight: 700; vertical-align: super; margin-left: 2px; }
+  .grid3 { display: grid; grid-template-columns: repeat(3, 1fr); gap: 12px; }
+  .row { display: flex; flex-wrap: wrap; gap: 10px; align-items: center; margin-top: 12px; }
+  .btn { font: inherit; font-size: 16px; padding: 10px 16px; border-radius: 10px; border: none; background: var(--accent); color: #fff; cursor: pointer; }
+  .btn.ghost { background: transparent; color: var(--ink); border: 2px solid var(--line); }
+  button:focus-visible, [role="button"]:focus-visible { outline: 3px solid var(--accent); outline-offset: 2px; }
+  .msg { margin-top: 10px; font-weight: 700; min-height: 1.4em; }
+  /* Atelier */
+  .atl { background: var(--card); border: 1px solid var(--line); border-radius: 14px; padding: 16px; margin: 14px 0; }
+  .steps { display: flex; flex-wrap: wrap; gap: 6px; margin: 8px 0 12px; }
+  .steps button { font: inherit; font-size: 15px; padding: 6px 12px; border-radius: 999px; border: 2px solid var(--line); background: var(--bg); color: var(--ink); cursor: pointer; }
+  .steps button[aria-pressed="true"] { background: var(--ink); color: var(--bg); border-color: var(--ink); }
+  .chunks { display: flex; flex-wrap: wrap; gap: 8px; }
+  .chunk { font: inherit; font-size: 18px; padding: 10px 12px; border-radius: 12px; border: 2px solid var(--line); background: var(--bg); color: var(--ink); text-align: center; min-width: 96px; }
+  .chunk .ic { display: block; font-size: 26px; line-height: 1.2; }
+  button.chunk { cursor: pointer; }
+  .chunk.done { border-color: var(--ok); background: var(--ok-bg); }
+  .chunk.oops { border-color: var(--no); background: var(--no-bg); }
+  .built { min-height: 3em; margin: 10px 0; padding: 10px 12px; border: 2px dashed var(--line); border-radius: 12px; font-size: 19px; }
+  .gapline { font-size: 20px; line-height: 2.4; }
+  .gap { font: inherit; font-size: 19px; width: 8.5em; padding: 2px 8px; border: 2px solid var(--line); border-radius: 8px; background: var(--bg); color: var(--ink); }
+  .gap.ok { border-color: var(--ok); background: var(--ok-bg); } .gap.no { border-color: var(--no); background: var(--no-bg); }
+  /* Jeu des groupes */
+  .roles { display: flex; flex-wrap: wrap; gap: 8px; margin: 8px 0; }
+  .role { font: inherit; font-size: 17px; font-weight: 700; padding: 8px 14px; border-radius: 10px; border: 3px solid transparent; cursor: pointer; color: #fff; }
+  .role.r-gs { background: var(--gs); } .role.r-gv { background: var(--gv); } .role.r-gc { background: var(--gc); }
+  .role[aria-pressed="true"] { border-color: var(--ink); transform: scale(1.06); }
+  .sent { display: flex; flex-wrap: wrap; gap: 8px; font-size: 22px; margin: 12px 0; }
+  .grp { font: inherit; font-size: 21px; padding: 6px 10px; border-radius: 10px; border: 2px dashed var(--muted); background: var(--bg); color: var(--ink); cursor: pointer; }
+  .grp.as-gs { border: 3px solid var(--gs); color: var(--gs); background: var(--gs-bg); font-weight: 700; }
+  .grp.as-gv { border: 3px solid var(--gv); color: var(--gv); background: var(--gv-bg); font-weight: 700; }
+  .grp.as-gc { border: 3px solid var(--gc); color: var(--gc); background: var(--gc-bg); font-weight: 700; }
+  .grp.oops { border-color: var(--no); background: var(--no-bg); }
+  .test-row { display: flex; flex-wrap: wrap; gap: 8px; align-items: center; margin: 6px 0; }
+  .test-row .g { min-width: 10em; font-weight: 700; }
+  .result { font-size: 20px; padding: 10px 12px; border-radius: 10px; background: var(--bg); border: 1px solid var(--line); margin-top: 8px; }
+  /* Tri */
+  .pool { display: flex; flex-wrap: wrap; gap: 8px; margin-top: 8px; }
+  .pool button { font: inherit; font-size: 17px; padding: 8px 12px; border-radius: 12px; border: 2px solid var(--line); background: var(--card); color: var(--ink); cursor: pointer; text-align: left; }
+  .pool button[aria-pressed="true"] { border-color: var(--accent); background: var(--accent); color: #fff; }
+  .bins { display: grid; grid-template-columns: repeat(auto-fit, minmax(170px, 1fr)); gap: 10px; margin-top: 10px; }
+  .bin { border: 2px dashed var(--line); border-radius: 12px; padding: 8px; min-height: 90px; background: var(--bg); cursor: pointer; }
+  .bin h4 { margin: 0 0 6px; font-size: 16px; }
+  .bin .chip2 { display: block; margin: 4px 0; padding: 4px 9px; border-radius: 10px; background: var(--ok-bg); border: 1px solid var(--ok); font-size: 15px; }
+  /* Écriture */
+  .wr { width: 100%; font: inherit; font-size: 20px; padding: 8px 12px; border: 2px solid var(--line); border-radius: 10px; background: var(--bg); color: var(--ink); }
+  .wr.ok { border-color: var(--ok); background: var(--ok-bg); }
+  /* Quiz */
+  #quiz .qcard { background: var(--card); border: 1px solid var(--line); border-radius: 12px; padding: 16px; }
+  #quiz .qtext { font-size: 20px; font-weight: 700; margin: 6px 0 12px; }
+  .choices { display: grid; gap: 10px; }
+  .choice { text-align: left; font: inherit; font-size: 18px; padding: 12px 14px; border-radius: 10px; border: 2px solid var(--line); background: var(--bg); color: var(--ink); cursor: pointer; }
+  .choice.right { background: var(--ok-bg); border-color: var(--ok); } .choice.wrong { background: var(--no-bg); border-color: var(--no); }
+  .feedback { margin-top: 12px; padding: 10px 12px; border-radius: 10px; }
+  .feedback.ok { background: var(--ok-bg); } .feedback.no { background: var(--no-bg); }
+  .progress { height: 10px; background: var(--line); border-radius: 999px; overflow: hidden; margin: 8px 0 12px; }
+  .progress > div { height: 100%; background: var(--accent); width: 0; transition: width .3s; }
+  .tag { display: inline-block; font-size: 12px; font-weight: 700; padding: 1px 8px; border-radius: 999px; color: #fff; background: var(--accent); }
+  select { font: inherit; font-size: 16px; padding: 8px; border-radius: 8px; border: 1px solid var(--line); background: var(--card); color: var(--ink); }
+  .cards { width: 100%; border-collapse: collapse; }
+  .cards td { width: 50%; height: 90px; border: 2px dashed var(--muted); padding: 10px 12px; font-size: 17px; }
+  .cards td.q { font-weight: 700; }
+  @media (max-width: 680px) { .grid3 { grid-template-columns: 1fr; } body { font-size: 16px; } .big { font-size: 19px; } }
+  @media print {
+    body { background: #fff; color: #000; font-size: 13.5px; }
+    nav, .noprint, #quiz-section, #quiz { display: none !important; }
+    h2 { break-before: page; border-top: none; margin-top: 0; } h2.first { break-before: auto; }
+    .box, tr, .atl { break-inside: avoid; }
+    .gs, .gv, .gc, .bgs, .bgv, .bgc, .t1 { -webkit-print-color-adjust: exact; print-color-adjust: exact; }
+    @page { size: A4; margin: 12mm; }
+  }
+  @media (prefers-reduced-motion: reduce) { .progress > div { transition: none; } .role[aria-pressed="true"] { transform: none; } }
+</style>
+</head>
+<body>
+<main>
+  <p class="noprint" style="margin:0 0 10px"><a href="../" style="color:var(--accent)">← Toutes les leçons</a></p>
+  <h1>✏️ Français : la phrase</h1>
+  <p class="sub">Des outils pour apprendre et comprendre les leçons G1 (types et formes de phrases) et G2 (la phrase et ses groupes)</p>
+
+  <nav class="noprint">
+    <a href="#resume">📄 Fiche résumé</a>
+    <a href="#tests">🔬 Les 3 tests magiques</a>
+    <a href="#jeu-groupes">🎨 Colorie les groupes</a>
+    <a href="#supprime">🗑️ Supprime ou déplace</a>
+    <a href="#types">🗂️ Trie les phrases</a>
+    <a href="#negative">✍️ Écris à la forme négative</a>
+    <a href="#atelier">🧩 Définitions par cœur</a>
+    <a href="#quiz-section">🎯 Quiz qui parle</a>
+    
+  </nav>
+
+  
+
+  
+
+  <div class="box tip">
+    <h3>👋 Comment réviser avec cette page</h3>
+    <ul>
+      <li><b>Essayer de se souvenir</b> (quiz, cartes, questions à l'oral) est plus efficace que relire ou recopier.</li>
+      <li><b>Plusieurs petites séances</b> de 10 minutes, sur plusieurs jours, valent mieux qu'une longue séance la veille.</li>
+      <li>Le bouton <b>🔊 Écouter</b> lit les questions à voix haute.</li>
+    </ul>
+  </div>
+
+  <!-- ===================== RÉSUMÉ ===================== -->
+  <h2 id="resume" class="first">📄 1. La fiche résumé</h2>
+
+  <div class="box t1">
+    <h3>📝 C'est quoi, une phrase ?</h3>
+    <p class="big">Une phrase est une <b>suite de mots</b> qui <b>a du sens</b>.<br>Elle <b>commence par une majuscule</b> et <b>se termine par un point</b> ( <b>.</b> <b>?</b> <b>!</b> ).</p>
+    <p>Exemple : <b>J</b>e lis ma leçon de grammaire<b>.</b></p>
+  </div>
+
+  <h3>G1 · Les 3 types de phrases : à quoi sert la phrase ?</h3>
+  <div class="grid3">
+    <div class="box t1"><h3>📢 Déclarative</h3><p><b>Je raconte.</b> Elle donne un renseignement ou décrit un fait.</p><p>Se termine par <b>.</b></p><p><i>Nous dégustons un petit-déjeuner équilibré chaque matin.</i></p></div>
+    <div class="box t1"><h3>❓ Interrogative</h3><p><b>Je demande.</b> Elle sert à poser une question.</p><p>Se termine par <b>?</b></p><p><i>Veux-tu du thé ou du café ?</i></p></div>
+    <div class="box t1"><h3>👉 Injonctive (ou impérative)</h3><p><b>J'ordonne.</b> Elle sert à donner un ordre.</p><p>Se termine par <b>!</b> ou <b>.</b></p><p><i>Mange ta tartine.</i></p></div>
+  </div>
+  <p>💡 <b>Astuce</b> : demande-toi « <b>Je raconte, je demande ou j'ordonne ?</b> »</p>
+
+  <h3>G1 · Les 3 formes de phrases (d'après la leçon)</h3>
+  <div class="grid3">
+    <div class="box t1"><h3>✅ Affirmative</h3><p>Elle dit que quelque chose est <b>vrai</b>, ou exprime son <b>accord</b>. Elle dit « <b>oui</b> ».</p><p><i>Les amis de mes amis sont mes amis.</i></p></div>
+    <div class="box t1"><h3>🚫 Négative</h3><p>Elle dit « <b>non</b> ». On la reconnaît à 2 petits mots autour du verbe : <b>ne … pas</b>, <b>ne … jamais</b>, <b>ne … plus</b>, <b>ne … rien</b>.</p><p><i>Je <b>ne</b> mange <b>pas</b> de bonbons.</i></p></div>
+    <div class="box t1"><h3>😮 Exclamative</h3><p>Elle exprime une <b>émotion</b> : la joie, la surprise, la colère… À l'écrit, elle se termine par un <b>point d'exclamation ( ! )</b>.</p><p><i>Quelle belle journée !</i></p></div>
+  </div>
+  <p>💡 <b>Astuce pour la forme négative</b> : <b>ne</b> et <b>pas</b> sont comme 2 tranches de pain, et le <b>verbe</b> est le jambon du sandwich 🥪. « Je <b>ne</b> <u>mange</u> <b>pas</b>. »</p>
+
+  <h3>G2 · Les groupes de la phrase</h3>
+  <p>Une phrase est faite de <b>plusieurs groupes de mots</b>. Chaque groupe a un <b>rôle</b>, une <b>fonction</b>.</p>
+  <div class="box">
+    <p class="big"><span class="gc">Chaque matin<span class="lab">GC</span></span>, <span class="gs">nous<span class="lab">GS</span></span> <span class="gv">dégustons un petit-déjeuner équilibré<span class="lab">GV</span></span>.</p>
+    <p class="big"><span class="gs">Le chat<span class="lab">GS</span></span> <span class="gv">mange sa pâtée<span class="lab">GV</span></span> <span class="gc">dans la cuisine<span class="lab">GC</span></span>.</p>
+  </div>
+  <div class="grid3">
+    <div class="box bgs"><h3>🔵 Groupe sujet (GS)</h3><ul><li>Il dit <b>de qui ou de quoi on parle</b>.</li><li>Il <b>commande l'accord du verbe</b>.</li><li>Il est <b>indispensable</b> 🔒.</li></ul></div>
+    <div class="box bgv"><h3>🔴 Groupe verbal (GV)</h3><ul><li>Il est fait du <b>verbe</b> et des <b>compléments indispensables</b>.</li><li>Il dit <b>ce qu'on dit</b> du sujet.</li><li>Il est <b>indispensable</b> 🔒.</li></ul></div>
+    <div class="box bgc"><h3>🟢 Groupe circonstanciel (GC)</h3><ul><li>Il donne des informations sur les <b>circonstances</b> : <b>quand ? où ? comment ? pourquoi ?</b></li><li>Il est <b>facultatif</b> 🗑️ : on peut l'enlever.</li><li>Il est <b>déplaçable</b> ↔️.</li></ul></div>
+  </div>
+  <p>💡 <b>Astuce</b> : le GS et le GV sont le <b>cœur</b> de la phrase 🔒. Le GC est le <b>bonus</b> 🎁 : on peut l'enlever ou le déplacer.</p>
+
+  <!-- ===================== TESTS ===================== -->
+  <h2 id="tests">🔬 2. Les 3 tests magiques pour trouver les groupes</h2>
+  <p>Pas besoin de deviner : on fait des <b>tests</b>, comme une détective. 🕵️‍♀️</p>
+  <table>
+    <tr><th>Je cherche…</th><th>Le test</th><th>Exemple : « Le chat mange sa pâtée dans la cuisine. »</th></tr>
+    <tr><td class="gv">① Le verbe</td><td>Je change le <b>moment</b> : je dis « <b>Hier</b>… » ou « <b>Demain</b>… ». Le mot qui <b>change</b>, c'est le verbe.</td><td>Hier, le chat <b>mangeait</b>… Demain, le chat <b>mangera</b>… → le verbe est <b>mange</b>.</td></tr>
+    <tr><td class="gs">② Le groupe sujet</td><td>Je pose la question « <b>Qui est-ce qui</b> + verbe ? ». Ou je l'encadre : « <b>C'est … qui</b> ». Ou je le remplace par <b>il, elle, ils, elles</b>.</td><td>Qui est-ce qui mange ? → <b>C'est le chat qui</b> mange. → <b>Il</b> mange. Le GS est <b>le chat</b>.</td></tr>
+    <tr><td class="gc">③ Le groupe circonstanciel</td><td>J'essaie de l'<b>enlever</b> 🗑️ et de le <b>déplacer</b> ↔️. Si la phrase a encore du sens, c'est un GC.</td><td>« Le chat mange sa pâtée. » → ça marche. « <b>Dans la cuisine</b>, le chat mange sa pâtée. » → ça marche aussi. C'est un GC !</td></tr>
+  </table>
+  <p>🧠 <b>L'ordre à retenir</b> : <b>d'abord le verbe</b>, puis le sujet, puis le reste.</p>
+
+  <!-- ===================== JEU GROUPES ===================== -->
+  <h2 id="jeu-groupes">🎨 3. Colorie les groupes</h2>
+  <div class="box noprint">
+    <p>① Choisis une couleur : <b>GS</b>, <b>GV</b> ou <b>GC</b>. ② Clique sur le groupe de mots qui va avec. Utilise les tests magiques !</p>
+    <div class="roles" role="group" aria-label="Choisir le groupe">
+      <button class="role r-gs" data-r="gs" aria-pressed="true">🔵 GS</button>
+      <button class="role r-gv" data-r="gv" aria-pressed="false">🔴 GV</button>
+      <button class="role r-gc" data-r="gc" aria-pressed="false">🟢 GC</button>
+    </div>
+    <div class="sent" id="sent" aria-live="polite"></div>
+    <div class="msg" id="sentMsg"></div>
+    <div class="row"><button class="btn ghost" id="sentListen">🔊 Écouter la phrase</button><button class="btn" id="sentNext" hidden>Phrase suivante ➜</button><span id="sentCount" style="color:var(--muted)"></span></div>
+  </div>
+
+  <!-- ===================== SUPPRIME / DÉPLACE ===================== -->
+  <h2 id="supprime">🗑️ 4. Supprime ou déplace : le test du GC</h2>
+  <div class="box noprint">
+    <p>Essaie d'<b>enlever</b> ou de <b>déplacer</b> chaque groupe. Lis la nouvelle phrase à voix haute : <b>a-t-elle encore du sens ?</b></p>
+    <div id="manip"></div>
+    <div class="row"><button class="btn" id="manipNext">Autre phrase ➜</button></div>
+  </div>
+
+  <!-- ===================== TRI ===================== -->
+  <h2 id="types">🗂️ 5. Trie les phrases</h2>
+  <div class="box noprint">
+    <h3>Les types : je raconte, je demande ou j'ordonne ?</h3>
+    <div class="sort" data-bins='["📢 Déclarative (je raconte)","❓ Interrogative (je demande)","👉 Injonctive (j&#39;ordonne)"]' data-items='[["Le soleil brille.",0],["Mon chat dort sur le canapé.",0],["Nous dégustons un petit-déjeuner équilibré chaque matin.",0],["Veux-tu du thé ou du café ?",1],["Où habites-tu ?",1],["Est-ce que tu viens ?",1],["Mange ta tartine.",2],["Ferme la porte, s&#39;il te plaît.",2],["Range ta chambre !",2]]'></div>
+  </div>
+  <div class="box noprint">
+    <h3>Les formes : affirmative, négative ou exclamative ?</h3>
+    <div class="sort" data-bins='["✅ Affirmative","🚫 Négative","😮 Exclamative"]' data-items='[["Les amis de mes amis sont mes amis.",0],["J&#39;aime le chocolat.",0],["Je ne mange pas de bonbons.",1],["Il ne pleut jamais ici.",1],["Tom n&#39;a plus faim.",1],["Quelle belle journée !",2],["Comme tu as grandi !",2]]'></div>
+  </div>
+
+  <!-- ===================== NÉGATIVE ===================== -->
+  <h2 id="negative">✍️ 6. Écris à la forme négative</h2>
+  <div class="box">
+    <p>Transforme chaque phrase à la <b>forme négative</b>. Mets le verbe dans le sandwich 🥪 <b>ne … pas</b>. Devant une voyelle, <b>ne</b> devient <b>n'</b> : « Tom <b>n'</b>aime <b>pas</b>… ». Tu peux écrire au clavier ou à la main.</p>
+    <div id="negList"></div>
+  </div>
+
+  <!-- ===================== ATELIER ===================== -->
+  <h2 id="atelier">🧩 7. Les définitions par cœur</h2>
+  <div class="box tip"><p>Chaque définition est <b>découpée en morceaux avec une image</b>. Fais les étapes dans l'ordre : <b>① Écoute → ② Remets en ordre → ③ Les trous → ④ Sans regarder</b>. Une définition par jour suffit.</p></div>
+  <div class="atl" id="atl-phrase"></div>
+  <div class="atl" id="atl-gs"></div>
+  <div class="atl" id="atl-gv"></div>
+  <div class="atl" id="atl-gc"></div>
+
+  <!-- ===================== QUIZ ===================== -->
+  <h2 id="quiz-section">🎯 8. Le quiz qui parle</h2>
+  <div class="box tip">
+    <p>Appuie sur <b>🔊 Écouter</b> pour entendre la question. Si tu te trompes, la question <b>revient à la fin</b>.</p>
+    <div class="row">
+      <label for="part">Je révise :</label>
+      <select id="part">
+        <option value="all">Tout</option>
+        <option value="1">G1 · Types et formes</option>
+        <option value="2">G2 · Les groupes</option>
+      </select>
+      <button class="btn" id="start">▶️ Commencer</button>
+    </div>
+  </div>
+  <div id="quiz"></div>
+
+  <!-- ===================== CARTES ===================== -->
+  <h2 id="cartes">✂️ 9. Les cartes à découper</h2>
+  <p>Découpez chaque ligne et pliez-la : la question devant, la réponse derrière.</p>
+  <table class="cards" id="cardtable"></table>
+
+  <!-- ===================== PLANNING ===================== -->
+  </main>
+
+<script>
+/* ---------- Outils communs ---------- */
+function shuffle(a){ for(let i=a.length-1;i>0;i--){const j=Math.floor(Math.random()*(i+1));[a[i],a[j]]=[a[j],a[i]];} return a; }
+function speak(text){
+  try {
+    if (!('speechSynthesis' in window)) return;
+    speechSynthesis.cancel();
+    const u = new SpeechSynthesisUtterance(text.replace(/\bGS\b/g,'groupe sujet').replace(/\bGV\b/g,'groupe verbal').replace(/\bGC\b/g,'groupe circonstanciel'));
+    u.lang = 'fr-FR'; u.rate = 0.9;
+    const v = speechSynthesis.getVoices().find(v => v.lang && v.lang.startsWith('fr'));
+    if (v) u.voice = v;
+    speechSynthesis.speak(u);
+  } catch(e) {}
+}
+const nz = t => (t||'').toLowerCase().normalize('NFD').replace(/[̀-ͯ]/g,'').replace(/[’]/g,"'").trim();
+const ROLE_NAME = { gs: 'groupe sujet', gv: 'groupe verbal', gc: 'groupe circonstanciel' };
+
+/* ---------- Phrases découpées (jeux 🎨 et 🗑️) ---------- */
+const SENTS = [
+  [["Le chat","gs"],["mange sa pâtée","gv"],["dans la cuisine","gc"]],
+  [["Chaque matin,","gc"],["nous","gs"],["dégustons un petit-déjeuner équilibré","gv"]],
+  [["Léa","gs"],["lit sa leçon de grammaire","gv"],["dans sa chambre","gc"]],
+  [["Les enfants","gs"],["jouent au ballon","gv"],["après l'école","gc"]],
+  [["Hier soir,","gc"],["mon frère","gs"],["a regardé un film","gv"]],
+  [["La maîtresse","gs"],["explique la leçon","gv"]],
+  [["Les amis de mes amis","gs"],["sont mes amis","gv"]],
+  [["Dans le jardin,","gc"],["les oiseaux","gs"],["chantent","gv"],["depuis ce matin","gc"]],
+  [["Ma grand-mère","gs"],["prépare une tarte","gv"],["pour mon anniversaire","gc"]],
+  [["Le bus","gs"],["s'arrête","gv"],["devant l'école","gc"]]
+];
+const sentenceText = s => { const t = s.map(g=>g[0]).join(' ').replace(/ ,/g, ','); return t.charAt(0).toUpperCase() + t.slice(1) + '.'; };
+
+/* 🎨 Colorie les groupes */
+(function(){
+  let role = 'gs', order = shuffle(SENTS.map((s,i)=>i)), idx = 0, done = 0;
+  const box = document.getElementById('sent'), msg = document.getElementById('sentMsg'), nextB = document.getElementById('sentNext'), cnt = document.getElementById('sentCount');
+  document.querySelectorAll('.role').forEach(b => b.onclick = () => { role = b.dataset.r; document.querySelectorAll('.role').forEach(x => x.setAttribute('aria-pressed', x === b)); });
+  function load(){
+    const s = SENTS[order[idx % order.length]]; done = 0; msg.textContent = ''; nextB.hidden = true;
+    cnt.textContent = 'Phrase ' + (idx + 1);
+    box.innerHTML = s.map((g,i) => '<button type="button" class="grp" data-i="'+i+'">'+(i===0 ? g[0].charAt(0).toUpperCase()+g[0].slice(1) : g[0])+'</button>').join(' ') + '<span>.</span>';
+    box.querySelectorAll('.grp').forEach(b => b.onclick = () => {
+      const g = s[+b.dataset.i];
+      if (b.dataset.ok) return;
+      if (g[1] === role) {
+        b.classList.add('as-' + role); b.dataset.ok = 1; done++;
+        msg.textContent = '✅ Oui ! « ' + g[0].replace(',','') + ' » est le ' + ROLE_NAME[role] + '.';
+        if (done === s.length) { msg.textContent = '🎉 Bravo, toute la phrase est coloriée !'; speak('Bravo !'); nextB.hidden = false; }
+      } else {
+        b.classList.add('oops'); setTimeout(() => b.classList.remove('oops'), 700);
+        const hint = g[1] === 'gc' ? 'Essaie de l’enlever : la phrase a encore du sens ? Alors c’est un GC.' :
+                     g[1] === 'gs' ? 'Pose la question « Qui est-ce qui… ? » : c’est le groupe sujet.' :
+                                     'Dis « Hier… » : le mot qui change est le verbe, il est dans le GV.';
+        msg.textContent = '🔁 Pas ' + (role==='gs'?'le GS':role==='gv'?'le GV':'le GC') + '. ' + hint;
+      }
+    });
+  }
+  document.getElementById('sentListen').onclick = () => speak(sentenceText(SENTS[order[idx % order.length]]));
+  nextB.onclick = () => { idx++; load(); };
+  load();
+})();
+
+/* 🗑️ Supprime ou déplace */
+(function(){
+  const pool = SENTS.filter(s => s.some(g => g[1]==='gc'));
+  let i = 0;
+  const root = document.getElementById('manip');
+  function load(){
+    const s = pool[i % pool.length];
+    let html = '<p class="big">' + sentenceText(s) + '</p>';
+    s.forEach((g,k) => {
+      html += '<div class="test-row"><span class="g">« ' + g[0].replace(',','') + ' »</span>' +
+        '<button class="btn ghost" type="button" data-k="'+k+'" data-a="del">🗑️ Enlever</button>' +
+        '<button class="btn ghost" type="button" data-k="'+k+'" data-a="move">↔️ Déplacer au début</button></div>';
+    });
+    html += '<div class="result" hidden></div><div class="msg"></div>';
+    root.innerHTML = html;
+    const res = root.querySelector('.result'), msg = root.querySelector('.msg');
+    root.querySelectorAll('[data-a]').forEach(b => b.onclick = () => {
+      const k = +b.dataset.k, g = s[k];
+      const rest = s.filter((_,j)=>j!==k).map(x=>[x[0].replace(',',''),x[1]]);
+      let t;
+      if (b.dataset.a === 'del') t = rest.map(x=>x[0]).join(' ');
+      else t = g[0].replace(',','') + ', ' + rest.map(x=>x[0]).join(' ');
+      t = t.charAt(0).toUpperCase() + t.slice(1) + '.';
+      if (b.dataset.a === 'del' && g[1] !== 'gc') t = t.replace(/\.$/,' …');
+      res.hidden = false; res.textContent = t;
+      speak(t);
+      if (g[1] === 'gc') msg.innerHTML = '✅ La phrase a encore du sens : « ' + g[0].replace(',','') + ' » est un <span class="gc">groupe circonstanciel</span> 🎁. Il est facultatif et déplaçable.';
+      else { const who = (g[1]==='gs' ? 'le <span class="gs">groupe sujet</span>' : 'le <span class="gv">groupe verbal</span>');
+        msg.innerHTML = b.dataset.a === 'del'
+          ? '🚫 La phrase est cassée : « ' + g[0].replace(',','') + ' » est ' + who + ' 🔒. Il est indispensable : on ne peut pas l’enlever.'
+          : '🤔 Ça sonne bizarre : « ' + g[0].replace(',','') + ' » est ' + who + ' 🔒. Il ne se déplace pas librement comme un GC.'; }
+    });
+  }
+  document.getElementById('manipNext').onclick = () => { i++; load(); };
+  load();
+})();
+
+/* 🗂️ Tri */
+document.querySelectorAll('.sort').forEach(box => {
+  const bins = JSON.parse(box.dataset.bins), items = shuffle(JSON.parse(box.dataset.items));
+  let sel = null, placed = 0;
+  box.innerHTML = '<p style="color:var(--muted)">Clique sur une phrase, puis sur la bonne case. 🔊 Un double-clic lit la phrase.</p><div class="pool"></div><div class="bins"></div><div class="msg"></div>';
+  const pool = box.querySelector('.pool'), binsEl = box.querySelector('.bins'), msg = box.querySelector('.msg');
+  items.forEach(([label, b]) => { const bt = document.createElement('button'); bt.type = 'button'; bt.innerHTML = label; bt.dataset.b = b; bt.setAttribute('aria-pressed','false');
+    bt.onclick = () => { pool.querySelectorAll('button').forEach(x => x.setAttribute('aria-pressed','false')); bt.setAttribute('aria-pressed','true'); sel = bt; };
+    bt.ondblclick = () => speak(bt.textContent); pool.appendChild(bt); });
+  bins.forEach((name, i) => {
+    const d = document.createElement('div'); d.className = 'bin'; d.tabIndex = 0; d.setAttribute('role','button'); d.innerHTML = '<h4>' + name + '</h4>';
+    const drop = () => {
+      if (!sel) { msg.textContent = "👆 Choisis d'abord une phrase."; return; }
+      if (+sel.dataset.b === i) { const c = document.createElement('span'); c.className = 'chip2'; c.innerHTML = sel.innerHTML; d.appendChild(c); sel.remove(); sel = null; placed++;
+        msg.textContent = placed === items.length ? '🎉 Tout est bien rangé !' : '✅ Oui !'; if (placed === items.length) speak('Tout est bien rangé !'); }
+      else msg.textContent = '🔁 Pas cette case. Regarde la ponctuation, et demande-toi : je raconte, je demande ou j’ordonne ?';
+    };
+    d.onclick = drop; d.onkeydown = e => { if (e.key === 'Enter' || e.key === ' ') { e.preventDefault(); drop(); } };
+    binsEl.appendChild(d);
+  });
+});
+
+/* ✍️ Forme négative */
+(function(){
+  const NEG = [
+    ["Je mange des légumes.","Je ne mange pas de légumes."],
+    ["Le chat dort.","Le chat ne dort pas."],
+    ["Tom aime le foot.","Tom n'aime pas le foot."],
+    ["Nous allons à la piscine.","Nous n'allons pas à la piscine."],
+    ["Léa lit une bande dessinée.","Léa ne lit pas de bande dessinée."],
+    ["Il pleut aujourd'hui.","Il ne pleut pas aujourd'hui."]
+  ];
+  const root = document.getElementById('negList');
+  root.innerHTML = NEG.map((n,i) => '<div class="box"><p class="big">' + (i+1) + '. ' + n[0] + '</p>' +
+    '<input class="wr" id="neg'+i+'" lang="fr" spellcheck="true" autocomplete="off" aria-label="Phrase à la forme négative" placeholder="Écris la phrase à la forme négative">' +
+    '<div class="row noprint"><button class="btn" type="button" data-i="'+i+'">✔️ Vérifier</button><button class="btn ghost" type="button" data-l="'+i+'">🔊 Écouter ma phrase</button></div><div class="msg" id="negm'+i+'"></div></div>').join('');
+  root.querySelectorAll('[data-l]').forEach(b => b.onclick = () => speak(document.getElementById('neg'+b.dataset.l).value || "Tu n'as encore rien écrit."));
+  root.querySelectorAll('[data-i]').forEach(b => b.onclick = () => {
+    const i = +b.dataset.i, inp = document.getElementById('neg'+i), m = document.getElementById('negm'+i), t = ' ' + nz(inp.value) + ' ';
+    if (t.trim().length < 3) { m.textContent = "✏️ Écris ta phrase d'abord."; return; }
+    const hasNe = /\sne\s|\sn'/.test(t), hasPas = /\s(pas|jamais|plus|rien)[\s.!]/.test(t);
+    const cap = /^[A-ZÀÂÉÈÊÎÔÙÛÇ]/.test(inp.value.trim()), dot = /[.!?]$/.test(inp.value.trim());
+    if (hasNe && hasPas && cap && dot) { inp.classList.add('ok'); m.textContent = '🎉 Bravo ! Le verbe est bien dans le sandwich 🥪. Une réponse possible : ' + NEG[i][1]; speak('Bravo !'); }
+    else {
+      const tips = [];
+      if (!hasNe) tips.push('il manque « ne » ou « n’ » avant le verbe');
+      if (!hasPas) tips.push('il manque « pas » après le verbe');
+      if (!cap) tips.push('pense à la majuscule');
+      if (!dot) tips.push('pense au point');
+      m.textContent = '💡 Presque : ' + tips.join(', ') + '.';
+    }
+  });
+})();
+
+/* 🧩 Atelier des définitions */
+const DEFS = {
+  'atl-phrase': { title: "⭐ La phrase", color: 'var(--t1)',
+    chunks: [["🧩","Une phrase est une suite de mots"],["💡","qui a du sens."],["🔠","Elle commence par une majuscule"],["⏺️","et se termine par un point."]],
+    gaps: ["suite","sens","majuscule","point"] },
+  'atl-gs': { title: "🔵 Le groupe sujet (GS)", color: 'var(--gs)',
+    chunks: [["👤","Il indique de qui ou de quoi"],["💬","on parle dans la phrase."],["🔗","Il commande l'accord du verbe."],["🔒","Il est indispensable."]],
+    gaps: ["quoi","parle","accord","verbe","indispensable"] },
+  'atl-gv': { title: "🔴 Le groupe verbal (GV)", color: 'var(--gv)',
+    chunks: [["🏃","Il est constitué du verbe"],["➕","et des compléments indispensables."]],
+    gaps: ["verbe","compléments","indispensables"] },
+  'atl-gc': { title: "🟢 Le groupe circonstanciel (GC)", color: 'var(--gc)',
+    chunks: [["🕰️📍","Il donne des informations"],["🔎","sur les circonstances de l'action."],["🗑️","Il est facultatif"],["↔️","et déplaçable."]],
+    gaps: ["informations","circonstances","action","facultatif","déplaçable"] }
+};
+const fullText = d => d.chunks.map(c=>c[1]).join(' ');
+Object.keys(DEFS).forEach(id => {
+  const d = DEFS[id], root = document.getElementById(id);
+  const names = ['① Écoute','② Remets en ordre','③ Trous : 1 mot','③ Trous : 3 mots','③ Tous les mots','④ Sans regarder'];
+  root.innerHTML = '<h3 style="color:'+d.color+'">'+d.title+'</h3><div class="steps noprint" role="group" aria-label="Étapes">'+names.map((n,i)=>'<button type="button" data-s="'+i+'">'+n+'</button>').join('')+'</div><div class="body"></div>';
+  const stepsEl = root.querySelector('.steps'), body = root.querySelector('.body');
+  stepsEl.querySelectorAll('button').forEach(b => b.onclick = () => go(+b.dataset.s));
+  const next = i => '<div class="row noprint"><button class="btn" type="button" data-next="'+i+'">Étape suivante ➜</button></div>';
+  const wire = () => { const n = body.querySelector('[data-next]'); if (n) n.onclick = () => go(+n.dataset.next); };
+  function go(step){
+    stepsEl.querySelectorAll('button').forEach(b => b.setAttribute('aria-pressed', +b.dataset.s === step));
+    if (step === 0) {
+      body.innerHTML = '<p>Regarde chaque morceau et son image. Écoute, puis <b>répète à voix haute</b>.</p><div class="chunks">'+d.chunks.map(c=>'<div class="chunk"><span class="ic">'+c[0]+'</span>'+c[1]+'</div>').join('')+'</div><div class="row noprint"><button class="btn ghost" type="button" data-a="l">🔊 Écouter</button></div>'+next(1);
+      body.querySelector('[data-a="l"]').onclick = () => speak(fullText(d)); wire();
+    }
+    if (step === 1) {
+      let k = 0; const order = shuffle(d.chunks.map((c,i)=>i));
+      body.innerHTML = '<p>Clique sur les morceaux <b>dans le bon ordre</b>.</p><div class="built"></div><div class="chunks">'+order.map(i=>'<button type="button" class="chunk" data-i="'+i+'"><span class="ic">'+d.chunks[i][0]+'</span>'+d.chunks[i][1]+'</button>').join('')+'</div><div class="msg"></div>';
+      const built = body.querySelector('.built'), msg = body.querySelector('.msg');
+      body.querySelectorAll('button.chunk').forEach(b => b.onclick = () => {
+        if (b.disabled) return;
+        if (+b.dataset.i === k) { b.classList.add('done'); b.disabled = true; built.textContent += (k ? ' ' : '') + d.chunks[k][1]; k++;
+          if (k === d.chunks.length) { msg.textContent = '🎉 Bravo !'; speak(fullText(d)); body.insertAdjacentHTML('beforeend', next(2)); wire(); } }
+        else { b.classList.add('oops'); msg.textContent = '🔁 Pas encore : quel morceau vient juste après ?'; setTimeout(()=>b.classList.remove('oops'), 700); }
+      });
+    }
+    if (step >= 2 && step <= 4) {
+      const n = step === 2 ? 1 : step === 3 ? Math.min(3, d.gaps.length) : d.gaps.length;
+      const hide = new Set(shuffle(d.gaps.slice()).slice(0, n));
+      let html = '<p>'+(step===4 ? 'Écris <b>tous</b> les mots qui manquent.' : 'Écris le mot qui manque.')+' Les accents ne comptent pas.</p><div class="gapline">';
+      d.chunks.forEach(c => {
+        let txt = c[1];
+        hide.forEach(w => { const re = new RegExp("(^|[\\s'’])(" + w + ")(?=[\\s,.]|$)"); txt = txt.replace(re, (m,a,b)=> a+'§'+b+'§'); });
+        txt = txt.replace(/§([^§]+)§/g, (m,w)=>'<input class="gap" data-w="'+w+'" aria-label="mot manquant" autocomplete="off" spellcheck="false">');
+        html += '<span>'+c[0]+'</span> '+txt+' ';
+      });
+      html += '</div><div class="row noprint"><button class="btn" type="button" data-a="ck">✔️ Vérifier</button><button class="btn ghost" type="button" data-a="hint">💡 Indice</button></div><div class="msg"></div>';
+      body.innerHTML = html;
+      const msg = body.querySelector('.msg'), inputs = [...body.querySelectorAll('.gap')];
+      inputs.forEach(x => x.addEventListener('keydown', e => { if (e.key === 'Enter') body.querySelector('[data-a="ck"]').click(); }));
+      body.querySelector('[data-a="hint"]').onclick = () => { const f = inputs.find(x => nz(x.value) !== nz(x.dataset.w)); if (f) { f.value = f.dataset.w.slice(0, Math.min(f.dataset.w.length, f.value.length + 1)); f.focus(); } };
+      body.querySelector('[data-a="ck"]').onclick = () => {
+        let all = true; inputs.forEach(x => { const ok = nz(x.value) === nz(x.dataset.w); x.classList.toggle('ok', ok); x.classList.toggle('no', !ok); if (!ok) all = false; });
+        if (all) { msg.textContent = '🎉 Tout est juste !'; speak('Tout est juste ! ' + fullText(d)); body.insertAdjacentHTML('beforeend', next(step+1)); wire(); }
+        else msg.textContent = '🔁 Les cases rouges ne sont pas encore justes. Tu peux demander un indice.';
+      };
+    }
+    if (step === 5) {
+      body.innerHTML = '<p><b>Cache l’écran</b> et dis la définition à voix haute. Puis clique pour vérifier.</p><div class="row noprint"><button class="btn" type="button" data-a="show">👀 Montrer pour vérifier</button></div><div class="built" hidden></div><div class="row noprint" hidden data-r><button class="btn" type="button" data-a="yes">✅ Je l’ai dite juste</button><button class="btn ghost" type="button" data-a="again">🔁 Je refais les trous</button></div><div class="msg"></div>';
+      const built = body.querySelector('.built'), row = body.querySelector('[data-r]'), msg = body.querySelector('.msg');
+      body.querySelector('[data-a="show"]').onclick = () => { built.hidden = false; built.textContent = fullText(d); row.hidden = false; };
+      body.querySelector('[data-a="yes"]').onclick = () => { msg.textContent = '🌟 Bravo ! Redis-la ce soir au coucher.'; speak('Bravo !'); };
+      body.querySelector('[data-a="again"]').onclick = () => go(4);
+    }
+  }
+  go(0);
+});
+
+/* 🎯 Quiz */
+const Q = [
+  {p:1, q:"Une phrase commence par…", c:["Une majuscule","Un point","Une virgule"], a:0, e:"Une phrase commence par une majuscule et se termine par un point (. ? !)."},
+  {p:1, q:"Une phrase est une suite de mots qui…", c:["A du sens","Est très longue","Rime"], a:0, e:"Une suite de mots qui a du sens."},
+  {p:1, q:"« Veux-tu du thé ou du café ? » est une phrase…", c:["Interrogative","Déclarative","Injonctive"], a:0, e:"Elle pose une question et se termine par ?"},
+  {p:1, q:"« Mange ta tartine. » est une phrase…", c:["Injonctive","Interrogative","Déclarative"], a:0, e:"Elle donne un ordre : c'est une phrase injonctive (ou impérative)."},
+  {p:1, q:"« Le soleil brille. » est une phrase…", c:["Déclarative","Interrogative","Injonctive"], a:0, e:"Elle raconte un fait : c'est une phrase déclarative."},
+  {p:1, q:"À quoi sert une phrase déclarative ?", c:["À donner un renseignement ou décrire un fait","À poser une question","À donner un ordre"], a:0, e:"Je raconte."},
+  {p:1, q:"À quoi sert une phrase injonctive ?", c:["À donner un ordre","À poser une question","À raconter"], a:0, e:"J'ordonne."},
+  {p:1, q:"Une phrase interrogative se termine par…", c:["Un point d'interrogation ?","Un point .","Une virgule"], a:0, e:"Elle pose une question."},
+  {p:1, q:"Combien y a-t-il de types de phrases dans la leçon ?", c:["3","2","5"], a:0, e:"Déclarative, interrogative, injonctive."},
+  {p:1, q:"« Je ne mange pas de bonbons. » est à la forme…", c:["Négative","Affirmative","Exclamative"], a:0, e:"Ne … pas : c'est la forme négative."},
+  {p:1, q:"« Les amis de mes amis sont mes amis. » est à la forme…", c:["Affirmative","Négative","Exclamative"], a:0, e:"Elle dit « oui » : c'est la forme affirmative."},
+  {p:1, q:"« Quelle belle journée ! » est à la forme…", c:["Exclamative","Négative","Affirmative"], a:0, e:"Elle exprime une émotion et se termine par !"},
+  {p:1, q:"Quelle phrase est à la forme négative ?", c:["Il ne pleut jamais ici.","Il pleut beaucoup ici.","Comme il pleut !"], a:0, e:"Ne … jamais : forme négative."},
+  {p:1, q:"Une phrase à la forme affirmative dit…", c:["« Oui » : quelque chose est vrai","« Non »","Un ordre"], a:0, e:"Elle dit que quelque chose est vrai, ou exprime son accord."},
+  {p:2, q:"Le groupe sujet indique…", c:["De qui ou de quoi on parle","Où et quand","L'ordre donné"], a:0, e:"Le GS dit de qui ou de quoi on parle."},
+  {p:2, q:"Qui commande l'accord du verbe ?", c:["Le groupe sujet","Le groupe circonstanciel","Le point"], a:0, e:"Le GS commande l'accord du verbe : « Les enfants jouent »."},
+  {p:2, q:"Le groupe verbal est constitué…", c:["Du verbe et des compléments indispensables","Seulement du sujet","Des mots qu'on peut enlever"], a:0, e:"Verbe + compléments indispensables."},
+  {p:2, q:"Le groupe circonstanciel est…", c:["Facultatif et déplaçable","Indispensable","Toujours au début"], a:0, e:"On peut l'enlever ou le déplacer."},
+  {p:2, q:"Le groupe circonstanciel donne des informations sur…", c:["Les circonstances de l'action : quand, où, comment","Le sujet","La ponctuation"], a:0, e:"Quand ? Où ? Comment ? Pourquoi ?"},
+  {p:2, q:"Dans « Le chat mange sa pâtée dans la cuisine », le groupe sujet est…", c:["Le chat","mange sa pâtée","dans la cuisine"], a:0, e:"C'est le chat qui mange."},
+  {p:2, q:"Dans « Le chat mange sa pâtée dans la cuisine », le GC est…", c:["dans la cuisine","Le chat","mange"], a:0, e:"On peut l'enlever : « Le chat mange sa pâtée. »"},
+  {p:2, q:"Dans « Chaque matin, nous dégustons un petit-déjeuner », le verbe est…", c:["dégustons","matin","petit-déjeuner"], a:0, e:"Hier, nous dégustions : c'est le mot qui change."},
+  {p:2, q:"Comment trouver le verbe ?", c:["Je change le moment : « Hier… », « Demain… »","Je cherche le premier mot","Je cherche le mot le plus long"], a:0, e:"Le mot qui change avec le temps, c'est le verbe."},
+  {p:2, q:"Comment trouver le groupe sujet ?", c:["« C'est … qui » + verbe","Je l'enlève","Je cherche la virgule"], a:0, e:"C'est le chat qui mange → le chat."},
+  {p:2, q:"Comment savoir si un groupe est un GC ?", c:["Je l'enlève ou le déplace : la phrase a encore du sens","Il est toujours en premier","Il a une majuscule"], a:0, e:"Facultatif et déplaçable."},
+  {p:2, q:"« Les enfants (jouer) au ballon. » Quelle est la bonne forme ?", c:["jouent","joue","jouer"], a:0, e:"Le GS « les enfants » est au pluriel : ils jouent."},
+  {p:2, q:"Peut-on enlever le groupe sujet ?", c:["Non, il est indispensable","Oui, toujours"], a:0, e:"Sans lui, la phrase est cassée."},
+  {p:2, q:"Dans « Hier soir, mon frère a regardé un film », le GC est…", c:["Hier soir","mon frère","a regardé un film"], a:0, e:"Il dit quand : on peut l'enlever ou le déplacer."}
+];
+(function(){
+  const t = document.getElementById('cardtable');
+  Q.forEach(x => { const tr = document.createElement('tr'); tr.innerHTML = '<td class="q"><span class="tag">'+(x.p===1?'G1':'G2')+'</span><br>'+x.q+'</td><td>'+x.c[x.a]+' — '+x.e+'</td>'; t.appendChild(tr); });
+})();
+let queue = [], total = 0, done = 0, firstTry = 0, missed = new Set();
+const qbox = document.getElementById('quiz');
+document.getElementById('start').onclick = () => {
+  const part = document.getElementById('part').value;
+  queue = shuffle(Q.filter(x => part==='all' || String(x.p)===part).map(x => ({...x})));
+  total = queue.length; done = 0; firstTry = 0; missed = new Set(); show();
+};
+function show(){
+  if (!queue.length) {
+    const msg = firstTry === total ? "Tout juste du premier coup, bravo !" : "Tu as tout retrouvé ! Les questions ratées sont revenues et tu les as réussies : c'est comme ça que la mémoire se construit.";
+    qbox.innerHTML = '<div class="qcard"><div class="qtext">🎉 Terminé !</div><p>'+firstTry+' sur '+total+' du premier coup.</p><p>'+msg+'</p><div class="row"><button class="btn" onclick="document.getElementById(\'start\').click()">🔁 Recommencer</button></div></div>';
+    speak('Terminé ! ' + msg); return;
+  }
+  const x = queue[0], order = shuffle(x.c.map((c,i)=>i));
+  qbox.innerHTML = '<div class="qcard"><div class="progress"><div style="width:'+(100*done/total)+'%"></div></div><span class="tag">'+(x.p===1?'G1 · Types et formes':'G2 · Les groupes')+'</span><div class="qtext">'+x.q+'</div><div class="choices">'+order.map(i=>'<button class="choice" data-i="'+i+'">'+x.c[i]+'</button>').join('')+'</div><div id="fb"></div><div class="row"><button class="btn ghost" id="listen">🔊 Écouter</button><button class="btn" id="next" hidden>Suivant ➜</button></div></div>';
+  document.getElementById('listen').onclick = () => speak(x.q + '. ' + order.map((i,k)=>'Réponse ' + (k+1) + ' : ' + x.c[i]).join('. '));
+  qbox.querySelectorAll('.choice').forEach(b => b.onclick = () => answer(b, x));
+}
+function answer(btn, x){
+  const i = +btn.dataset.i, fb = document.getElementById('fb');
+  qbox.querySelectorAll('.choice').forEach(b => { b.disabled = true; if (+b.dataset.i === x.a) b.classList.add('right'); });
+  if (i === x.a) { fb.className = 'feedback ok'; fb.textContent = '✅ Oui ! ' + x.e; if (!missed.has(x.q)) firstTry++; queue.shift(); done++; }
+  else { btn.classList.add('wrong'); fb.className = 'feedback no'; fb.textContent = '🔁 Pas encore. La bonne réponse : ' + x.c[x.a] + '. ' + x.e + ' Cette question reviendra.'; missed.add(x.q); queue.push(queue.shift()); }
+  speak(fb.textContent);
+  const n = document.getElementById('next'); n.hidden = false; n.onclick = show; n.focus();
+}
+</script>
+</body>
+</html>

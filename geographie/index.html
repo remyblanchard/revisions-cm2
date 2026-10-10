@@ -1,0 +1,624 @@
+<!DOCTYPE html>
+<html lang="fr">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Réviser Se déplacer</title>
+<style>
+  :root {
+    --bg: #fbfaf7; --card: #ffffff; --ink: #1d2433; --muted: #5a6478; --line: #dcdfe6;
+    --p1: #2f6fd0; --p1-bg: #e9f1fd;
+    --p2: #c45d00; --p2-bg: #fdf0e3;
+    --p3: #2e8540; --p3-bg: #e8f5ea;
+    --ok: #1f7a4d; --ok-bg: #e3f4ea; --no: #b3261e; --no-bg: #fbe9e7;
+    --accent: #5b4bc4;
+  }
+  @media (prefers-color-scheme: dark) {
+    :root:not([data-theme="light"]) {
+      --bg: #14181f; --card: #1c222c; --ink: #e9edf3; --muted: #a5aec0; --line: #2f3746;
+      --p1: #7fb0f5; --p1-bg: #1a2a42; --p2: #f2a65f; --p2-bg: #3a2817; --p3: #79d18a; --p3-bg: #1a3322;
+      --ok: #73d39f; --ok-bg: #173126; --no: #f28b82; --no-bg: #3a1d1b; --accent: #a99cf5;
+    }
+  }
+  :root[data-theme="dark"] {
+    --bg: #14181f; --card: #1c222c; --ink: #e9edf3; --muted: #a5aec0; --line: #2f3746;
+    --p1: #7fb0f5; --p1-bg: #1a2a42; --p2: #f2a65f; --p2-bg: #3a2817; --p3: #79d18a; --p3-bg: #1a3322;
+    --ok: #73d39f; --ok-bg: #173126; --no: #f28b82; --no-bg: #3a1d1b; --accent: #a99cf5;
+  }
+  * { box-sizing: border-box; }
+  [hidden]{display:none!important}
+  body { margin: 0; background: var(--bg); color: var(--ink); font: 17px/1.65 Arial, Helvetica, sans-serif; letter-spacing: .01em; }
+  main { max-width: 900px; margin: 0 auto; padding: 20px 16px 60px; }
+  h1 { font-size: 28px; margin: 0 0 4px; }
+  h2 { font-size: 22px; margin: 36px 0 12px; padding-top: 8px; border-top: 3px solid var(--line); }
+  h3 { font-size: 19px; margin: 0 0 8px; }
+  p { margin: 6px 0; }
+  ul { margin: 6px 0; padding-left: 22px; }
+  li { margin: 4px 0; }
+  .sub { color: var(--muted); margin: 0 0 16px; }
+  nav { display: flex; flex-wrap: wrap; gap: 8px; margin: 14px 0 6px; }
+  nav a { text-decoration: none; color: var(--ink); background: var(--card); border: 1px solid var(--line); border-radius: 999px; padding: 6px 14px; font-size: 15px; }
+  .box { background: var(--card); border: 1px solid var(--line); border-radius: 12px; padding: 14px 16px; margin: 12px 0; }
+  .p1 { background: var(--p1-bg); border-left: 8px solid var(--p1); }
+  .p2 { background: var(--p2-bg); border-left: 8px solid var(--p2); }
+  .p3 { background: var(--p3-bg); border-left: 8px solid var(--p3); }
+  .p1 h3 { color: var(--p1); } .p2 h3 { color: var(--p2); } .p3 h3 { color: var(--p3); }
+  .tip { border-left: 8px solid var(--accent); }
+  .warn { background: var(--no-bg); border-left: 8px solid var(--no); }
+  table { width: 100%; border-collapse: collapse; margin: 8px 0; background: var(--card); }
+  th, td { border: 1px solid var(--line); padding: 8px 10px; text-align: left; vertical-align: top; }
+  th { background: var(--bg); }
+  .key { font-weight: 700; }
+  .def { font-size: 18px; }
+  .grid2 { display: grid; grid-template-columns: 1fr 1fr; gap: 12px; }
+  .mm { display: grid; grid-template-columns: 1fr; gap: 10px; }
+  .center { text-align: center; font-weight: 700; font-size: 20px; padding: 10px; border: 3px solid var(--ink); border-radius: 12px; background: var(--card); }
+  /* Flashcards */
+  .cards { width: 100%; border-collapse: collapse; }
+  .cards td { width: 50%; height: 96px; border: 2px dashed var(--muted); padding: 10px 12px; font-size: 17px; }
+  .cards td.q { font-weight: 700; }
+  .tag { display: inline-block; font-size: 12px; font-weight: 700; padding: 1px 8px; border-radius: 999px; color: #fff; margin-bottom: 4px; }
+  .t1 { background: var(--p1); } .t2 { background: var(--p2); } .t3 { background: var(--p3); }
+  /* Quiz */
+  #quiz .qcard { background: var(--card); border: 1px solid var(--line); border-radius: 12px; padding: 16px; }
+  #quiz .qtext { font-size: 20px; font-weight: 700; margin: 6px 0 12px; }
+  .choices { display: grid; gap: 10px; }
+  .choice { text-align: left; font: inherit; font-size: 18px; padding: 12px 14px; border-radius: 10px; border: 2px solid var(--line); background: var(--bg); color: var(--ink); cursor: pointer; }
+  .choice:hover { border-color: var(--accent); }
+  .choice.right { background: var(--ok-bg); border-color: var(--ok); }
+  .choice.wrong { background: var(--no-bg); border-color: var(--no); }
+  .btn { font: inherit; font-size: 16px; padding: 10px 16px; border-radius: 10px; border: none; background: var(--accent); color: #fff; cursor: pointer; }
+  .btn.ghost { background: transparent; color: var(--ink); border: 2px solid var(--line); }
+  .row { display: flex; flex-wrap: wrap; gap: 10px; align-items: center; margin-top: 12px; }
+  .feedback { margin-top: 12px; padding: 10px 12px; border-radius: 10px; display: none; }
+  .feedback.ok { display: block; background: var(--ok-bg); }
+  .feedback.no { display: block; background: var(--no-bg); }
+  .progress { height: 10px; background: var(--line); border-radius: 999px; overflow: hidden; margin: 8px 0 12px; }
+  .progress > div { height: 100%; background: var(--accent); width: 0; transition: width .3s; }
+  select { font: inherit; font-size: 16px; padding: 8px; border-radius: 8px; border: 1px solid var(--line); background: var(--card); color: var(--ink); }
+  .compass { width: 220px; height: 220px; display: block; margin: 6px auto; }
+  .wl { border-bottom: 2px solid var(--line); height: 2.4em; }
+  .bank { display: flex; flex-wrap: wrap; gap: 8px; margin: 8px 0; }
+  .bank span { background: var(--bg); border: 1px solid var(--line); border-radius: 8px; padding: 2px 10px; font-weight: 700; }
+  .ex { break-inside: avoid; }
+  .lvl { font-size: 13px; font-weight: 700; letter-spacing: .06em; text-transform: uppercase; color: var(--muted); margin: 18px 0 4px; }
+  details { margin-top: 8px; } summary { cursor: pointer; color: var(--accent); font-weight: 700; }
+  .check li { list-style: none; } .check { padding-left: 4px; }
+  @media print { details { display: none; } }
+  .ans { width: 100%; font: inherit; font-size: 20px; line-height: 1.6; padding: 12px 14px; border: 2px solid var(--line); border-radius: 10px; background: var(--card); color: var(--ink); resize: vertical; min-height: 4.2em; margin-top: 6px; }
+  .ans:focus { outline: none; border-color: var(--accent); }
+  .tools { display: flex; flex-wrap: wrap; gap: 8px; margin-top: 8px; }
+  .tools button { font: inherit; font-size: 16px; padding: 8px 14px; border-radius: 10px; border: 2px solid var(--line); background: var(--card); color: var(--ink); cursor: pointer; }
+  .tools button.primary { background: var(--accent); color: #fff; border-color: var(--accent); }
+  .verdict { margin-top: 10px; padding: 10px 12px; border-radius: 10px; background: var(--card); border: 1px solid var(--line); }
+  .verdict ul { margin: 4px 0; padding-left: 4px; } .verdict li { list-style: none; }
+  .bank span { cursor: pointer; } .bank span:hover, .bank span:focus { border-color: var(--accent); outline: none; }
+  .wl { display: none; }
+  @media print { .wl { display: block; } .ans, .tools, .verdict { display: none !important; } }
+  @media (max-width: 640px) { .grid2 { grid-template-columns: 1fr; } body { font-size: 16px; } }
+  @media print {
+    body { background: #fff; color: #000; font-size: 13.5px; }
+    nav, #quiz-section, .noprint { display: none !important; }
+    h2 { break-before: page; border-top: none; margin-top: 0; }
+    h2.first { break-before: auto; }
+    .box, tr { break-inside: avoid; }
+    .cards td { height: 80px; }
+    @page { size: A4; margin: 12mm; }
+  }
+</style>
+</head>
+<body>
+<main>
+  <p class="noprint" style="margin:0 0 10px"><a href="../" style="color:var(--accent)">← Toutes les leçons</a></p>
+  <h1>🚲 Géographie : Se déplacer</h1>
+  <p class="sub">Des outils pour réviser l'évaluation 1 · d'après la leçon et la fiche de révision de la classe</p>
+
+  <nav class="noprint">
+    <a href="#resume">📄 Fiche résumé</a>
+    <a href="#carte">🧭 Carte mentale</a>
+    <a href="#tableaux">⚖️ Avantages / inconvénients</a>
+    <a href="#dico">📖 Les mots à savoir</a>
+    <a href="#phrases">✍️ Phrases-réponses</a>
+    <a href="#quiz-section">🎯 Quiz qui parle</a>
+    <a href="#cartes">✂️ Cartes à découper</a>
+    <a href="#rediger">✍️ Je rédige</a>
+    
+  </nav>
+
+  
+
+  <div class="box tip">
+    <h3>👋 Comment réviser avec cette page</h3>
+    <ul>
+      <li><b>Essayer de se souvenir</b> (quiz, cartes, questions à l'oral) est plus efficace que relire ou recopier.</li>
+      <li><b>Plusieurs petites séances</b> de 10 minutes, sur plusieurs jours, valent mieux qu'une longue séance la veille.</li>
+      <li>Le bouton <b>🔊 Écouter</b> lit les questions à voix haute.</li>
+    </ul>
+  </div>
+
+  <!-- ===================== FICHE RÉSUMÉ ===================== -->
+  <h2 id="resume" class="first">📄 1. La fiche résumé</h2>
+  <p><b>La grande question :</b> comment les gens se déplacent-ils, et quels problèmes ont-ils ?</p>
+
+  <div class="box p1">
+    <h3>🏙️ Partie 1 : se déplacer dans une ville de France</h3>
+    <ul>
+      <li>On choisit son transport selon <b>la distance</b>, <b>le motif</b> (pourquoi on y va : les études, le travail, les loisirs, les courses) et <b>l'argent</b>.</li>
+      <li>Exemple de Pierre, à Troyes (au <b>nord-est</b> de la France) :
+        <ul>
+          <li>🏫 vers l'école, 500 m → <b>à pied</b> ;</li>
+          <li>🛒 vers le centre commercial avec des sacs, 1 km → <b>en voiture</b> ;</li>
+          <li>🏊 vers la piscine, 1,5 km, sans dépenser trop → <b>en bus</b>.</li>
+        </ul>
+      </li>
+      <li><b>Les problèmes de la voiture en ville</b> : la pollution de l'air, les embouteillages, le bruit, les accidents, le prix de l'essence, la fatigue des conducteurs.</li>
+      <li><b>Les nouvelles formes de mobilité</b> : les vélos en libre-service, les voitures électriques en libre-service, le tramway, le covoiturage.</li>
+      <li><b>Les aménagements de la ville</b> : les pistes cyclables, les voies de bus, les zones piétonnes.</li>
+      <li><b>Leurs avantages</b> : elles <b>polluent moins</b> et font <b>moins de bruit</b>.</li>
+      <li>⚠️ Les habitants des <b>campagnes</b> ont <b>moins accès</b> à ces nouvelles mobilités.</li>
+    </ul>
+  </div>
+
+  <div class="box p2">
+    <h3>🇮🇳 Partie 2 : se déplacer à Mumbai, en Inde</h3>
+    <ul>
+      <li><b>Où ?</b> L'Inde est un pays d'<b>Asie</b>, au sud du continent. Mumbai est à l'<b>ouest</b> de l'Inde, au bord de la mer.</li>
+      <li>Mumbai a <b>plus de 20 millions d'habitants</b>. C'est la ville la plus peuplée de l'Inde.</li>
+      <li><b>Les transports</b> : la voiture, le taxi, la marche à pied, l'autobus, la moto, le train.</li>
+      <li><b>Les difficultés</b> :
+        <ul>
+          <li>d'énormes <b>embouteillages</b>, surtout aux heures de pointe ;</li>
+          <li>des trains <b>surchargés</b> ;</li>
+          <li>l'<b>insécurité</b> : beaucoup d'<b>accidents</b>, 10 à 12 morts par jour dans les trains ;</li>
+          <li>la <b>pollution</b> et la <b>lenteur</b>.</li>
+        </ul>
+      </li>
+      <li>Beaucoup prennent le train car ils sont <b>trop pauvres pour avoir une voiture</b> et veulent <b>éviter les embouteillages</b>.</li>
+      <li><b>Les solutions</b> : le <b>métro aérien</b> (payant), le pont <b>Bandra-Worli Sea Link</b>, les <b>passerelles</b> pour les piétons, les <b>viaducs</b> routiers.</li>
+      <li><b>Est-ce que tout le monde a accès au métro ? Non.</b> Le billet est <b>trop cher</b> pour les personnes très pauvres.</li>
+    </ul>
+  </div>
+
+  <div class="box p3">
+    <h3>🌳 Partie 3 : se déplacer à la campagne, en France</h3>
+    <ul>
+      <li><b>Espace urbain</b> = la ville : beaucoup d'habitants, d'immeubles et de services. <b>Espace rural</b> = la campagne : des villages, peu d'habitants, des champs et de la nature.</li>
+      <li>Exemple de Castelmoron-d'Albret (au <b>sud-ouest</b>) : il n'y a <b>plus d'école, de commerces, de poste ni de médecin</b>. La <b>voiture est indispensable</b>.</li>
+      <li><b>Les avantages de la campagne</b> : le calme, la nature, une grande maison avec un jardin.</li>
+      <li><b>Les inconvénients</b> : les services sont loin, il faut une voiture, les trajets sont longs et fatigants, et ça <b>coûte cher</b> (la famille Vivien paie 320 € d'essence par mois).</li>
+      <li><b>Les problèmes</b> : l'isolement, et un accès difficile à l'école, aux soins et à l'hôpital, au travail, aux musées.</li>
+      <li><b>Les 3 solutions</b> :
+        <ul>
+          <li>🚗 le <b>covoiturage</b> ;</li>
+          <li>💻 le <b>télétravail</b> ;</li>
+          <li>🏪 les <b>points multiservices</b>.</li>
+        </ul>
+      </li>
+    </ul>
+  </div>
+
+  <!-- ===================== CARTE MENTALE ===================== -->
+  <h2 id="carte">🧭 2. La carte mentale</h2>
+  <div class="mm">
+    <div class="center">🚲 SE DÉPLACER</div>
+    <div class="grid2">
+      <div class="box p1"><h3>🏙️ Ville de France</h3>
+        <p><b>Choisir</b> : la distance, le motif, l'argent</p>
+        <p><b>Problèmes</b> : la pollution, les embouteillages, le bruit</p>
+        <p><b>Solutions</b> : les vélos et voitures électriques en libre-service, le tramway, le covoiturage, les pistes cyclables, les voies de bus, les zones piétonnes</p>
+      </div>
+      <div class="box p2"><h3>🇮🇳 Mumbai, en Inde</h3>
+        <p><b>Où</b> : en Asie, à l'ouest de l'Inde</p>
+        <p><b>Problèmes</b> : les embouteillages, les trains bondés, les accidents</p>
+        <p><b>Solutions</b> : le métro aérien, le pont, les passerelles, les viaducs</p>
+        <p><b>Limite</b> : le métro est trop cher pour les plus pauvres</p>
+      </div>
+    </div>
+    <div class="box p3"><h3>🌳 La campagne en France</h3>
+      <p><b>Plus</b> : le calme, la nature, le jardin · <b>Moins</b> : les services sont loin, la voiture est obligatoire, le coût, la fatigue</p>
+      <p><b>Solutions</b> : le covoiturage 🚗, le télétravail 💻, les points multiservices 🏪</p>
+    </div>
+  </div>
+
+  <div class="box">
+    <h3>🧭 La rose des vents</h3>
+    <svg class="compass" viewBox="0 0 220 220" role="img" aria-label="Rose des vents avec nord, sud, est, ouest et les directions intermédiaires">
+      <circle cx="110" cy="110" r="70" fill="none" stroke="currentColor" stroke-width="2" opacity=".35"/>
+      <line x1="110" y1="30" x2="110" y2="190" stroke="currentColor" stroke-width="3"/>
+      <line x1="30" y1="110" x2="190" y2="110" stroke="currentColor" stroke-width="3"/>
+      <line x1="60" y1="60" x2="160" y2="160" stroke="currentColor" stroke-width="1.5" opacity=".5"/>
+      <line x1="160" y1="60" x2="60" y2="160" stroke="currentColor" stroke-width="1.5" opacity=".5"/>
+      <g font-family="Arial" font-weight="700" font-size="18" fill="currentColor" text-anchor="middle">
+        <text x="110" y="22">N</text><text x="110" y="212">S</text>
+        <text x="204" y="116">E</text><text x="16" y="116">O</text>
+      </g>
+      <g font-family="Arial" font-size="13" fill="currentColor" text-anchor="middle">
+        <text x="172" y="50">Nord-est</text><text x="48" y="50">Nord-ouest</text>
+        <text x="172" y="178">Sud-est</text><text x="50" y="178">Sud-ouest</text>
+      </g>
+    </svg>
+    <p>On tourne dans le sens des aiguilles d'une montre : <b>N</b>ord en haut, <b>E</b>st, <b>S</b>ud, <b>O</b>uest. Une phrase pour s'en souvenir : <b>« Nos Enfants Sont Organisés »</b>. On dit toujours le Nord ou le Sud <b>en premier</b> : <b>nord</b>-est, <b>sud</b>-ouest.</p>
+    <ul>
+      <li>Troyes → <b>nord-est</b> de la France.</li>
+      <li>Castelmoron-d'Albret → <b>sud-ouest</b> de la France.</li>
+      <li>Mumbai → <b>ouest</b> de l'Inde.</li>
+      <li>L'Inde → en <b>Asie</b>. Entraîne-toi à la montrer sur un planisphère ou dans un atlas.</li>
+    </ul>
+  </div>
+
+  <!-- ===================== TABLEAUX ===================== -->
+  <h2 id="tableaux">⚖️ 3. Avantages et inconvénients</h2>
+  <table>
+    <tr><th>Transport</th><th>👍 Avantages</th><th>👎 Inconvénients</th></tr>
+    <tr><td class="key">🚶 À pied</td><td>C'est gratuit, ça fait faire du sport, ça ne pollue pas</td><td>C'est fatigant et lent pour aller loin</td></tr>
+    <tr><td class="key">🚗 La voiture</td><td>Elle est rapide, on peut transporter des sacs, on part quand on veut</td><td>La pollution, les embouteillages, le coût de l'essence, le bruit, les accidents</td></tr>
+    <tr><td class="key">🚌 Le bus</td><td>Il n'est pas cher et il pollue moins qu'une voiture par personne</td><td>Il a des horaires, beaucoup d'arrêts, et il y a parfois trop de monde</td></tr>
+    <tr><td class="key">🚇 Le métro aérien (Mumbai)</td><td>Il est rapide, il évite les embouteillages, il pollue peu</td><td>Sa construction coûte cher, et le billet est trop cher pour les plus pauvres</td></tr>
+  </table>
+  <table>
+    <tr><th>🌳 Habiter à la campagne</th><th>👍 Avantages</th><th>👎 Inconvénients</th></tr>
+    <tr><td class="key">La vie au village</td><td>Le calme, la nature, une grande maison, un jardin</td><td>Les services sont loin, la voiture est obligatoire, les trajets sont longs et fatigants, ça coûte cher, on se sent isolé</td></tr>
+  </table>
+
+  <div class="box warn">
+    <h3>⚠️ Attention aux pièges</h3>
+    <ul>
+      <li>Sous la photo des vélos, il faut écrire <b>« vélos en libre-service »</b>, pas « vélo électrique ».</li>
+      <li>Sous la photo de la voiture qui se recharge, il faut écrire <b>« voitures électriques en libre-service »</b>.</li>
+    </ul>
+  </div>
+
+  <!-- ===================== DICO ===================== -->
+  <h2 id="dico">📖 4. Les mots à savoir par cœur</h2>
+  <p>Ce sont les définitions du « Mon petit dico » de la leçon. Elles tombent très souvent à l'évaluation.</p>
+  <div class="box p1 def"><b>🚗 Le covoiturage</b> : c'est quand <b>plusieurs personnes</b> utilisent <b>la même voiture</b> pour <b>partager les frais</b> de transport.<br><i>Pour s'en souvenir : « co » veut dire « ensemble ». On voyage ensemble, en voiture.</i></div>
+  <div class="box p1 def"><b>🌱 Les nouvelles formes de mobilité</b> : de <b>nouveaux moyens de transport</b> plus <b>respectueux de l'environnement</b>.</div>
+  <div class="box p2 def"><b>⏰ Les heures de pointe</b> : les <b>moments de la journée</b> où la circulation est <b>très intense</b>, le matin et le soir.</div>
+  <div class="box p3 def"><b>💻 Le télétravail</b> : travailler <b>depuis sa maison</b>, grâce au téléphone et à Internet, <b>sans se déplacer</b>.<br><i>Pour s'en souvenir : « télé » veut dire « à distance », comme dans téléphone.</i></div>
+  <div class="box p3 def"><b>🏪 Un point multiservices</b> : un <b>magasin</b> qui offre <b>plusieurs services au même endroit</b> : la boulangerie, l'épicerie, la poste, le tabac…<br><i>Pour s'en souvenir : « multi » veut dire « plusieurs ».</i></div>
+  <div class="box p3 def"><b>🏙️ L'espace urbain</b> = la ville · <b>🌾 L'espace rural</b> = la campagne.<br><i>Pour s'en souvenir : urbain → les rues et les immeubles ; rural → les champs et les tracteurs.</i></div>
+
+  <!-- ===================== PHRASES ===================== -->
+  <h2 id="phrases">✍️ 5. Les phrases-réponses toutes prêtes</h2>
+  <p>Ce sont les seules phrases à <b>écrire</b>. Elle les dit d'abord à l'oral, puis les écrit une fois. Une réponse courte et juste vaut mieux qu'une longue.</p>
+  <table>
+    <tr><th>Si la question est…</th><th>Je peux répondre…</th></tr>
+    <tr><td>Pourquoi choisir tel transport ?</td><td>« Je choisis <b>…</b> parce que la distance est <b>…</b> et que <b>…</b>. »</td></tr>
+    <tr><td>Quels sont les problèmes de la voiture en ville ?</td><td>« La voiture cause <b>de la pollution, des embouteillages et du bruit</b>. »</td></tr>
+    <tr><td>Quels sont les avantages des nouvelles mobilités ?</td><td>« Elles <b>polluent moins</b> et font <b>moins de bruit</b>. »</td></tr>
+    <tr><td>Quelles difficultés à Mumbai ?</td><td>« Il y a <b>des embouteillages</b>, des <b>trains surchargés</b> et beaucoup d'<b>accidents</b>. »</td></tr>
+    <tr><td>Tout le monde a-t-il accès au métro à Mumbai ?</td><td>« <b>Non</b>, car le billet est <b>trop cher</b> pour les personnes très pauvres. »</td></tr>
+    <tr><td>Avantages et inconvénients de la campagne ?</td><td>« L'avantage, c'est <b>le calme et la nature</b>. L'inconvénient, c'est que <b>les services sont loin</b> et qu'il faut <b>une voiture</b>. »</td></tr>
+    <tr><td>Quelles solutions pour les villages ?</td><td>« <b>Le covoiturage, le télétravail et les points multiservices</b>. »</td></tr>
+    <tr><td>À quoi sert le covoiturage ?</td><td>« Il permet de <b>partager les frais</b> et de <b>polluer moins</b>. »</td></tr>
+    <tr><td>Pourquoi le télétravail et les points multiservices limitent-ils les déplacements ?</td><td>« Avec le télétravail, on <b>reste à la maison</b>. Au point multiservices, on trouve <b>tout au même endroit</b>. »</td></tr>
+  </table>
+
+  <!-- ===================== QUIZ ===================== -->
+  <h2 id="quiz-section">🎯 6. Le quiz qui parle</h2>
+  <div class="box tip">
+    <p>Appuie sur <b>🔊 Écouter</b> pour entendre la question et les réponses. Si tu te trompes, la question <b>revient à la fin</b>. On recommence jusqu'à tout réussir !</p>
+    <div class="row">
+      <label for="part">Je révise :</label>
+      <select id="part">
+        <option value="all">Tout</option>
+        <option value="1">🏙️ La ville</option>
+        <option value="2">🇮🇳 Mumbai</option>
+        <option value="3">🌳 La campagne</option>
+        <option value="new">🆕 Nouvelles questions</option>
+      </select>
+      <button class="btn" id="start">▶️ Commencer</button>
+    </div>
+  </div>
+  <div id="quiz"></div>
+
+  <!-- ===================== FLASHCARDS ===================== -->
+  <h2 id="cartes">✂️ 7. Les cartes à découper</h2>
+  <p>Imprimez, découpez chaque ligne, puis pliez-la au milieu : la <b>question</b> devant, la <b>réponse</b> derrière. La couleur indique la partie.</p>
+  <table class="cards" id="cardtable"></table>
+
+  <!-- ===================== PLANNING ===================== -->
+  <h2 id="rediger">✍️ Je rédige : des phrases simples</h2>
+  <div class="box tip">
+    <p><b>Comment faire.</b> L'enfant <b>dit sa phrase à voix haute d'abord</b>, puis la <b>tape au clavier</b> dans le cadre. Elle peut cliquer sur un mot de la banque pour l'ajouter sans le taper. Les mots difficiles sont dans la <b>banque de mots</b> : elle les recopie, sans chercher l'orthographe. Une fois la phrase finie, elle appuie sur <b>🔊 Écouter ma phrase</b> pour l'entendre, puis sur <b>✔️ Vérifier</b>. Le corrigé s'ouvre en cliquant sur « Voir une réponse possible ». Il n'apparaît pas à l'impression.</p>
+    
+  </div>
+
+  <div class="box">
+    <h3>🔎 Je vérifie ma phrase</h3>
+    <ul class="check">
+      <li>☐ Ma phrase <b>répond à la question</b>.</li>
+      <li>☐ Elle commence par une <b>majuscule</b>.</li>
+      <li>☐ Elle finit par un <b>point</b>.</li>
+      <li>☐ J'ai <b>recopié</b> les mots difficiles depuis la banque.</li>
+    </ul>
+  </div>
+
+  <div class="box">
+    <h3>📦 La banque de mots</h3>
+    <div class="bank">
+      <span>gratuit</span><span>la distance</span><span>la pollution</span><span>les embouteillages</span><span>le bruit</span>
+      <span>le covoiturage</span><span>partager les frais</span><span>le télétravail</span><span>un point multiservices</span>
+      <span>le métro aérien</span><span>le billet</span><span>trop cher</span><span>pauvres</span><span>indispensable</span>
+      <span>le calme</span><span>la nature</span><span>les services</span><span>éloignés</span><span>transport collectif</span>
+    </div>
+  </div>
+
+  <p class="lvl">Niveau 1 · Je complète la phrase</p>
+  <div id="ex1" class="box p1 ex">
+    <p><b>1.</b> Pierre va à l'école à pied parce que…</p>
+    <div class="wl"></div>
+    <details><summary>Voir une réponse possible</summary><p>Pierre va à l'école à pied parce que c'est près (500 m) et que c'est gratuit.</p></details>
+  </div>
+  <div id="ex2" class="box p2 ex">
+    <p><b>2.</b> À Mumbai, beaucoup d'habitants prennent le train parce que…</p>
+    <div class="wl"></div>
+    <details><summary>Voir une réponse possible</summary><p>À Mumbai, beaucoup d'habitants prennent le train parce qu'ils sont trop pauvres pour avoir une voiture et qu'ils veulent éviter les embouteillages.</p></details>
+  </div>
+  <div id="ex3" class="box p3 ex">
+    <p><b>3.</b> À Castelmoron-d'Albret, la voiture est indispensable car…</p>
+    <div class="wl"></div>
+    <details><summary>Voir une réponse possible</summary><p>À Castelmoron-d'Albret, la voiture est indispensable car il n'y a plus d'école, de commerces, de poste ni de médecin dans le village.</p></details>
+  </div>
+
+  <p class="lvl">Niveau 2 · J'écris une phrase avec les 3 mots donnés</p>
+  <div id="ex4" class="box p1 ex">
+    <p><b>4.</b> <span class="bank"><span>covoiturage</span><span>personnes</span><span>frais</span></span></p>
+    <div class="wl"></div><div class="wl"></div>
+    <details><summary>Voir une réponse possible</summary><p>Le covoiturage, c'est quand plusieurs personnes partagent une voiture et les frais du trajet.</p></details>
+  </div>
+  <div id="ex5" class="box p2 ex">
+    <p><b>5.</b> <span class="bank"><span>métro aérien</span><span>billet</span><span>cher</span></span></p>
+    <div class="wl"></div><div class="wl"></div>
+    <details><summary>Voir une réponse possible</summary><p>Le billet du métro aérien est trop cher pour les personnes très pauvres.</p></details>
+  </div>
+  <div id="ex6" class="box p3 ex">
+    <p><b>6.</b> <span class="bank"><span>campagne</span><span>calme</span><span>voiture</span></span></p>
+    <div class="wl"></div><div class="wl"></div>
+    <details><summary>Voir une réponse possible</summary><p>À la campagne, on vit au calme, mais il faut une voiture pour tout faire.</p></details>
+  </div>
+
+  <p class="lvl">Niveau 3 · Je réponds en 2 phrases (le début est donné)</p>
+  <div id="ex7" class="box p1 ex">
+    <p><b>7.</b> Donne un avantage et un inconvénient de la voiture en ville.</p>
+    <p>Un avantage de la voiture, c'est…</p><div class="wl"></div>
+    <p>Un inconvénient, c'est…</p><div class="wl"></div>
+    <details><summary>Voir une réponse possible</summary><p>Un avantage de la voiture, c'est qu'on peut transporter des sacs. Un inconvénient, c'est qu'elle pollue et cause des embouteillages.</p></details>
+  </div>
+  <div id="ex8" class="box p2 ex">
+    <p><b>8.</b> Est-ce que tous les habitants de Mumbai peuvent prendre le métro aérien ? Explique.</p>
+    <p>Non, parce que…</p><div class="wl"></div><div class="wl"></div>
+    <details><summary>Voir une réponse possible</summary><p>Non, parce que le métro aérien est payant. Le billet est trop cher pour les personnes très pauvres.</p></details>
+  </div>
+  <div id="ex9" class="box p3 ex">
+    <p><b>9.</b> Donne deux solutions pour les habitants des villages, puis explique l'une d'elles.</p>
+    <p>Deux solutions sont…</p><div class="wl"></div>
+    <p>Par exemple, …</p><div class="wl"></div>
+    <details><summary>Voir une réponse possible</summary><p>Deux solutions sont le télétravail et les points multiservices. Par exemple, avec le télétravail, on travaille chez soi grâce à Internet, donc on ne prend pas la voiture.</p></details>
+  </div>
+
+  <p class="lvl">Défi, si elle a envie</p>
+  <div id="ex10" class="box p1 ex">
+    <p><b>10.</b> Raconte le trajet de Pierre vers la piscine en 2 phrases. Dis <b>comment</b> il y va, <b>pourquoi</b> il y va, et à quelle <b>distance</b> elle se trouve.</p>
+    <div class="wl"></div><div class="wl"></div>
+    <details><summary>Voir une réponse possible</summary><p>Pierre va à la piscine en bus, parce que c'est un transport collectif qui ne coûte pas cher. Il y va pour ses loisirs, et la piscine est à 1,5 km de chez lui.</p></details>
+  </div>
+
+  </main>
+
+<script>
+const Q = [
+  // Partie 1 — ville
+  {p:1, q:"Pour aller à l'école à 500 mètres, gratuitement, en faisant de l'exercice, je prends…", c:["La voiture","La marche à pied","Le bus"], a:1, e:"500 m, c'est près : à pied, c'est gratuit et c'est du sport."},
+  {p:1, q:"Pour faire les courses avec beaucoup de sacs, à plus d'1 km, je prends…", c:["La marche à pied","La voiture","Le vélo"], a:1, e:"La voiture permet de transporter les sacs."},
+  {p:1, q:"Pour aller à la piscine sans dépenser trop d'argent, en transport collectif, je prends…", c:["Le bus","La voiture","Le taxi"], a:0, e:"Le bus est un transport collectif, pas cher."},
+  {p:1, q:"Où se trouve la ville de Troyes en France ?", c:["Au nord-est","Au sud-ouest","Au nord-ouest"], a:0, e:"Troyes est au nord-est."},
+  {p:1, q:"Quel est un inconvénient de la voiture en ville ?", c:["Elle est gratuite","Elle cause des embouteillages et de la pollution","Elle fait faire du sport"], a:1, e:"La pollution, les embouteillages, le bruit, les accidents…"},
+  {p:1, q:"Le covoiturage, c'est…", c:["Une voiture électrique","Plusieurs personnes dans la même voiture pour partager les frais","Une voie pour les bus"], a:1, e:"« Co » veut dire « ensemble »."},
+  {p:1, q:"Les nouvelles formes de mobilité sont…", c:["De nouveaux transports plus respectueux de l'environnement","Des voitures plus rapides","Des avions"], a:0, e:"Elles polluent moins et font moins de bruit."},
+  {p:1, q:"Lequel est une nouvelle forme de mobilité ?", c:["Le tramway","La voiture à essence","Le camion"], a:0, e:"Le tramway, les vélos et voitures électriques en libre-service, le covoiturage."},
+  {p:1, q:"Lequel est un aménagement de la ville ?", c:["La pollution","Les pistes cyclables","Les embouteillages"], a:1, e:"Les pistes cyclables, les voies de bus, les zones piétonnes."},
+  {p:1, q:"Qui a le moins accès aux nouvelles façons de se déplacer ?", c:["Les habitants des villes","Les habitants des campagnes"], a:1, e:"À la campagne, il n'y a souvent ni tramway ni vélos en libre-service."},
+  // Partie 2 — Mumbai
+  {p:2, q:"Mumbai se trouve dans quel pays ?", c:["En Chine","En Inde","Au Brésil"], a:1, e:"Mumbai est en Inde, en Asie."},
+  {p:2, q:"Sur quel continent se trouve l'Inde ?", c:["En Afrique","En Asie","En Europe"], a:1, e:"L'Inde est en Asie."},
+  {p:2, q:"Où se trouve Mumbai en Inde ?", c:["À l'ouest","À l'est","Au nord"], a:0, e:"Mumbai est à l'ouest de l'Inde, au bord de la mer."},
+  {p:2, q:"Combien d'habitants à Mumbai ?", c:["Plus de 20 millions","2 000","Environ 1 million"], a:0, e:"Plus de 20 millions : c'est la ville la plus peuplée de l'Inde."},
+  {p:2, q:"Quelle est une difficulté pour se déplacer à Mumbai ?", c:["Il n'y a pas de voitures","Les trains sont surchargés et il y a des accidents","Les routes sont vides"], a:1, e:"Les embouteillages, les trains bondés, l'insécurité."},
+  {p:2, q:"Pourquoi beaucoup d'habitants prennent-ils le train ?", c:["Parce qu'ils sont trop pauvres pour une voiture et veulent éviter les embouteillages","Parce que le train est très confortable"], a:0, e:"Ils n'ont pas de voiture et le train évite les bouchons."},
+  {p:2, q:"Quelle est une solution choisie à Mumbai ?", c:["Le métro aérien","Fermer les routes","Le téléphérique de montagne"], a:0, e:"Le métro aérien, le pont, les passerelles, les viaducs."},
+  {p:2, q:"Tous les habitants ont-ils accès au métro aérien ?", c:["Oui, il est gratuit","Non, le billet est trop cher pour les plus pauvres"], a:1, e:"Le métro est payant : trop cher pour les personnes très pauvres."},
+  {p:2, q:"Les heures de pointe, ce sont…", c:["Les moments où la circulation est très intense","Les heures où il n'y a personne","Les heures de l'école"], a:0, e:"Le matin et le soir, quand tout le monde se déplace."},
+  // Partie 3 — campagne
+  {p:3, q:"L'espace rural, c'est…", c:["La ville","La campagne"], a:1, e:"Rural = la campagne. Urbain = la ville."},
+  {p:3, q:"Où se trouve le village de Castelmoron-d'Albret ?", c:["Au sud-ouest","Au nord-est"], a:0, e:"Au sud-ouest de la France."},
+  {p:3, q:"Dans ce village, pourquoi la voiture est-elle indispensable ?", c:["Parce qu'il n'y a plus d'école, de commerces, de poste ni de médecin","Parce que les habitants aiment conduire"], a:0, e:"Tout se trouve en dehors du village."},
+  {p:3, q:"Un avantage d'habiter à la campagne ?", c:["Le calme et la nature","Les services tout près","Le métro"], a:0, e:"Le calme, la nature, une grande maison avec un jardin."},
+  {p:3, q:"Un inconvénient d'habiter à la campagne ?", c:["Le bruit des voitures","Les services sont loin et il faut une voiture"], a:1, e:"Les trajets sont longs, fatigants et coûtent cher."},
+  {p:3, q:"Le télétravail, c'est…", c:["Travailler depuis chez soi avec Internet et le téléphone","Regarder la télé au travail","Travailler dans une usine"], a:0, e:"« Télé » = à distance. On ne se déplace pas."},
+  {p:3, q:"Un point multiservices, c'est…", c:["Un magasin avec plusieurs services au même endroit","Un parking","Une école"], a:0, e:"La boulangerie, l'épicerie, la poste, le tabac… au même endroit."},
+  {p:3, q:"Quelles sont les 3 solutions pour les villages ?", c:["Le covoiturage, le télétravail, les points multiservices","Le métro, le tramway, le taxi"], a:0, e:"Elles permettent d'utiliser moins la voiture."},
+  {p:3, q:"Un avantage du covoiturage à la campagne ?", c:["On partage les frais et on pollue moins","On va plus vite qu'en avion"], a:0, e:"On partage les frais, il y a moins de voitures, et on rencontre des gens."},
+  // ---- Nouvelles questions ----
+  {n:1, p:1, q:"Vrai ou faux : la voiture est toujours le meilleur moyen de transport en ville.", c:["Vrai","Faux"], a:1, e:"Faux : on choisit selon la distance, le motif et l'argent."},
+  {n:1, p:1, q:"Trouve l'intrus : ce n'est PAS une nouvelle forme de mobilité.", c:["Les vélos en libre-service","Le tramway","Le covoiturage","Les embouteillages"], a:3, e:"Les embouteillages sont une nuisance, pas une solution."},
+  {n:1, p:1, q:"Trouve l'intrus : ce n'est PAS une nuisance.", c:["La pollution de l'air","Le bruit","Les embouteillages","Les zones piétonnes"], a:3, e:"Les zones piétonnes sont un aménagement de la ville."},
+  {n:1, p:1, q:"Qui suis-je ? Je suis une rue où seuls les piétons peuvent marcher.", c:["Une zone piétonne","Une voie de bus","Une piste cyclable"], a:0, e:"La zone piétonne est un aménagement urbain."},
+  {n:1, p:1, q:"À Lyon, les Vélo'v sont…", c:["Des vélos en libre-service","Des voitures électriques","Un tramway"], a:0, e:"Ce sont des vélos en libre-service : une nouvelle forme de mobilité."},
+  {n:1, p:1, q:"Pierre va à la piscine. Quel est le motif de son déplacement ?", c:["Les études","Les loisirs","Le travail","Les courses"], a:1, e:"La piscine, c'est un loisir."},
+  {n:1, p:1, q:"Pierre va à l'école. Quel est le motif de son déplacement ?", c:["Les études","Les loisirs","Les courses"], a:0, e:"Aller à l'école, ce sont les études."},
+  {n:1, p:1, q:"Quel n'est PAS un avantage des nouvelles mobilités ?", c:["Elles polluent moins","Elles font moins de bruit","Elles existent partout à la campagne"], a:2, e:"Les habitants des campagnes y ont moins accès."},
+  {n:1, p:1, q:"Une voie réservée aux bus et aux cyclistes sert à…", c:["Éviter les embouteillages pour les bus et les vélos","Garer les voitures","Faire la course"], a:0, e:"C'est un aménagement urbain pour mieux circuler."},
+  {n:1, p:2, q:"Vrai ou faux : Mumbai est la ville la plus peuplée de l'Inde.", c:["Vrai","Faux"], a:0, e:"Vrai : plus de 20 millions d'habitants."},
+  {n:1, p:2, q:"Les heures de pointe, c'est surtout…", c:["Le matin et le soir, quand les gens vont au travail et rentrent","En pleine nuit","Le dimanche après-midi"], a:0, e:"C'est quand la circulation est très intense."},
+  {n:1, p:2, q:"À quoi servent les passerelles aériennes à Mumbai ?", c:["À faire passer les piétons au-dessus de la circulation","À faire rouler les trains","À garer les voitures"], a:0, e:"Les piétons traversent sans danger."},
+  {n:1, p:2, q:"À quoi servent les viaducs routiers ?", c:["À faire passer les voitures au-dessus de la ville","Aux piétons","Aux bateaux"], a:0, e:"Ce sont des routes construites en hauteur."},
+  {n:1, p:2, q:"Pourquoi le métro aérien évite-t-il les embouteillages ?", c:["Parce qu'il roule au-dessus des routes","Parce qu'il est gratuit","Parce qu'il va moins vite"], a:0, e:"Il roule en hauteur, sans croiser les voitures."},
+  {n:1, p:2, q:"Trouve l'intrus : ce n'est PAS une solution choisie à Mumbai.", c:["Le métro aérien","Le pont Bandra-Worli Sea Link","Les passerelles pour les piétons","Les trains surchargés"], a:3, e:"Les trains surchargés sont un problème."},
+  {n:1, p:2, q:"Dans les trains de Mumbai aux heures de pointe…", c:["Les portières ne se ferment pas et certains voyagent sur le toit","Tout le monde est assis","Il n'y a personne"], a:0, e:"C'est très dangereux : il y a des morts chaque jour."},
+  {n:1, p:2, q:"Mumbai est au bord de quel océan ?", c:["L'océan Indien","L'océan Atlantique","L'océan Arctique"], a:0, e:"Mumbai est sur la côte ouest de l'Inde, au bord de l'océan Indien."},
+  {n:1, p:3, q:"Un village de 900 habitants entouré de champs est un espace…", c:["Rural","Urbain"], a:0, e:"Rural = la campagne."},
+  {n:1, p:3, q:"Une grande ville comme Lyon est un espace…", c:["Rural","Urbain"], a:1, e:"Urbain = la ville."},
+  {n:1, p:3, q:"Pourquoi l'école de Castelmoron-d'Albret a-t-elle fermé ?", c:["Plus aucun enfant n'y était inscrit","Elle était trop grande","Les maîtres sont partis en vacances"], a:0, e:"Le village a perdu ses habitants et ses services."},
+  {n:1, p:3, q:"Pourquoi la famille Vivien s'est-elle installée à la campagne ?", c:["Pour avoir une belle maison et un grand jardin","Pour être près de son travail","Pour prendre le métro"], a:0, e:"Ils voulaient le calme et la nature."},
+  {n:1, p:3, q:"Quel est un inconvénient du choix de la famille Vivien ?", c:["Une heure de voiture matin et soir, et beaucoup d'essence à payer","Trop de bruit","Pas de jardin"], a:0, e:"320 € d'essence par mois, et de la fatigue."},
+  {n:1, p:3, q:"Qui suis-je ? Je travaille chez moi avec un ordinateur et Internet.", c:["Le télétravail","Le covoiturage","Un point multiservices"], a:0, e:"Avec le télétravail, on n'a pas besoin de se déplacer."},
+  {n:1, p:3, q:"Qui suis-je ? Dans mon magasin, on achète du pain et on envoie des lettres.", c:["Un point multiservices","Une station de covoiturage","Un hôpital"], a:0, e:"Plusieurs services au même endroit."},
+  {n:1, p:3, q:"Trouve l'intrus : ce n'est PAS un problème des villages isolés.", c:["L'isolement","L'accès difficile aux soins","Les trains surchargés","La nécessité d'acheter une voiture"], a:2, e:"Les trains surchargés, c'est à Mumbai."},
+  {n:1, p:3, q:"Le covoiturage aide une famille de la campagne à…", c:["Partager le prix de l'essence","Avoir un métro","Habiter en ville"], a:0, e:"On partage les frais de transport."}
+];
+
+/* ---------- Flashcards ---------- */
+(function buildCards(){
+  const t = document.getElementById('cardtable');
+  Q.forEach(x => {
+    const tr = document.createElement('tr');
+    const tq = document.createElement('td'); tq.className = 'q';
+    tq.innerHTML = '<span class="tag t'+x.p+'">'+['','Ville','Mumbai','Campagne'][x.p]+'</span><br>'+x.q;
+    const ta = document.createElement('td');
+    ta.textContent = x.c[x.a] + ' — ' + x.e;
+    tr.append(tq, ta); t.appendChild(tr);
+  });
+})();
+
+/* ---------- Text-to-speech ---------- */
+function speak(text){
+  try {
+    if (!('speechSynthesis' in window)) return;
+    speechSynthesis.cancel();
+    const u = new SpeechSynthesisUtterance(text);
+    u.lang = 'fr-FR'; u.rate = 0.9;
+    const v = speechSynthesis.getVoices().find(v => v.lang && v.lang.startsWith('fr'));
+    if (v) u.voice = v;
+    speechSynthesis.speak(u);
+  } catch(e) {}
+}
+
+/* ---------- Quiz ---------- */
+let queue = [], total = 0, done = 0, firstTry = 0, missed = new Set();
+const box = document.getElementById('quiz');
+function shuffle(a){ for(let i=a.length-1;i>0;i--){const j=Math.floor(Math.random()*(i+1));[a[i],a[j]]=[a[j],a[i]];} return a; }
+
+document.getElementById('start').onclick = () => {
+  const part = document.getElementById('part').value;
+  queue = shuffle(Q.filter(x => part==='all' || (part==='new' ? x.n : String(x.p)===part)).map(x => ({...x})));
+  total = queue.length; done = 0; firstTry = 0; missed = new Set();
+  show();
+};
+
+function show(){
+  if (!queue.length) {
+    const msg = firstTry === total ? "Tout juste du premier coup, bravo pour ta mémoire !" :
+      "Tu as tout retrouvé ! Les questions ratées sont revenues et tu les as réussies : c'est comme ça que la mémoire se construit.";
+    box.innerHTML = '<div class="qcard"><div class="qtext">🎉 Terminé !</div><p>'+firstTry+' sur '+total+' du premier coup.</p><p>'+msg+'</p><div class="row"><button class="btn" onclick="document.getElementById(\'start\').click()">🔁 Recommencer</button></div></div>';
+    speak('Terminé ! ' + msg);
+    return;
+  }
+  const x = queue[0];
+  const order = shuffle(x.c.map((c,i)=>i));
+  const tag = ['','🏙️ La ville','🇮🇳 Mumbai','🌳 La campagne'][x.p];
+  box.innerHTML =
+    '<div class="qcard"><div class="progress"><div style="width:'+(100*done/total)+'%"></div></div>'+
+    '<span class="tag t'+x.p+'">'+tag+'</span>'+
+    '<div class="qtext">'+x.q+'</div>'+
+    '<div class="choices">'+order.map(i=>'<button class="choice" data-i="'+i+'">'+x.c[i]+'</button>').join('')+'</div>'+
+    '<div class="feedback" id="fb"></div>'+
+    '<div class="row"><button class="btn ghost" id="listen">🔊 Écouter</button><button class="btn" id="next" style="display:none">Suivant ➜</button></div></div>';
+  document.getElementById('listen').onclick = () => speak(x.q + '. ' + order.map((i,k)=>'Réponse ' + (k+1) + ' : ' + x.c[i]).join('. '));
+  box.querySelectorAll('.choice').forEach(b => b.onclick = () => answer(b, x));
+}
+
+function answer(btn, x){
+  const i = +btn.dataset.i, fb = document.getElementById('fb');
+  box.querySelectorAll('.choice').forEach(b => { b.disabled = true; if (+b.dataset.i === x.a) b.classList.add('right'); });
+  if (i === x.a) {
+    fb.className = 'feedback ok'; fb.textContent = '✅ Oui ! ' + x.e;
+    if (!missed.has(x.q)) firstTry++;
+    queue.shift(); done++;
+  } else {
+    btn.classList.add('wrong');
+    fb.className = 'feedback no'; fb.textContent = '🔁 Pas encore. La bonne réponse : ' + x.c[x.a] + '. ' + x.e + ' Cette question reviendra.';
+    missed.add(x.q);
+    queue.push(queue.shift());
+  }
+  speak(fb.textContent);
+  const n = document.getElementById('next'); n.style.display = 'inline-block'; n.onclick = show; n.focus();
+}
+
+/* ---------- Je rédige : saisie au clavier ---------- */
+const EX = {
+  ex1: {start:"Pierre va à l'école à pied parce que ", keys:[{l:"la distance : c'est près (500 m)", any:["pres","proche","500","pas loin","court"]},{l:"c'est gratuit ou ça fait du sport", any:["gratuit","sport","exercice","payer","argent"]}]},
+  ex2: {start:"À Mumbai, beaucoup d'habitants prennent le train parce que ", keys:[{l:"ils sont pauvres / n'ont pas de voiture", any:["pauvre","voiture","argent"]},{l:"ils veulent éviter les embouteillages", any:["embouteill","bouchon","circulation"]}]},
+  ex3: {start:"À Castelmoron-d'Albret, la voiture est indispensable car ", keys:[{l:"il n'y a plus de services (école, commerces, poste, médecin)", any:["ecole","commerce","poste","medecin","service","magasin"]}]},
+  ex4: {start:"", keys:[{l:"le mot « covoiturage »", any:["covoiturage"]},{l:"le mot « personnes »", any:["personne"]},{l:"le mot « frais »", any:["frais"]}]},
+  ex5: {start:"", keys:[{l:"les mots « métro aérien »", any:["metro"]},{l:"le mot « billet »", any:["billet"]},{l:"le mot « cher »", any:["cher"]}]},
+  ex6: {start:"", keys:[{l:"le mot « campagne »", any:["campagne"]},{l:"le mot « calme »", any:["calme"]},{l:"le mot « voiture »", any:["voiture"]}]},
+  ex7: {start:"Un avantage de la voiture, c'est \nUn inconvénient, c'est ", keys:[{l:"un avantage (rapide, transporter des sacs, partir quand on veut…)", any:["rapide","sac","transport","quand on veut","horaire","porter","vite"]},{l:"un inconvénient (pollution, embouteillages, bruit, accidents, essence…)", any:["pollu","embouteill","bruit","accident","essence","cher","bouchon"]}]},
+  ex8: {start:"Non, parce que ", keys:[{l:"le métro est payant / le billet est cher", any:["cher","payant","prix","payer","billet"]},{l:"les personnes très pauvres", any:["pauvre"]}]},
+  ex9: {start:"Deux solutions sont \nPar exemple, ", keys:[{l:"2 solutions parmi : télétravail, covoiturage, point multiservices", any:["teletravail","covoiturage","multiservice"], min:2}]},
+  ex10:{start:"", keys:[{l:"comment : le bus", any:["bus"]},{l:"pourquoi : les loisirs (la piscine)", any:["loisir","piscine","nager"]},{l:"la distance : 1,5 km", any:["1,5","1.5","1 km","kilometre","km"]}]}
+};
+const norm = t => t.toLowerCase().normalize('NFD').replace(/[̀-ͯ]/g,'').replace(/[’']/g,"'");
+let lastBox = null;
+function store(id, v){ try { localStorage.setItem('geo-redac-'+id, v); } catch(e) {} }
+function restore(id){ try { return localStorage.getItem('geo-redac-'+id); } catch(e) { return null; } }
+
+Object.keys(EX).forEach(id => {
+  const box = document.getElementById(id); if (!box) return;
+  const cfg = EX[id];
+  const ta = document.createElement('textarea');
+  ta.className = 'ans'; ta.id = 'ta-'+id; ta.rows = cfg.start.includes('\n') ? 3 : 2;
+  ta.setAttribute('lang','fr'); ta.spellcheck = true; ta.setAttribute('aria-label','Ma réponse');
+  const saved = restore(id); ta.value = saved !== null ? saved : cfg.start;
+  ta.addEventListener('focus', () => { lastBox = ta; });
+  ta.addEventListener('input', () => store(id, ta.value));
+  const tools = document.createElement('div'); tools.className = 'tools';
+  tools.innerHTML = '<button type="button" data-a="listen">🔊 Écouter ma phrase</button><button type="button" class="primary" data-a="check">✔️ Vérifier</button><button type="button" data-a="reset">↺ Recommencer</button>';
+  const out = document.createElement('div'); out.className = 'verdict'; out.hidden = true;
+  const det = box.querySelector('details');
+  box.insertBefore(ta, det); box.insertBefore(tools, det); box.insertBefore(out, det);
+  tools.querySelector('[data-a="listen"]').onclick = () => speak(ta.value.trim() || "Tu n'as encore rien écrit.");
+  tools.querySelector('[data-a="reset"]').onclick = () => { ta.value = cfg.start; store(id, ta.value); out.hidden = true; ta.focus(); };
+  tools.querySelector('[data-a="check"]').onclick = () => {
+    const raw = ta.value.trim(), t = norm(raw);
+    const written = raw.replace(norm(cfg.start).trim() ? cfg.start.trim() : '', '').trim();
+    if (raw.length < 5 || (cfg.start && norm(raw) === norm(cfg.start.trim()))) {
+      out.hidden = false; out.innerHTML = '✏️ Écris ta réponse d\'abord, puis appuie sur Vérifier.'; return;
+    }
+    const lines = raw.split(/\n+/).map(x => x.trim()).filter(Boolean);
+    const cap = lines.every(l => /^[A-ZÀÂÄÉÈÊËÎÏÔÖÙÛÜÇ]/.test(l));
+    const dot = /[.!?]$/.test(raw);
+    let ok = 0, html = '<b>Le sens</b><ul>';
+    cfg.keys.forEach(k => {
+      const hits = k.any.filter(w => t.includes(norm(w))).length;
+      const good = hits >= (k.min || 1); if (good) ok++;
+      html += '<li>' + (good ? '✅ Tu parles de ' : '💡 Tu peux ajouter ') + k.l + '</li>';
+    });
+    html += '</ul><b>Je vérifie ma phrase</b><ul>';
+    html += '<li>' + (cap ? '✅' : '💡') + ' Une majuscule au début' + (lines.length > 1 ? ' de chaque phrase' : '') + '</li>';
+    html += '<li>' + (dot ? '✅' : '💡') + ' Un point à la fin</li></ul>';
+    const all = ok === cfg.keys.length && cap && dot;
+    html += all ? '<p>🎉 <b>Bravo, ta réponse est complète !</b></p>' : '<p>Corrige les 💡, puis vérifie encore. Tu peux aussi regarder la réponse possible.</p>';
+    out.hidden = false; out.innerHTML = html;
+    speak(all ? 'Bravo, ta réponse est complète !' : 'Presque ! Regarde les ampoules pour compléter ta réponse.');
+  };
+});
+
+/* Clic sur un mot de la banque : il s'ajoute dans le cadre */
+document.querySelectorAll('#rediger ~ .box .bank span, #rediger ~ .box .bank span').forEach(sp => {
+  if (sp.querySelector('span')) return;
+  sp.tabIndex = 0; sp.setAttribute('role','button'); sp.title = 'Ajouter ce mot à ma réponse';
+  const add = () => {
+    const own = sp.closest('.ex') && sp.closest('.ex').querySelector('.ans');
+    const ta = own || lastBox; if (!ta) return;
+    const w = sp.textContent.trim(), st = ta.selectionStart ?? ta.value.length, en = ta.selectionEnd ?? st;
+    const before = ta.value.slice(0, st), sep = before && !/\s$/.test(before) ? ' ' : '';
+    ta.value = before + sep + w + ' ' + ta.value.slice(en);
+    const pos = (before + sep + w + ' ').length; ta.focus(); ta.setSelectionRange(pos, pos);
+    ta.dispatchEvent(new Event('input'));
+  };
+  sp.onclick = add; sp.onkeydown = e => { if (e.key === 'Enter' || e.key === ' ') { e.preventDefault(); add(); } };
+});
+</script>
+</body>
+</html>

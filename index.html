@@ -1,0 +1,36 @@
+<!DOCTYPE html>
+<html lang="fr">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Mes révisions CM2</title>
+<style>
+  :root { --bg: #fbfaf7; --card: #ffffff; --ink: #1d2433; --muted: #5a6478; --line: #dcdfe6; --fr: #6b4fc4; --geo: #1f7fa8; --his: #b4442f; }
+  @media (prefers-color-scheme: dark) {
+    :root:not([data-theme="light"]) { --bg: #14181f; --card: #1c222c; --ink: #e9edf3; --muted: #a5aec0; --line: #2f3746; --fr: #b5a5f5; --geo: #6cc3e6; --his: #f2957f; color-scheme: dark; }
+  }
+  :root[data-theme="dark"] { --bg: #14181f; --card: #1c222c; --ink: #e9edf3; --muted: #a5aec0; --line: #2f3746; --fr: #b5a5f5; --geo: #6cc3e6; --his: #f2957f; color-scheme: dark; }
+  * { box-sizing: border-box; }
+  body { margin: 0; background: var(--bg); color: var(--ink); font: 18px/1.6 Arial, Helvetica, sans-serif; }
+  main { max-width: 640px; margin: 0 auto; padding: 28px 16px 48px; }
+  h1 { font-size: 30px; margin: 0 0 6px; }
+  p { color: var(--muted); margin: 0 0 22px; }
+  .list { display: grid; gap: 14px; }
+  a.card { display: block; text-decoration: none; color: var(--ink); background: var(--card); border: 2px solid var(--line); border-left: 10px solid var(--c); border-radius: 14px; padding: 16px 18px; }
+  a.card:hover, a.card:focus-visible { border-color: var(--c); outline: none; }
+  a.card b { display: block; font-size: 22px; }
+  a.card span { color: var(--muted); font-size: 16px; }
+</style>
+</head>
+<body>
+<main>
+  <h1>📚 Mes révisions</h1>
+  <p>Choisis ta leçon. Dans chaque page, il y a un quiz qui parle 🔊, des jeux et des fiches.</p>
+  <div class="list">
+    <a class="card" href="francais/" style="--c:var(--fr)"><b>✏️ Français : la phrase</b><span>Types et formes de phrases · les groupes GS, GV, GC</span></a>
+    <a class="card" href="geographie/" style="--c:var(--geo)"><b>🚲 Géographie : se déplacer</b><span>La ville · Mumbai · la campagne</span></a>
+    <a class="card" href="histoire/" style="--c:var(--his)"><b>🇫🇷 Histoire : le temps de la République</b><span>1815-1852 · la IIIᵉ République · la colonisation</span></a>
+  </div>
+</main>
+</body>
+</html>

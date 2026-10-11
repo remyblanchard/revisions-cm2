@@ -32,6 +32,19 @@
   }
   * { box-sizing: border-box; }
   [hidden]{display:none!important}
+  .nx .item { font-size: 21px; font-weight: 700; margin: 6px 0 10px; line-height: 1.5; }
+  .nx .opts { display: flex; flex-wrap: wrap; gap: 8px; margin: 6px 0; }
+  .nx .opt { font: inherit; font-size: 18px; padding: 10px 16px; border-radius: 12px; border: 2px solid var(--line); background: var(--bg); color: var(--ink); cursor: pointer; touch-action: manipulation; min-width: 56px; }
+  .nx .opt.right { background: var(--ok-bg); border-color: var(--ok); }
+  .nx .opt.wrong { background: var(--no-bg); border-color: var(--no); }
+  .nx .steplab { font-size: 15px; font-weight: 700; color: var(--muted); margin-top: 8px; }
+  .nx .fbk { margin-top: 8px; padding: 8px 12px; border-radius: 10px; min-height: 1.4em; }
+  .nx .fbk.ok { background: var(--ok-bg); } .nx .fbk.no { background: var(--no-bg); }
+  .nx .count { color: var(--muted); font-size: 15px; font-variant-numeric: tabular-nums; }
+  .nx .built2 { min-height: 2.6em; font-size: 21px; padding: 8px 12px; border: 2px dashed var(--line); border-radius: 12px; margin: 8px 0; }
+  .nx .tile { font: inherit; font-size: 19px; padding: 8px 12px; border-radius: 10px; border: 2px solid var(--accent); background: var(--card); color: var(--ink); cursor: pointer; touch-action: manipulation; }
+  .nx .tile:disabled { opacity: .25; }
+
   .wchips { margin-top: 6px; } .wchip { font: inherit; font-size: 19px; margin: 4px; padding: 8px 14px; border-radius: 999px; border: 2px solid var(--accent); background: var(--card); color: var(--ink); cursor: pointer; touch-action: manipulation; }
 
   button, input, textarea, select, .bin, .bank span, [role="button"] { touch-action: manipulation; }
@@ -148,6 +161,7 @@
     <a href="#types">🗂️ Trie les phrases</a>
     <a href="#negative">✍️ Écris à la forme négative</a>
     <a href="#atelier">🧩 Définitions par cœur</a>
+    <a href="#nouveaux">🆕 Nouveaux exercices</a>
     <a href="#quiz-section">🎯 Quiz qui parle</a>
     
   </nav>
@@ -261,6 +275,18 @@
   <div class="atl" id="atl-gs"></div>
   <div class="atl" id="atl-gv"></div>
   <div class="atl" id="atl-gc"></div>
+
+  <!-- ===================== NOUVEAUX EXERCICES ===================== -->
+  <h2 id="nouveaux">🆕 Nouveaux exercices</h2>
+  <div class="box tip noprint">
+    <p>Tout se fait <b>en tapant sur les boutons</b>, sans clavier. Si tu te trompes, un indice t'aide et tu réessaies. Les exercices suivent la leçon de la classe : <b>3 types</b> (déclarative, interrogative, injonctive), <b>3 formes</b> (affirmative, négative, exclamative), et les groupes <b>GS, GV, GC</b>.</p>
+  </div>
+  <div class="box noprint"><h3>1 · La bonne ponctuation</h3><p>Quelle ponctuation termine la phrase ? Demande-toi : <b>je raconte, je demande ou j'ordonne ?</b></p><div class="nx" id="nx-ponct"></div></div>
+  <div class="box noprint"><h3>2 · Le type et la forme</h3><p>Pour chaque phrase, trouve <b>d'abord le type</b>, <b>puis la forme</b>.</p><div class="nx" id="nx-tf"></div></div>
+  <div class="box noprint"><h3>3 · Construis la phrase</h3><p>Tape sur les étiquettes <b>dans le bon ordre</b> pour construire la phrase demandée. N'oublie pas la ponctuation !</p><div class="nx" id="nx-build"></div></div>
+  <div class="box noprint"><h3>4 · Le GS commande le verbe</h3><p>Trouve le <span class="gs">groupe sujet</span>, puis choisis le <b>verbe bien accordé</b>.</p><div class="nx" id="nx-accord"></div></div>
+  <div class="box noprint"><h3>5 · Le détective des groupes</h3><p>Dans chaque phrase, trouve le groupe demandé. Utilise les <b>3 tests magiques</b>.</p><div class="nx" id="nx-find"></div></div>
+  <div class="box noprint"><h3>6 · Vrai ou faux ? La leçon</h3><p>Ces phrases parlent de la leçon. Sont-elles <b>vraies</b> ou <b>fausses</b> ?</p><div class="nx" id="nx-vf"></div></div>
 
   <!-- ===================== QUIZ ===================== -->
   <h2 id="quiz-section">🎯 8. Le quiz qui parle</h2>
@@ -590,6 +616,152 @@ function answer(btn, x){
   speak(fb.textContent);
   const n = document.getElementById('next'); n.hidden = false; n.onclick = show; n.focus();
 }
+
+/* ---------- 🆕 Nouveaux exercices ---------- */
+function stepper(rootId, items, opts){
+  const root = document.getElementById(rootId); if (!root) return;
+  let order = shuffle(items.map((x,i)=>i)), k = 0, first = 0, err = false;
+  function end(){
+    root.innerHTML = '<div class="item">🎉 Terminé ! ' + first + ' sur ' + items.length + ' du premier coup.</div><div class="row"><button class="btn" type="button">🔁 Recommencer</button></div>';
+    root.querySelector('button').onclick = () => { order = shuffle(items.map((x,i)=>i)); k = 0; first = 0; show(); };
+    speak('Terminé ! Bravo !');
+  }
+  function show(){
+    if (k >= items.length) return end();
+    const it = items[order[k]]; err = false; let s = 0;
+    root.innerHTML = '<div class="count">' + (k+1) + ' / ' + items.length + '</div><div class="item">' + it.q + '</div><div class="steps-zone"></div><div class="fbk"></div>' +
+      '<div class="row"><button class="btn ghost" type="button" data-l>🔊 Écouter</button><button class="btn" type="button" data-n hidden>Suivant ➜</button></div>';
+    const zone = root.querySelector('.steps-zone'), fb = root.querySelector('.fbk'), nb = root.querySelector('[data-n]');
+    root.querySelector('[data-l]').onclick = () => speak(it.say || it.q.replace(/<[^>]+>/g,''));
+    function step(){
+      const st = it.steps[s];
+      const div = document.createElement('div');
+      div.innerHTML = (st.label ? '<div class="steplab">' + st.label + '</div>' : '') + '<div class="opts">' + st.o.map((o,i)=>'<button type="button" class="opt" data-i="'+i+'">'+o+'</button>').join('') + '</div>';
+      zone.appendChild(div);
+      div.querySelectorAll('.opt').forEach(b => b.onclick = () => {
+        const i = +b.dataset.i;
+        if ([].concat(st.a).includes(i)) {
+          div.querySelectorAll('.opt').forEach(x => x.disabled = true); b.classList.add('right');
+          fb.className = 'fbk ok'; fb.textContent = '✅ ' + (st.e || 'Oui !');
+          s++;
+          if (s < it.steps.length) step();
+          else { if (!err) first++; nb.hidden = false; nb.focus(); speak(fb.textContent); }
+        } else {
+          err = true; b.classList.add('wrong'); setTimeout(()=>b.classList.remove('wrong'), 800);
+          fb.className = 'fbk no'; fb.textContent = '🔁 ' + (st.h || 'Pas encore, réessaie.');
+        }
+      });
+    }
+    step();
+    nb.onclick = () => { k++; show(); };
+  }
+  show();
+}
+const TYPES = ['📢 Déclarative','❓ Interrogative','👉 Injonctive'];
+const FORMES = ['✅ Affirmative','🚫 Négative','😮 Exclamative'];
+const P3 = ['.','?','!'];
+const HT = 'Demande-toi : je raconte (déclarative), je demande (interrogative) ou j’ordonne (injonctive) ?';
+
+// 1 · Ponctuation
+stepper('nx-ponct', [
+  {q:'Le train arrive à huit heures ___', steps:[{o:P3, a:0, e:'Je raconte : phrase déclarative, elle finit par un point.', h:HT}]},
+  {q:'À quelle heure arrive le train ___', steps:[{o:P3, a:1, e:'Je demande : phrase interrogative, elle finit par « ? ».', h:HT}]},
+  {q:'Range ta chambre ___', steps:[{o:P3, a:[0,2], e:'J’ordonne : phrase injonctive, elle finit par « . » ou « ! ».', h:HT}]},
+  {q:'Est-ce que tu as faim ___', steps:[{o:P3, a:1, e:'« Est-ce que » : c’est une question.', h:HT}]},
+  {q:'Quel magnifique arc-en-ciel ___', steps:[{o:P3, a:2, e:'C’est une émotion : forme exclamative, avec « ! ».', h:'Elle exprime une émotion forte : la surprise, l’admiration…'}]},
+  {q:'Mon frère joue au basket le samedi ___', steps:[{o:P3, a:0, e:'Je raconte : point final.', h:HT}]},
+  {q:'Ferme la fenêtre, s’il te plaît ___', steps:[{o:P3, a:[0,2], e:'C’est un ordre poli : injonctive, « . » ou « ! ».', h:HT}]},
+  {q:'Où as-tu rangé tes chaussures ___', steps:[{o:P3, a:1, e:'« Où » : je demande, c’est une question.', h:HT}]}
+]);
+
+// 2 · Type puis forme (phrases sans émotion, pour ne pas mélanger)
+const tf = (q, t, f, et, ef) => ({q, steps:[{label:'① Le type', o:TYPES, a:t, e:et, h:HT},{label:'② La forme', o:FORMES.slice(0,2), a:f, e:ef, h:'Cherche le sandwich 🥪 « ne … pas / jamais / plus / rien » autour du verbe.'}]});
+stepper('nx-tf', [
+  tf('Je n’aime pas les épinards.', 0, 1, 'Je raconte : déclarative.', '« n’… pas » : forme négative.'),
+  tf('Le chat dort sur le canapé.', 0, 0, 'Je raconte : déclarative.', 'Elle dit « oui » : forme affirmative.'),
+  tf('Ne cours pas dans le couloir.', 2, 1, 'C’est un ordre : injonctive.', '« ne … pas » : forme négative.'),
+  tf('Viens avec moi au parc.', 2, 0, 'C’est un ordre : injonctive.', 'Pas de « ne … pas » : forme affirmative.'),
+  tf('As-tu fini tes devoirs ?', 1, 0, 'C’est une question : interrogative.', 'Pas de « ne … pas » : forme affirmative.'),
+  tf('Pourquoi ne veux-tu pas venir ?', 1, 1, 'C’est une question : interrogative.', '« ne … pas » : forme négative.'),
+  tf('Il ne pleut jamais en été ici.', 0, 1, 'Je raconte : déclarative.', '« ne … jamais » : forme négative.'),
+  tf('N’oublie pas ton goûter.', 2, 1, 'C’est un ordre : injonctive.', '« n’… pas » : forme négative.')
+]);
+
+// 3 · Construire la phrase (étiquettes)
+(function(){
+  const root = document.getElementById('nx-build'); if (!root) return;
+  const B = [
+    {t:'Construis une phrase <b>interrogative</b>.', w:['Est-ce que','tu','aimes','le chocolat','?']},
+    {t:'Construis une phrase <b>injonctive</b>.', w:['Range','tes jouets','.']},
+    {t:'Construis une phrase <b>déclarative</b>.', w:['Les élèves','lisent','une histoire','.']},
+    {t:'Construis une phrase à la forme <b>négative</b>.', w:['Léa','ne','mange','pas','de viande','.']},
+    {t:'Construis une phrase à la forme <b>exclamative</b>.', w:['Comme','ce gâteau','est','bon','!']},
+    {t:'Construis une phrase <b>interrogative</b> à la forme <b>négative</b>.', w:['Pourquoi','ne','viens-tu','pas','?']}
+  ];
+  let k = 0;
+  function show(){
+    if (k >= B.length) { root.innerHTML = '<div class="item">🎉 Bravo, toutes les phrases sont construites !</div><div class="row"><button class="btn" type="button">🔁 Recommencer</button></div>'; root.querySelector('button').onclick = () => { k = 0; show(); }; speak('Bravo !'); return; }
+    const it = B[k]; let pos = 0;
+    root.innerHTML = '<div class="count">' + (k+1) + ' / ' + B.length + '</div><div class="item">' + it.t + '</div><div class="built2"></div><div class="opts">' +
+      shuffle(it.w.map((w,i)=>i)).map(i=>'<button type="button" class="tile" data-i="'+i+'">'+it.w[i]+'</button>').join('') + '</div><div class="fbk"></div><div class="row"><button class="btn" type="button" data-n hidden>Suivant ➜</button></div>';
+    const built = root.querySelector('.built2'), fb = root.querySelector('.fbk'), nb = root.querySelector('[data-n]');
+    root.querySelectorAll('.tile').forEach(b => b.onclick = () => {
+      const i = +b.dataset.i;
+      if (it.w[i] === it.w[pos]) {
+        b.disabled = true; let w = it.w[pos]; if (pos === 0) w = w.charAt(0).toUpperCase() + w.slice(1);
+        built.textContent += (pos === 0 || w === '.' ? '' : ' ') + w; pos++;
+        fb.className = 'fbk'; fb.textContent = '';
+        if (pos === it.w.length) { fb.className = 'fbk ok'; fb.textContent = '✅ Bravo !'; speak(built.textContent); nb.hidden = false; }
+      } else {
+        fb.className = 'fbk no';
+        fb.textContent = pos === 0 ? '🔁 Quel mot commence la phrase ? Il aura une majuscule.' : (/^[.?!]$/.test(it.w[i]) ? '🔁 La ponctuation vient tout à la fin.' : '🔁 Pas encore. Lis à voix haute le début de ta phrase.');
+      }
+    });
+    nb.onclick = () => { k++; show(); };
+  }
+  show();
+})();
+
+// 4 · Accord GS → verbe
+const ac = (q, gsOpts, gsA, vOpts, vA, why) => ({q, steps:[{label:'① Le groupe sujet', o:gsOpts, a:gsA, e:'C’est le groupe sujet.', h:'« C’est … qui » + verbe : qui fait l’action ?'},{label:'② Le verbe bien accordé', o:vOpts, a:vA, e:why, h:'Le GS est-il au singulier (un seul) ou au pluriel (plusieurs) ?'}]});
+stepper('nx-accord', [
+  ac('Les oiseaux ___ dans le jardin.', ['Les oiseaux','dans le jardin'], 0, ['chante','chantent'], 1, '« Les oiseaux » = ils : ils chantent.'),
+  ac('Ma petite sœur ___ une histoire.', ['Ma petite sœur','une histoire'], 0, ['lit','lisent'], 0, '« Ma petite sœur » = elle : elle lit.'),
+  ac('Chaque soir, mes parents ___ le dîner.', ['Chaque soir','mes parents','le dîner'], 1, ['prépare','préparent'], 1, '« Mes parents » = ils : ils préparent.'),
+  ac('Dans la cour, les enfants ___ au ballon.', ['Dans la cour','les enfants','au ballon'], 1, ['joue','jouent'], 1, '« Les enfants » = ils : ils jouent.'),
+  ac('Le chien de mes voisins ___ fort.', ['Le chien de mes voisins','fort'], 0, ['aboie','aboient'], 0, 'Le GS est « le chien » (un seul) : il aboie. « De mes voisins » ne compte pas !'),
+  ac('Tom et Léa ___ à la piscine.', ['Tom et Léa','à la piscine'], 0, ['va','vont'], 1, '« Tom et Léa » = ils : ils vont.')
+]);
+
+// 5 · Détective des groupes
+const fd = (q, ask, o, a, e, h) => ({q, steps:[{label:ask, o, a, e, h}]});
+const HGS = 'Pose la question « C’est … qui » + verbe.', HGC = 'Essaie de l’enlever : la phrase a encore du sens ? Alors c’est un GC.', HV = 'Dis « Hier… » : le mot qui change, c’est le verbe.';
+stepper('nx-find', [
+  fd('Le matin, mon père boit un café.', 'Où est le 🟢 GC ?', ['Le matin','mon père','boit un café'], 0, '« Le matin » dit quand : on peut l’enlever ou le déplacer.', HGC),
+  fd('Le matin, mon père boit un café.', 'Où est le 🔵 GS ?', ['Le matin','mon père','un café'], 1, 'C’est mon père qui boit.', HGS),
+  fd('Les élèves écoutent la maîtresse en silence.', 'Où est le 🟢 GC ?', ['Les élèves','écoutent la maîtresse','en silence'], 2, '« En silence » dit comment : il est facultatif.', HGC),
+  fd('Les élèves écoutent la maîtresse en silence.', 'Quel est le verbe ?', ['élèves','écoutent','silence'], 1, 'Hier, les élèves écoutaient : c’est le verbe.', HV),
+  fd('Sous le pont, une barque glisse doucement.', 'Où est le 🔵 GS ?', ['Sous le pont','une barque','doucement'], 1, 'C’est une barque qui glisse.', HGS),
+  fd('Sous le pont, une barque glisse doucement.', 'Combien y a-t-il de 🟢 GC ?', ['0','1','2'], 2, '« Sous le pont » (où) et « doucement » (comment) : on peut enlever les deux.', HGC),
+  fd('Ma tante habite à Lyon.', 'Peut-on enlever « à Lyon » ?', ['Oui, c’est un GC','Non, il fait partie du GV'], 1, '« Ma tante habite. » ne veut rien dire : « à Lyon » est un complément indispensable du GV.', 'Enlève-le et lis : « Ma tante habite. » Est-ce que ça a du sens ?'),
+  fd('Pendant les vacances, nous partons à la mer.', 'Quel groupe peut-on déplacer ?', ['Pendant les vacances','nous','partons'], 0, '« Nous partons à la mer pendant les vacances. » : ça marche, c’est un GC.', HGC)
+]);
+
+// 6 · Vrai ou faux
+const VF = ['✅ Vrai','❌ Faux'];
+const vf = (q, a, e) => ({q, steps:[{o:VF, a, e, h:'Relis la fiche résumé si tu hésites.'}]});
+stepper('nx-vf', [
+  vf('Une phrase commence par une majuscule.', 0, 'Vrai : majuscule au début, point à la fin.'),
+  vf('Il existe 3 types de phrases.', 0, 'Vrai : déclarative, interrogative, injonctive.'),
+  vf('La phrase injonctive sert à poser une question.', 1, 'Faux : elle sert à donner un ordre.'),
+  vf('La phrase déclarative donne un renseignement ou décrit un fait.', 0, 'Vrai : je raconte.'),
+  vf('La forme affirmative dit « non ».', 1, 'Faux : elle dit « oui ». C’est la forme négative qui dit « non ».'),
+  vf('Le groupe sujet commande l’accord du verbe.', 0, 'Vrai : « Les enfants jouent ».'),
+  vf('Le groupe circonstanciel est indispensable.', 1, 'Faux : il est facultatif et déplaçable.'),
+  vf('Le groupe verbal contient le verbe et ses compléments indispensables.', 0, 'Vrai.'),
+  vf('On peut enlever le groupe sujet.', 1, 'Faux : il est indispensable.'),
+  vf('La phrase exclamative se termine par un point d’exclamation.', 0, 'Vrai : « Quelle belle journée ! »')
+]);
 </script>
 </body>
 </html>

@@ -1,0 +1,608 @@
+<!DOCTYPE html>
+<html lang="fr">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Réviser Sciences</title>
+<style>
+  :root {
+    --bg: #fbfaf7; --card: #ffffff; --ink: #1d2433; --muted: #5a6478; --line: #dcdfe6;
+    --s1: #2f6fd0; --s1-bg: #e9f1fd;
+    --s2: #2e8540; --s2-bg: #e8f5ea;
+    --s3: #0e7c86; --s3-bg: #e1f4f5;
+    --s4: #8a4fc4; --s4-bg: #f1eafb;
+    --ok: #1f7a4d; --ok-bg: #e3f4ea; --no: #b3261e; --no-bg: #fbe9e7;
+    --accent: #5b4bc4;
+  }
+  @media (prefers-color-scheme: dark) {
+    :root:not([data-theme="light"]) {
+      --bg: #14181f; --card: #1c222c; --ink: #e9edf3; --muted: #a5aec0; --line: #2f3746;
+      --s1: #7fb0f5; --s1-bg: #1a2a42; --s2: #79d18a; --s2-bg: #1a3322; --s3: #6fd3dc; --s3-bg: #13313a; --s4: #c3a3f5; --s4-bg: #2a2342;
+      --ok: #73d39f; --ok-bg: #173126; --no: #f28b82; --no-bg: #3a1d1b; --accent: #a99cf5;
+      color-scheme: dark;
+    }
+  }
+  :root[data-theme="dark"] {
+    --bg: #14181f; --card: #1c222c; --ink: #e9edf3; --muted: #a5aec0; --line: #2f3746;
+    --s1: #7fb0f5; --s1-bg: #1a2a42; --s2: #79d18a; --s2-bg: #1a3322; --s3: #6fd3dc; --s3-bg: #13313a; --s4: #c3a3f5; --s4-bg: #2a2342;
+    --ok: #73d39f; --ok-bg: #173126; --no: #f28b82; --no-bg: #3a1d1b; --accent: #a99cf5;
+    color-scheme: dark;
+  }
+  * { box-sizing: border-box; }
+  [hidden] { display: none !important; }
+  button, input, textarea, select, .bin, [role="button"] { touch-action: manipulation; }
+  body { margin: 0; background: var(--bg); color: var(--ink); font: 17px/1.65 Arial, Helvetica, sans-serif; letter-spacing: .01em; }
+  main { max-width: 900px; margin: 0 auto; padding: 20px 16px 60px; }
+  h1 { font-size: 28px; margin: 0 0 4px; }
+  h2 { font-size: 22px; margin: 36px 0 12px; padding-top: 8px; border-top: 3px solid var(--line); }
+  h3 { font-size: 19px; margin: 0 0 8px; }
+  p { margin: 6px 0; } ul, ol { margin: 6px 0; padding-left: 22px; } li { margin: 4px 0; }
+  .sub { color: var(--muted); margin: 0 0 16px; }
+  nav { display: flex; flex-wrap: wrap; gap: 8px; margin: 14px 0 6px; }
+  nav a { text-decoration: none; color: var(--ink); background: var(--card); border: 1px solid var(--line); border-radius: 999px; padding: 6px 14px; font-size: 15px; }
+  .box { background: var(--card); border: 1px solid var(--line); border-radius: 12px; padding: 14px 16px; margin: 12px 0; }
+  .tip { border-left: 8px solid var(--accent); }
+  .warn { background: var(--no-bg); border-left: 8px solid var(--no); }
+  .c1 { background: var(--s1-bg); border-left: 8px solid var(--s1); } .c1 h3 { color: var(--s1); }
+  .c2 { background: var(--s2-bg); border-left: 8px solid var(--s2); } .c2 h3 { color: var(--s2); }
+  .c3 { background: var(--s3-bg); border-left: 8px solid var(--s3); } .c3 h3 { color: var(--s3); }
+  .c4 { background: var(--s4-bg); border-left: 8px solid var(--s4); } .c4 h3 { color: var(--s4); }
+  table { width: 100%; border-collapse: collapse; margin: 8px 0; background: var(--card); }
+  th, td { border: 1px solid var(--line); padding: 8px 10px; text-align: left; vertical-align: top; }
+  th { background: var(--bg); }
+  .grid3 { display: grid; grid-template-columns: repeat(3, 1fr); gap: 12px; }
+  .grid4 { display: grid; grid-template-columns: repeat(4, 1fr); gap: 10px; }
+  .memo { display: inline-block; font-size: 21px; font-weight: 700; letter-spacing: .06em; padding: 2px 12px; border-radius: 10px; background: var(--card); border: 2px solid var(--line); }
+  .row { display: flex; flex-wrap: wrap; gap: 10px; align-items: center; margin-top: 12px; }
+  .btn { font: inherit; font-size: 16px; padding: 10px 16px; border-radius: 10px; border: none; background: var(--accent); color: #fff; cursor: pointer; }
+  .btn.ghost { background: transparent; color: var(--ink); border: 2px solid var(--line); }
+  button:focus-visible, [role="button"]:focus-visible { outline: 3px solid var(--accent); outline-offset: 2px; }
+  .msg { margin-top: 10px; font-weight: 700; min-height: 1.4em; }
+  .tag { display: inline-block; font-size: 12px; font-weight: 700; padding: 1px 8px; border-radius: 999px; color: #fff; }
+  .t1 { background: var(--s1); } .t2 { background: var(--s2); } .t3 { background: var(--s3); } .t4 { background: var(--s4); }
+  /* Exercices au doigt */
+  .nx .item { font-size: 21px; font-weight: 700; margin: 6px 0 10px; line-height: 1.5; }
+  .nx .opts { display: flex; flex-wrap: wrap; gap: 8px; margin: 6px 0; }
+  .nx .opt { font: inherit; font-size: 18px; padding: 10px 16px; border-radius: 12px; border: 2px solid var(--line); background: var(--bg); color: var(--ink); cursor: pointer; }
+  .nx .opt.right { background: var(--ok-bg); border-color: var(--ok); }
+  .nx .opt.wrong { background: var(--no-bg); border-color: var(--no); }
+  .nx .fbk { margin-top: 8px; padding: 8px 12px; border-radius: 10px; min-height: 1.4em; }
+  .nx .fbk.ok { background: var(--ok-bg); } .nx .fbk.no { background: var(--no-bg); }
+  .nx .count { color: var(--muted); font-size: 15px; font-variant-numeric: tabular-nums; }
+  .nx .built2 { min-height: 2.6em; font-size: 19px; padding: 8px 12px; border: 2px dashed var(--line); border-radius: 12px; margin: 8px 0; }
+  .nx .tile { font: inherit; font-size: 18px; padding: 8px 12px; border-radius: 10px; border: 2px solid var(--accent); background: var(--card); color: var(--ink); cursor: pointer; }
+  .nx .tile:disabled { opacity: .25; }
+  .pool { display: flex; flex-wrap: wrap; gap: 8px; margin-top: 8px; }
+  .pool button { font: inherit; font-size: 17px; padding: 8px 12px; border-radius: 12px; border: 2px solid var(--line); background: var(--card); color: var(--ink); cursor: pointer; }
+  .pool button[aria-pressed="true"] { border-color: var(--accent); background: var(--accent); color: #fff; }
+  .bins { display: grid; grid-template-columns: repeat(auto-fit, minmax(150px, 1fr)); gap: 10px; margin-top: 10px; }
+  .bin { border: 2px dashed var(--line); border-radius: 12px; padding: 8px; min-height: 90px; background: var(--bg); cursor: pointer; }
+  .bin h4 { margin: 0 0 6px; font-size: 16px; }
+  .bin .chip2 { display: inline-block; margin: 3px; padding: 3px 9px; border-radius: 999px; background: var(--ok-bg); border: 1px solid var(--ok); font-size: 15px; }
+  /* Atelier */
+  .atl { background: var(--card); border: 1px solid var(--line); border-radius: 14px; padding: 16px; margin: 14px 0; }
+  .steps { display: flex; flex-wrap: wrap; gap: 6px; margin: 8px 0 12px; }
+  .steps button { font: inherit; font-size: 15px; padding: 6px 12px; border-radius: 999px; border: 2px solid var(--line); background: var(--bg); color: var(--ink); cursor: pointer; }
+  .steps button[aria-pressed="true"] { background: var(--ink); color: var(--bg); border-color: var(--ink); }
+  .chunks { display: flex; flex-wrap: wrap; gap: 8px; }
+  .chunk { font: inherit; font-size: 18px; padding: 10px 12px; border-radius: 12px; border: 2px solid var(--line); background: var(--bg); color: var(--ink); text-align: center; min-width: 96px; }
+  .chunk .ic { display: block; font-size: 26px; line-height: 1.2; }
+  button.chunk { cursor: pointer; }
+  .chunk.done { border-color: var(--ok); background: var(--ok-bg); } .chunk.oops { border-color: var(--no); background: var(--no-bg); }
+  .built { min-height: 3em; margin: 10px 0; padding: 10px 12px; border: 2px dashed var(--line); border-radius: 12px; font-size: 19px; }
+  .gapline { font-size: 20px; line-height: 2.4; }
+  .gap { font: inherit; font-size: 19px; width: 9em; padding: 2px 8px; border: 2px solid var(--line); border-radius: 8px; background: var(--bg); color: var(--ink); }
+  .gap.ok { border-color: var(--ok); background: var(--ok-bg); } .gap.no { border-color: var(--no); background: var(--no-bg); }
+  .wchips { margin-top: 6px; } .wchip { font: inherit; font-size: 18px; margin: 4px; padding: 8px 14px; border-radius: 999px; border: 2px solid var(--accent); background: var(--card); color: var(--ink); cursor: pointer; }
+  /* Quiz */
+  #quiz .qcard { background: var(--card); border: 1px solid var(--line); border-radius: 12px; padding: 16px; }
+  #quiz .qtext { font-size: 20px; font-weight: 700; margin: 6px 0 12px; }
+  .choices { display: grid; gap: 10px; }
+  .choice { text-align: left; font: inherit; font-size: 18px; padding: 12px 14px; border-radius: 10px; border: 2px solid var(--line); background: var(--bg); color: var(--ink); cursor: pointer; }
+  .choice.right { background: var(--ok-bg); border-color: var(--ok); } .choice.wrong { background: var(--no-bg); border-color: var(--no); }
+  .feedback { margin-top: 12px; padding: 10px 12px; border-radius: 10px; }
+  .feedback.ok { background: var(--ok-bg); } .feedback.no { background: var(--no-bg); }
+  .progress { height: 10px; background: var(--line); border-radius: 999px; overflow: hidden; margin: 8px 0 12px; }
+  .progress > div { height: 100%; background: var(--accent); width: 0; transition: width .3s; }
+  select { font: inherit; font-size: 16px; padding: 8px; border-radius: 8px; border: 1px solid var(--line); background: var(--card); color: var(--ink); }
+  .cards { width: 100%; border-collapse: collapse; }
+  .cards td { width: 50%; height: 90px; border: 2px dashed var(--muted); padding: 10px 12px; font-size: 17px; }
+  .cards td.q { font-weight: 700; }
+  @media (max-width: 680px) { .grid3, .grid4 { grid-template-columns: 1fr 1fr; } body { font-size: 16px; } }
+  @media (max-width: 440px) { .grid3, .grid4 { grid-template-columns: 1fr; } }
+  @media print {
+    body { background: #fff; color: #000; font-size: 13.5px; }
+    nav, .noprint, #quiz-section, #quiz { display: none !important; }
+    h2 { break-before: page; border-top: none; margin-top: 0; } h2.first { break-before: auto; }
+    .box, tr, .atl { break-inside: avoid; }
+    .c1, .c2, .c3, .c4, .tag { -webkit-print-color-adjust: exact; print-color-adjust: exact; }
+    @page { size: A4; margin: 12mm; }
+  }
+  @media (prefers-reduced-motion: reduce) { .progress > div { transition: none; } }
+</style>
+</head>
+<body>
+<main>
+  <p class="noprint" style="margin:0 0 10px"><a href="../" style="color:var(--accent)">← Toutes les leçons</a></p>
+  <h1>🔧 Sciences : matériaux et objets techniques</h1>
+  <p class="sub">Des outils pour réviser : S1 objet technique · S2 matière, matériaux et développement durable · S3 flotter ou couler, la péniche · les besoins</p>
+
+  <nav class="noprint">
+    <a href="#resume">📄 Fiche résumé</a>
+    <a href="#exos">👆 Exercices au doigt</a>
+    <a href="#atelier">🧩 Définitions</a>
+    <a href="#quiz-section">🎯 Quiz qui parle</a>
+    <a href="#cartes">✂️ Cartes</a>
+    
+  </nav>
+
+  
+
+  <!-- ===================== RÉSUMÉ ===================== -->
+  <h2 id="resume" class="first">📄 1. La fiche résumé</h2>
+
+  <div class="box c1">
+    <h3>🔧 S1 · Qu'est-ce qu'un objet technique ?</h3>
+    <ul>
+      <li>Ce n'est <b>pas un élément naturel</b>. Il <b>répond à un besoin</b> : il est utile aux humains.</li>
+      <li>Il est <b>modifié</b> ou <b>fabriqué</b>. C'est un produit qui a une <b>histoire</b>.</li>
+    </ul>
+    <div class="grid3">
+      <div class="box">🪨 <b>Élément naturel</b><br>un caillou, une branche</div>
+      <div class="box">🪓 <b>Objet modifié</b><br>une pierre taillée, un bâton taillé</div>
+      <div class="box">📒 <b>Objet fabriqué</b><br>un cahier, un vélo</div>
+    </div>
+    <p><b>Ses 3 fonctions</b> : <span class="memo">U · E · T</span></p>
+    <table>
+      <tr><th>Fonction</th><th>La question</th><th>Exemple : un vélo</th></tr>
+      <tr><td><b>U</b> · d'<b>usage</b> 🛠️</td><td>À quel besoin répond-il ? <b>À quoi sert-il ?</b></td><td>Il sert à se déplacer.</td></tr>
+      <tr><td><b>E</b> · d'<b>estime</b> 😍</td><td><b>Pourquoi plaît-il ?</b></td><td>Il est rouge et joli.</td></tr>
+      <tr><td><b>T</b> · <b>technique</b> ⚙️</td><td><b>De quoi est-il constitué ?</b> Quelles lois physiques utilise-t-il ?</td><td>Il est en métal et en caoutchouc. Il a des roues et une chaîne.</td></tr>
+    </table>
+    <p><b>Les 3 étapes pour fabriquer l'objet</b> : <span class="memo">C → S → E</span> (« <b>C</b>haque <b>S</b>oir, <b>E</b>ssaie »)</p>
+    <ol>
+      <li>📋 Réaliser un <b>cahier des charges</b> : la liste de tout ce que l'objet doit respecter.</li>
+      <li>💡 Chercher une <b>solution technique</b> parmi plusieurs possibilités, selon le coût, la mise en œuvre, les matériaux, les techniques…</li>
+      <li>🧪 Faire des <b>essais</b> : études, maquettes, tests, reproductions, prototypes…</li>
+    </ol>
+  </div>
+
+  <div class="box c4">
+    <h3>🧺 Les besoins et les objets qui y répondent</h3>
+    <div class="grid3">
+      <div class="box">👕 <b>Se vêtir</b><br>aiguille à chas en os, métier Jacquard</div>
+      <div class="box">🔥 <b>Se chauffer</b><br>silex, pyrite et amadou ; poêle Franklin</div>
+      <div class="box">🚗 <b>Se déplacer</b><br>la roue, la Google car</div>
+      <div class="box">🛡️ <b>Se protéger</b><br>le pont-levis, le vaccin</div>
+      <div class="box">🩺 <b>Se soigner</b><br>l'appareil à rayons X</div>
+      <div class="box">⚽ <b>S'amuser</b><br>la balle de cuju</div>
+      <div class="box">🐟 <b>Se nourrir</b><br>le harpon en os</div>
+      <div class="box">📚 <b>S'instruire</b><br>le papier, l'imprimerie de Gutenberg</div>
+      <div class="box">📻 <b>S'informer</b><br>la radio</div>
+    </div>
+    <p>💡 Le vaccin peut aller dans « se protéger » ou « se soigner » : il protège des maladies.</p>
+  </div>
+
+  <div class="box c2">
+    <h3>🧱 S2 · La matière</h3>
+    <ul>
+      <li>La <b>matière</b>, c'est toute <b>substance, inerte ou vivante</b>, qui constitue les corps physiques.</li>
+      <li>Elle a une <b>masse</b> ⚖️ et occupe un <b>volume</b> 📦.</li>
+      <li>Elle a <b>3 états</b> : <b>solide</b> 🧊, <b>liquide</b> 💧, <b>gazeux</b> 💨. Et des <b>propriétés</b> : physiques, chimiques, mécaniques.</li>
+      <li>Les <b>matières naturelles</b> ont 3 origines :</li>
+    </ul>
+    <div class="grid3">
+      <div class="box">🪨 <b>Minérales</b><br>pierre, sable, argile, calcaire</div>
+      <div class="box">🌿 <b>Végétales</b><br>bois, coton, résine, bambou, paille</div>
+      <div class="box">🐑 <b>Animales</b><br>laine, peau, plume, corne</div>
+    </div>
+    <p>⭐ La <b>matière première</b> est un <b>élément naturel non transformé</b> qui sera traité pour devenir un <b>matériau</b>. Exemple : le bois 🌳 → des planches.</p>
+    <h3 style="margin-top:12px">🧱 S2 · Les matériaux</h3>
+    <ul>
+      <li>⭐ Un <b>matériau</b>, c'est toute <b>matière utilisée pour fabriquer un objet technique</b>.</li>
+      <li>Ils sont classés en <b>4 grandes familles</b> :</li>
+    </ul>
+    <div class="grid4">
+      <div class="box">📦 <b>Organiques</b><br>papier, carton, cuir</div>
+      <div class="box">🏺 <b>Minéraux</b><br>verre, céramique, brique, plâtre</div>
+      <div class="box">🔩 <b>Métalliques</b><br>acier, cuivre, argent, bronze</div>
+      <div class="box">🧩 <b>Composites</b><br>béton armé, fibre de verre, contreplaqué</div>
+    </div>
+    <p>Un <b>produit manufacturé</b> est fait de <b>plusieurs matériaux</b> (exemple : un moteur).</p>
+    <p>💡 <b>Composite</b> = plusieurs matériaux <b>mélangés ou collés ensemble</b> : le béton armé = du béton + de l'acier.</p>
+    <h3 style="margin-top:12px">🌍 S2 · Le développement durable</h3>
+    <ul>
+      <li>⭐ C'est <b>répondre aux besoins des générations actuelles sans nuire aux générations futures</b>.</li>
+      <li>Il concerne : le respect des êtres humains, la solidarité, la biodiversité, les ressources naturelles, le changement climatique…</li>
+      <li>Pour cela, on <b>consomme moins</b> de matière et d'énergie, et on <b>recycle</b> ♻️. On économise les ressources naturelles et on protège l'environnement.</li>
+    </ul>
+  </div>
+
+  <div class="box c3">
+    <h3>⛵ S3 · Pourquoi ça flotte ou ça coule ?</h3>
+    <ul>
+      <li>⭐ L'eau exerce une <b>force vers le haut</b> : c'est la <b>poussée d'Archimède</b> ⬆️.</li>
+      <li>Le <b>poids</b> de l'objet tire vers le bas ⬇️.</li>
+      <li>Si l'objet est <b>moins lourd</b> que l'eau → il <b>flotte</b> (la plupart des <b>bois</b>).</li>
+      <li>Si l'objet est <b>plus lourd</b> que l'eau → il <b>coule</b> (la plupart des <b>métaux</b>).</li>
+      <li>La <b>masse volumique</b>, c'est la quantité de masse dans une unité de volume.</li>
+      <li>Un objet dans l'eau <b>déplace un volume d'eau égal à son propre volume</b>. Un objet, même lourd, flotte si l'eau qu'il pousse est assez lourde pour le porter.</li>
+      <li>C'est pour ça qu'un énorme <b>paquebot</b>, une <b>bouteille vide</b> ou de la <b>pâte à modeler aplatie</b> ne coulent pas.</li>
+    </ul>
+    <p>💡 <b>L'image à retenir</b> : la pâte à modeler en <b>boule</b> coule 🔴⬇️. La même pâte <b>aplatie en bateau</b> pousse plus d'eau, donc l'eau la porte 🛶⬆️.</p>
+    <h3 style="margin-top:12px">🚢 S3 · Les péniches</h3>
+    <ul>
+      <li>Ce sont des <b>bateaux</b> qui naviguent sur les <b>voies fluviales</b> (rivières, canaux) pour <b>transporter des marchandises</b>.</li>
+      <li><b>Autrefois</b>, elles étaient <b>tirées</b> le long des <b>chemins de halage</b> par 2 ou 3 hommes, ou par des animaux (chevaux, ânes).</li>
+      <li><b>Avant la 1ʳᵉ Guerre mondiale</b>, elles sont <b>motorisées</b> : vapeur, électricité, gazole…</li>
+    </ul>
+    <p><b>La Vorgine</b>, péniche de type <b>Freycinet</b> :</p>
+    <ul>
+      <li>une <b>coque en acier</b> ;</li>
+      <li><b>250 tonnes</b> de marchandises, soit <b>13 camions</b> ou 6 trains ;</li>
+      <li><b>38,5 m</b> de long et <b>5,05 m</b> de large : sa taille est faite pour passer les <b>écluses</b> des canaux de France ;</li>
+      <li>un <b>moteur de 300 chevaux</b> (gazole) fait tourner une <b>hélice</b> à l'arrière ;</li>
+      <li>elle est dirigée par un <b>gouvernail</b> ;</li>
+      <li>depuis <b>2002</b>, elle sert à l'<b>éducation au développement durable</b> (association « Les péniches du Val de Rhône »).</li>
+    </ul>
+  </div>
+
+  <!-- ===================== EXERCICES ===================== -->
+  <h2 id="exos">👆 2. Les exercices au doigt</h2>
+  <p class="noprint">Si tu te trompes, un indice t'aide et tu réessaies.</p>
+  <div class="box c1 noprint"><h3>1 · Naturel, modifié ou fabriqué ?</h3><div class="sort" data-bins='["🪨 Élément naturel","🪓 Objet modifié","📒 Objet fabriqué"]' data-items='[["un caillou",0],["une branche",0],["un coquillage",0],["une pierre taillée",1],["un bâton taillé",1],["un os taillé en aiguille",1],["un cahier",2],["un vélo",2],["une chaise",2],["un téléphone",2]]'></div></div>
+  <div class="box c1 noprint"><h3>2 · Quelle fonction ? Usage, estime ou technique</h3><div class="nx" id="nx-fct"></div></div>
+  <div class="box c1 noprint"><h3>3 · Les étapes dans l'ordre</h3><div class="nx" id="nx-etapes"></div></div>
+  <div class="box c2 noprint"><h3>4 · Minérale, végétale ou animale ?</h3><div class="sort" data-bins='["🪨 Minérale","🌿 Végétale","🐑 Animale"]' data-items='[["pierre",0],["sable",0],["argile",0],["calcaire",0],["bois",1],["coton",1],["résine",1],["bambou",1],["paille",1],["laine",2],["peau",2],["plume",2],["corne",2]]'></div></div>
+  <div class="box c2 noprint"><h3>5 · Les 4 familles de matériaux</h3><div class="sort" data-bins='["📦 Organiques","🏺 Minéraux","🔩 Métalliques","🧩 Composites"]' data-items='[["papier",0],["carton",0],["cuir",0],["verre",1],["céramique",1],["brique",1],["plâtre",1],["acier",2],["cuivre",2],["argent",2],["bronze",2],["béton armé",3],["fibre de verre",3],["contreplaqué",3]]'></div></div>
+  <div class="box c3 noprint"><h3>6 · Flotte ou coule ?</h3><div class="nx" id="nx-flotte"></div></div>
+  <div class="box c4 noprint"><h3>7 · À quel besoin répond l'objet ?</h3><div class="nx" id="nx-besoin"></div></div>
+  <div class="box c3 noprint"><h3>8 · La péniche : vrai ou faux ?</h3><div class="nx" id="nx-peniche"></div></div>
+  <div class="box c2 noprint"><h3>9 · Matière, matériau, développement durable : vrai ou faux ?</h3><div class="nx" id="nx-vf"></div></div>
+
+  <!-- ===================== ATELIER ===================== -->
+  <h2 id="atelier">🧩 3. Les définitions</h2>
+  <div class="box tip noprint"><p>Chaque définition est <b>découpée en morceaux avec une image</b>. Fais les étapes dans l'ordre : <b>① Écoute → ② Remets en ordre → ③ Les trous → ④ Sans regarder</b>. Pour les trous, tu peux <b>taper sur un mot</b> pour le mettre dans la case.</p></div>
+  <div class="atl" id="atl-ot"></div>
+  <div class="atl" id="atl-mat"></div>
+  <div class="atl" id="atl-mp"></div>
+  <div class="atl" id="atl-dd"></div>
+  <div class="atl" id="atl-arch"></div>
+
+  <!-- ===================== QUIZ ===================== -->
+  <h2 id="quiz-section">🎯 4. Le quiz qui parle</h2>
+  <div class="box tip">
+    <p>Appuie sur <b>🔊 Écouter</b> pour entendre la question. Si tu te trompes, la question <b>revient à la fin</b>.</p>
+    <div class="row">
+      <label for="part">Je révise :</label>
+      <select id="part">
+        <option value="all">Tout</option>
+        <option value="1">🔧 S1 · Objet technique</option>
+        <option value="2">🧱 S2 · Matière et matériaux</option>
+        <option value="3">⛵ S3 · Flotter, la péniche</option>
+        <option value="4">🧺 Les besoins</option>
+      </select>
+      <button class="btn" id="start">▶️ Commencer</button>
+    </div>
+  </div>
+  <div id="quiz"></div>
+
+  <!-- ===================== CARTES ===================== -->
+  <h2 id="cartes">✂️ 5. Les cartes à découper</h2>
+  <p>Découpez chaque ligne et pliez-la : la question devant, la réponse derrière. Utilisez 3 piles : « je ne sais pas », « j'hésite », « je sais ».</p>
+  <table class="cards" id="cardtable"></table>
+
+  
+</main>
+
+<script>
+function shuffle(a){ for(let i=a.length-1;i>0;i--){const j=Math.floor(Math.random()*(i+1));[a[i],a[j]]=[a[j],a[i]];} return a; }
+function speak(text){
+  try {
+    if (!('speechSynthesis' in window)) return;
+    speechSynthesis.cancel();
+    const u = new SpeechSynthesisUtterance(text.replace(/1ʳᵉ/g,'première'));
+    u.lang = 'fr-FR'; u.rate = 0.9;
+    const v = speechSynthesis.getVoices().find(v => v.lang && v.lang.startsWith('fr'));
+    if (v) u.voice = v;
+    speechSynthesis.speak(u);
+  } catch(e) {}
+}
+const nz = t => (t||'').toLowerCase().normalize('NFD').replace(/[̀-ͯ]/g,'').replace(/[’]/g,"'").trim();
+
+/* ---------- Tri : étiquette puis case ---------- */
+document.querySelectorAll('.sort').forEach(box => {
+  const bins = JSON.parse(box.dataset.bins), items = shuffle(JSON.parse(box.dataset.items));
+  let sel = null, placed = 0;
+  box.innerHTML = '<p style="color:var(--muted)">Tape sur une étiquette, puis sur la bonne case.</p><div class="pool"></div><div class="bins"></div><div class="msg"></div>';
+  const pool = box.querySelector('.pool'), binsEl = box.querySelector('.bins'), msg = box.querySelector('.msg');
+  items.forEach(([label, b]) => { const bt = document.createElement('button'); bt.type = 'button'; bt.textContent = label; bt.dataset.b = b; bt.setAttribute('aria-pressed','false');
+    bt.onclick = () => { pool.querySelectorAll('button').forEach(x => x.setAttribute('aria-pressed','false')); bt.setAttribute('aria-pressed','true'); sel = bt; speak(label); };
+    pool.appendChild(bt); });
+  bins.forEach((name, i) => {
+    const d = document.createElement('div'); d.className = 'bin'; d.tabIndex = 0; d.setAttribute('role','button'); d.innerHTML = '<h4>' + name + '</h4>';
+    const drop = () => {
+      if (!sel) { msg.textContent = "👆 Choisis d'abord une étiquette."; return; }
+      if (+sel.dataset.b === i) { const c = document.createElement('span'); c.className = 'chip2'; c.textContent = sel.textContent; d.appendChild(c); sel.remove(); sel = null; placed++;
+        msg.textContent = placed === items.length ? '🎉 Tout est bien rangé !' : '✅ Oui !'; if (placed === items.length) speak('Tout est bien rangé !'); }
+      else msg.textContent = '🔁 Pas cette case. Regarde la fiche résumé si tu hésites.';
+    };
+    d.onclick = drop; d.onkeydown = e => { if (e.key === 'Enter' || e.key === ' ') { e.preventDefault(); drop(); } };
+    binsEl.appendChild(d);
+  });
+});
+
+/* ---------- Questions au doigt ---------- */
+function stepper(rootId, items){
+  const root = document.getElementById(rootId); if (!root) return;
+  let order = shuffle(items.map((x,i)=>i)), k = 0, first = 0, err = false;
+  function end(){
+    root.innerHTML = '<div class="item">🎉 Terminé ! ' + first + ' sur ' + items.length + ' du premier coup.</div><div class="row"><button class="btn" type="button">🔁 Recommencer</button></div>';
+    root.querySelector('button').onclick = () => { order = shuffle(items.map((x,i)=>i)); k = 0; first = 0; show(); };
+    speak('Terminé ! Bravo !');
+  }
+  function show(){
+    if (k >= items.length) return end();
+    const it = items[order[k]]; err = false;
+    root.innerHTML = '<div class="count">' + (k+1) + ' / ' + items.length + '</div><div class="item">' + it.q + '</div><div class="opts">' +
+      it.o.map((o,i)=>'<button type="button" class="opt" data-i="'+i+'">'+o+'</button>').join('') + '</div><div class="fbk"></div>' +
+      '<div class="row"><button class="btn ghost" type="button" data-l>🔊 Écouter</button><button class="btn" type="button" data-n hidden>Suivant ➜</button></div>';
+    const fb = root.querySelector('.fbk'), nb = root.querySelector('[data-n]');
+    root.querySelector('[data-l]').onclick = () => speak(it.q.replace(/<[^>]+>/g,'') + '. ' + it.o.join('. '));
+    root.querySelectorAll('.opt').forEach(b => b.onclick = () => {
+      const i = +b.dataset.i;
+      if ([].concat(it.a).includes(i)) {
+        root.querySelectorAll('.opt').forEach(x => x.disabled = true); b.classList.add('right');
+        fb.className = 'fbk ok'; fb.textContent = '✅ ' + it.e; if (!err) first++; nb.hidden = false; nb.focus(); speak(fb.textContent);
+      } else { err = true; b.classList.add('wrong'); setTimeout(()=>b.classList.remove('wrong'), 800); fb.className = 'fbk no'; fb.textContent = '🔁 ' + (it.h || 'Pas encore, réessaie.'); }
+    });
+    nb.onclick = () => { k++; show(); };
+  }
+  show();
+}
+const F3 = ['🛠️ Usage','😍 Estime','⚙️ Technique'];
+const HF = 'Usage = à quoi ça sert ? Estime = pourquoi ça plaît ? Technique = de quoi c’est fait, comment ça marche ?';
+stepper('nx-fct', [
+  {q:'« Une montre sert à lire l’heure. »', o:F3, a:0, e:'À quoi sert-elle ? Fonction d’usage.', h:HF},
+  {q:'« Cette montre a un joli bracelet doré. »', o:F3, a:1, e:'Pourquoi plaît-elle ? Fonction d’estime.', h:HF},
+  {q:'« La montre contient une pile et des engrenages. »', o:F3, a:2, e:'De quoi est-elle constituée ? Fonction technique.', h:HF},
+  {q:'« Le vélo permet de se déplacer. »', o:F3, a:0, e:'Fonction d’usage.', h:HF},
+  {q:'« Le cadre du vélo est en aluminium. »', o:F3, a:2, e:'C’est un matériau : fonction technique.', h:HF},
+  {q:'« J’aime ce vélo parce qu’il est rouge et brillant. »', o:F3, a:1, e:'Fonction d’estime.', h:HF},
+  {q:'« La lampe sert à éclairer. »', o:F3, a:0, e:'Fonction d’usage.', h:HF},
+  {q:'« La lampe utilise l’électricité pour produire de la lumière. »', o:F3, a:2, e:'Une loi physique : fonction technique.', h:HF},
+  {q:'« Ce sac à dos est à la mode. »', o:F3, a:1, e:'Fonction d’estime.', h:HF}
+]);
+const FL = ['⬆️ Il flotte','⬇️ Il coule'];
+stepper('nx-flotte', [
+  {q:'Un morceau de bois', o:FL, a:0, e:'La plupart des bois sont moins lourds que l’eau : ils flottent.'},
+  {q:'Une clé en métal', o:FL, a:1, e:'La plupart des métaux sont plus lourds que l’eau : ils coulent.'},
+  {q:'Une bouteille vide et fermée', o:FL, a:0, e:'Elle est pleine d’air : elle flotte.'},
+  {q:'De la pâte à modeler en boule', o:FL, a:1, e:'En boule, elle pousse peu d’eau : elle coule.', h:'Pense à la boule de pâte à modeler de la leçon.'},
+  {q:'La même pâte à modeler aplatie en forme de bateau', o:FL, a:0, e:'Aplatie, elle déplace plus d’eau : la poussée d’Archimède la porte.'},
+  {q:'Un énorme paquebot en acier', o:FL, a:0, e:'Sa coque creuse déplace énormément d’eau : il flotte, même s’il est lourd.'},
+  {q:'Un caillou', o:FL, a:1, e:'Il est plus lourd que l’eau : il coule.'},
+  {q:'Un bouchon de liège', o:FL, a:0, e:'Le liège est très léger : il flotte.'},
+  {q:'Une pièce de monnaie', o:FL, a:1, e:'C’est du métal : elle coule.'},
+  {q:'La force de l’eau qui pousse vers le haut s’appelle…', o:['La poussée d’Archimède','La masse volumique','Le poids'], a:0, e:'L’eau pousse vers le haut : c’est la poussée d’Archimède.'}
+]);
+const B9 = ['👕 Se vêtir','🔥 Se chauffer','🚗 Se déplacer','🛡️ Se protéger','🩺 Se soigner','⚽ S’amuser','🐟 Se nourrir','📚 S’instruire','📻 S’informer'];
+const bq = (obj, a, others, e) => { const opts = shuffle([a].concat(others)); return {q:'À quel besoin répond <b>' + obj + '</b> ?', o:opts.map(i=>B9[i]), a:opts.flatMap((v,j)=> [].concat(e.ok||[a]).includes(v) ? [j] : []), e:e.t}; };
+stepper('nx-besoin', [
+  bq('la roue', 2, [0,7], {t:'La roue sert à se déplacer.'}),
+  bq('l’aiguille à chas en os', 0, [6,5], {t:'Elle sert à coudre des vêtements : se vêtir.'}),
+  bq('le poêle Franklin', 1, [8,2], {t:'Il sert à se chauffer.'}),
+  bq('le pont-levis', 3, [2,7], {t:'Il protège le château : se protéger.'}),
+  bq('l’appareil à rayons X', 4, [8,5], {t:'Il sert à voir l’intérieur du corps pour soigner.'}),
+  bq('la balle de cuju', 5, [6,0], {t:'C’est un jeu de balle : s’amuser.'}),
+  bq('le harpon en os', 6, [5,1], {t:'Il sert à pêcher : se nourrir.'}),
+  bq('l’imprimerie de Gutenberg', 7, [2,1], {t:'Elle sert à imprimer des livres : s’instruire.'}),
+  bq('la radio', 8, [5,0], {t:'Elle donne les nouvelles : s’informer.'}),
+  bq('le métier Jacquard', 0, [7,2], {t:'Il sert à tisser du tissu : se vêtir.'}),
+  bq('le silex, la pyrite et l’amadou', 1, [6,3], {t:'Ils servent à faire du feu : se chauffer.'}),
+  bq('le vaccin', 3, [4,8], {t:'Le vaccin protège des maladies (on accepte aussi « se soigner »).', ok:[3,4]})
+]);
+const VF = ['✅ Vrai','❌ Faux'];
+stepper('nx-peniche', [
+  {q:'Une péniche navigue sur les voies fluviales (rivières, canaux).', o:VF, a:0, e:'Vrai : elle transporte des marchandises.'},
+  {q:'Autrefois, les péniches étaient tirées le long des chemins de halage.', o:VF, a:0, e:'Vrai : par des hommes ou des animaux (chevaux, ânes).'},
+  {q:'La Vorgine a une coque en bois.', o:VF, a:1, e:'Faux : sa coque est en acier.'},
+  {q:'La Vorgine peut transporter 250 tonnes, soit 13 camions.', o:VF, a:0, e:'Vrai : 250 tonnes, 13 camions ou 6 trains.'},
+  {q:'Sa taille est faite pour passer dans les écluses des canaux de France.', o:VF, a:0, e:'Vrai : c’est le gabarit Freycinet.'},
+  {q:'La Vorgine est dirigée grâce à une hélice.', o:VF, a:1, e:'Faux : elle est dirigée par un gouvernail. L’hélice la fait avancer.'},
+  {q:'Son moteur fait tourner une hélice à l’arrière.', o:VF, a:0, e:'Vrai : un moteur de 300 chevaux, au gazole.'},
+  {q:'Aujourd’hui, la Vorgine sert à l’éducation au développement durable.', o:VF, a:0, e:'Vrai : depuis 2002.'}
+]);
+stepper('nx-vf', [
+  {q:'La matière a une masse et occupe un volume.', o:VF, a:0, e:'Vrai.'},
+  {q:'La matière a 3 états : solide, liquide et gazeux.', o:VF, a:0, e:'Vrai.'},
+  {q:'La matière première a déjà été transformée.', o:VF, a:1, e:'Faux : c’est un élément naturel NON transformé.'},
+  {q:'Un matériau est une matière utilisée pour fabriquer un objet technique.', o:VF, a:0, e:'Vrai.'},
+  {q:'Le verre est un matériau métallique.', o:VF, a:1, e:'Faux : le verre est un matériau minéral.'},
+  {q:'Le béton armé est un matériau composite.', o:VF, a:0, e:'Vrai : du béton + de l’acier.'},
+  {q:'Un produit manufacturé est fait de plusieurs matériaux.', o:VF, a:0, e:'Vrai : par exemple un moteur.'},
+  {q:'Le développement durable, c’est utiliser toutes les ressources tout de suite.', o:VF, a:1, e:'Faux : il faut répondre à nos besoins sans nuire aux générations futures.'},
+  {q:'Recycler aide à économiser les ressources naturelles.', o:VF, a:0, e:'Vrai.'},
+  {q:'La laine est une matière animale.', o:VF, a:0, e:'Vrai : elle vient du mouton.'}
+]);
+
+/* Étapes : construire l'ordre */
+(function(){
+  const root = document.getElementById('nx-etapes'); if (!root) return;
+  const W = ['📋 Le cahier des charges','💡 La solution technique','🧪 Les essais (maquettes, prototypes)','🎁 L’objet final'];
+  function show(){
+    let pos = 0;
+    root.innerHTML = '<div class="item">Tape sur les étapes dans l’ordre pour fabriquer un objet.</div><div class="built2"></div><div class="opts">' +
+      shuffle(W.map((w,i)=>i)).map(i=>'<button type="button" class="tile" data-i="'+i+'">'+W[i]+'</button>').join('') + '</div><div class="fbk"></div><div class="row"><button class="btn" type="button" data-n hidden>🔁 Recommencer</button></div>';
+    const built = root.querySelector('.built2'), fb = root.querySelector('.fbk'), nb = root.querySelector('[data-n]');
+    root.querySelectorAll('.tile').forEach(b => b.onclick = () => {
+      if (+b.dataset.i === pos) { b.disabled = true; built.textContent += (pos ? '  →  ' : '') + W[pos]; pos++; fb.className = 'fbk'; fb.textContent = '';
+        if (pos === W.length) { fb.className = 'fbk ok'; fb.textContent = '✅ Bravo ! Chaque Soir, Essaie : Cahier, Solution, Essais.'; speak('Bravo !'); nb.hidden = false; } }
+      else { fb.className = 'fbk no'; fb.textContent = '🔁 Pense à « Chaque Soir, Essaie » : C, puis S, puis E.'; }
+    });
+    nb.onclick = show;
+  }
+  show();
+})();
+
+/* ---------- Atelier des définitions ---------- */
+const DEFS = {
+  'atl-ot': { title: '🔧 Un objet technique', color: 'var(--s1)',
+    chunks: [['🚫🌳','Ce n’est pas un élément naturel.'],['🎯','Il répond à un besoin'],['👥','qui a une utilité pour les humains.'],['🛠️','Il est modifié ou fabriqué.']],
+    gaps: ['naturel','besoin','utilité','modifié','fabriqué'] },
+  'atl-mat': { title: '⭐ Un matériau', color: 'var(--s2)',
+    chunks: [['🧱','Un matériau, c’est toute matière'],['🛠️','utilisée pour fabriquer'],['🔧','un objet technique.']],
+    gaps: ['matière','fabriquer','objet','technique'] },
+  'atl-mp': { title: '⭐ La matière première', color: 'var(--s2)',
+    chunks: [['🌳','C’est un élément naturel'],['🚫','non transformé'],['⚙️','qui sera traité'],['🧱','pour devenir un matériau.']],
+    gaps: ['naturel','transformé','traité','matériau'] },
+  'atl-dd': { title: '⭐ Le développement durable', color: 'var(--s2)',
+    chunks: [['🙋','Répondre aux besoins'],['👧','des générations actuelles'],['🚫','sans nuire'],['👶','aux générations futures.']],
+    gaps: ['besoins','actuelles','nuire','futures'] },
+  'atl-arch': { title: '⭐ La poussée d’Archimède', color: 'var(--s3)',
+    chunks: [['💧','L’eau exerce une force'],['⬆️','vers le haut :'],['🧑‍🔬','c’est la poussée d’Archimède.']],
+    gaps: ['force','haut','poussée','Archimède'] }
+};
+const fullText = d => d.chunks.map(c=>c[1]).join(' ');
+Object.keys(DEFS).forEach(id => {
+  const d = DEFS[id], root = document.getElementById(id); if (!root) return;
+  const names = ['① Écoute','② Remets en ordre','③ Trous : 1 mot','③ Trous : 3 mots','③ Tous les mots','④ Sans regarder'];
+  root.innerHTML = '<h3 style="color:'+d.color+'">'+d.title+'</h3><div class="steps noprint" role="group" aria-label="Étapes">'+names.map((n,i)=>'<button type="button" data-s="'+i+'">'+n+'</button>').join('')+'</div><div class="body"></div>';
+  const stepsEl = root.querySelector('.steps'), body = root.querySelector('.body');
+  stepsEl.querySelectorAll('button').forEach(b => b.onclick = () => go(+b.dataset.s));
+  const next = i => '<div class="row noprint"><button class="btn" type="button" data-next="'+i+'">Étape suivante ➜</button></div>';
+  const wire = () => { const n = body.querySelector('[data-next]'); if (n) n.onclick = () => go(+n.dataset.next); };
+  function go(step){
+    stepsEl.querySelectorAll('button').forEach(b => b.setAttribute('aria-pressed', +b.dataset.s === step));
+    if (step === 0) {
+      body.innerHTML = '<p>Regarde chaque morceau et son image. Écoute, puis <b>répète à voix haute</b>.</p><div class="chunks">'+d.chunks.map(c=>'<div class="chunk"><span class="ic">'+c[0]+'</span>'+c[1]+'</div>').join('')+'</div><div class="row noprint"><button class="btn ghost" type="button" data-a="l">🔊 Écouter</button></div>'+next(1);
+      body.querySelector('[data-a="l"]').onclick = () => speak(fullText(d)); wire();
+    }
+    if (step === 1) {
+      let k = 0; const order = shuffle(d.chunks.map((c,i)=>i));
+      body.innerHTML = '<p>Tape sur les morceaux <b>dans le bon ordre</b>.</p><div class="built"></div><div class="chunks">'+order.map(i=>'<button type="button" class="chunk" data-i="'+i+'"><span class="ic">'+d.chunks[i][0]+'</span>'+d.chunks[i][1]+'</button>').join('')+'</div><div class="msg"></div>';
+      const built = body.querySelector('.built'), msg = body.querySelector('.msg');
+      body.querySelectorAll('button.chunk').forEach(b => b.onclick = () => {
+        if (b.disabled) return;
+        if (+b.dataset.i === k) { b.classList.add('done'); b.disabled = true; built.textContent += (k ? ' ' : '') + d.chunks[k][1]; k++;
+          if (k === d.chunks.length) { msg.textContent = '🎉 Bravo !'; speak(fullText(d)); body.insertAdjacentHTML('beforeend', next(2)); wire(); } }
+        else { b.classList.add('oops'); msg.textContent = '🔁 Pas encore : quel morceau vient juste après ?'; setTimeout(()=>b.classList.remove('oops'), 700); }
+      });
+    }
+    if (step >= 2 && step <= 4) {
+      const n = step === 2 ? 1 : step === 3 ? Math.min(3, d.gaps.length) : d.gaps.length;
+      const hide = new Set(shuffle(d.gaps.slice()).slice(0, n));
+      let html = '<p>'+(step===4 ? 'Retrouve <b>tous</b> les mots qui manquent.' : 'Retrouve le mot qui manque.')+' Les accents ne comptent pas.</p><div class="gapline">';
+      d.chunks.forEach(c => {
+        let txt = c[1];
+        hide.forEach(w => { const re = new RegExp("(^|[\\s'’])(" + w + ")(?=[\\s,.:]|$)"); txt = txt.replace(re, (m,a,b)=> a+'§'+b+'§'); });
+        txt = txt.replace(/§([^§]+)§/g, (m,w)=>'<input class="gap" data-w="'+w+'" aria-label="mot manquant" autocomplete="off" autocorrect="off" autocapitalize="none" spellcheck="false">');
+        html += '<span>'+c[0]+'</span> '+txt+' ';
+      });
+      html += '</div><div class="row noprint"><button class="btn" type="button" data-a="ck">✔️ Vérifier</button><button class="btn ghost" type="button" data-a="hint">💡 Indice</button></div><div class="msg"></div>';
+      body.innerHTML = html;
+      const msg = body.querySelector('.msg'), inputs = [...body.querySelectorAll('.gap')];
+      let focusGap = null;
+      inputs.forEach(x => x.addEventListener('focus', () => { focusGap = x; }));
+      const pool = [...new Set(Object.values(DEFS).flatMap(dd => dd.gaps))].filter(w => !inputs.some(x => x.dataset.w === w));
+      const words = shuffle(inputs.map(x => x.dataset.w).concat(shuffle(pool).slice(0, 2)));
+      const chipRow = document.createElement('div'); chipRow.className = 'wchips noprint';
+      chipRow.innerHTML = '<p style="margin:8px 0 4px">👆 <b>Tape sur un mot</b> pour le mettre dans la case, ou écris-le toi-même.</p>' + words.map(w => '<button type="button" class="wchip">' + w + '</button>').join('');
+      body.querySelector('.gapline').after(chipRow);
+      chipRow.querySelectorAll('.wchip').forEach(c => c.addEventListener('click', e => {
+        e.preventDefault();
+        let target = (focusGap && !focusGap.classList.contains('ok') && !focusGap.value) ? focusGap : inputs.find(x => !x.value);
+        if (!target) target = inputs.find(x => !x.classList.contains('ok')) || inputs[0];
+        target.value = c.textContent; target.classList.remove('no');
+        focusGap = inputs.find(x => !x.value) || null;
+      }));
+      body.querySelector('[data-a="hint"]').onclick = () => { const f = inputs.find(x => nz(x.value) !== nz(x.dataset.w)); if (f) { f.value = f.dataset.w.slice(0, Math.min(f.dataset.w.length, f.value.length + 1)); } };
+      body.querySelector('[data-a="ck"]').onclick = () => {
+        let all = true; inputs.forEach(x => { const ok = nz(x.value) === nz(x.dataset.w); x.classList.toggle('ok', ok); x.classList.toggle('no', !ok); if (!ok) all = false; });
+        if (all) { msg.textContent = '🎉 Tout est juste !'; speak('Tout est juste ! ' + fullText(d)); body.insertAdjacentHTML('beforeend', next(step+1)); wire(); }
+        else msg.textContent = '🔁 Les cases rouges ne sont pas encore justes. Tu peux demander un indice.';
+      };
+    }
+    if (step === 5) {
+      body.innerHTML = '<p><b>Cache l’écran</b> et dis la définition à voix haute. Puis tape pour vérifier.</p><div class="row noprint"><button class="btn" type="button" data-a="show">👀 Montrer pour vérifier</button></div><div class="built" hidden></div><div class="row noprint" hidden data-r><button class="btn" type="button" data-a="yes">✅ Je l’ai dite juste</button><button class="btn ghost" type="button" data-a="again">🔁 Je refais les trous</button></div><div class="msg"></div>';
+      const built = body.querySelector('.built'), row = body.querySelector('[data-r]'), msg = body.querySelector('.msg');
+      body.querySelector('[data-a="show"]').onclick = () => { built.hidden = false; built.textContent = fullText(d); row.hidden = false; };
+      body.querySelector('[data-a="yes"]').onclick = () => { msg.textContent = '🌟 Bravo ! Redis-la ce soir au coucher.'; speak('Bravo !'); };
+      body.querySelector('[data-a="again"]').onclick = () => go(4);
+    }
+  }
+  go(0);
+});
+
+/* ---------- Quiz ---------- */
+const Q = [
+  {p:1, q:'Un objet technique, c’est…', c:['Un objet modifié ou fabriqué qui répond à un besoin','Un élément naturel','Un animal'], a:0, e:'Il n’est pas naturel et il est utile aux humains.'},
+  {p:1, q:'Lequel est un élément naturel ?', c:['Un caillou','Un cahier','Une pierre taillée'], a:0, e:'Le caillou n’a pas été modifié par l’humain.'},
+  {p:1, q:'La fonction d’usage répond à la question…', c:['À quoi sert-il ?','Pourquoi plaît-il ?','De quoi est-il fait ?'], a:0, e:'Usage = à quel besoin il répond.'},
+  {p:1, q:'La fonction d’estime répond à la question…', c:['Pourquoi plaît-il ?','À quoi sert-il ?','Combien pèse-t-il ?'], a:0, e:'Estime = ce qui nous plaît.'},
+  {p:1, q:'La fonction technique répond à la question…', c:['De quoi est-il constitué ?','Pourquoi plaît-il ?','Qui l’a acheté ?'], a:0, e:'Technique = ses matériaux, les lois physiques utilisées.'},
+  {p:1, q:'La première étape pour fabriquer un objet est…', c:['Le cahier des charges','Les essais','La vente'], a:0, e:'Le cahier des charges liste tout ce que l’objet doit respecter.'},
+  {p:1, q:'Un prototype, une maquette, ce sont des…', c:['Essais','Matières premières','Besoins'], a:0, e:'La 3ᵉ étape : faire des essais.'},
+  {p:1, q:'On choisit la solution technique en fonction…', c:['Du coût, des matériaux, des techniques','De la couleur seulement','Du hasard'], a:0, e:'Coût, mise en œuvre, matériaux, techniques…'},
+  {p:2, q:'La matière a…', c:['Une masse et un volume','Seulement une couleur','Une fonction d’estime'], a:0, e:'Elle a une masse et occupe un volume.'},
+  {p:2, q:'Quels sont les 3 états de la matière ?', c:['Solide, liquide, gazeux','Chaud, froid, tiède','Bois, métal, verre'], a:0, e:'Solide 🧊, liquide 💧, gazeux 💨.'},
+  {p:2, q:'Le coton est une matière…', c:['Végétale','Animale','Minérale'], a:0, e:'Il vient d’une plante.'},
+  {p:2, q:'La laine est une matière…', c:['Animale','Végétale','Minérale'], a:0, e:'Elle vient du mouton.'},
+  {p:2, q:'Le sable est une matière…', c:['Minérale','Végétale','Animale'], a:0, e:'Comme la pierre, l’argile, le calcaire.'},
+  {p:2, q:'La matière première, c’est…', c:['Un élément naturel non transformé qui deviendra un matériau','Un objet fini','Un déchet'], a:0, e:'Exemple : le bois de l’arbre.'},
+  {p:2, q:'Un matériau, c’est…', c:['Une matière utilisée pour fabriquer un objet technique','Un besoin','Un état de la matière'], a:0, e:'À savoir par cœur.'},
+  {p:2, q:'L’acier est un matériau…', c:['Métallique','Organique','Minéral'], a:0, e:'Comme le cuivre, l’argent, le bronze.'},
+  {p:2, q:'Le verre est un matériau…', c:['Minéral','Métallique','Organique'], a:0, e:'Comme la céramique, la brique, le plâtre.'},
+  {p:2, q:'Le carton est un matériau…', c:['Organique','Composite','Métallique'], a:0, e:'Comme le papier et le cuir.'},
+  {p:2, q:'Le béton armé est un matériau…', c:['Composite','Organique','Minéral'], a:0, e:'Béton + acier : plusieurs matériaux ensemble.'},
+  {p:2, q:'Le développement durable, c’est…', c:['Répondre à nos besoins sans nuire aux générations futures','Tout consommer vite','Construire plus d’usines'], a:0, e:'À savoir par cœur.'},
+  {p:2, q:'Quel geste aide le développement durable ?', c:['Recycler','Jeter les bouteilles dans la nature','Laisser la lumière allumée'], a:0, e:'Recycler économise les ressources naturelles.'},
+  {p:3, q:'La force de l’eau vers le haut s’appelle…', c:['La poussée d’Archimède','La masse volumique','Le gouvernail'], a:0, e:'L’eau pousse vers le haut.'},
+  {p:3, q:'La plupart des bois…', c:['Flottent','Coulent'], a:0, e:'Ils sont moins lourds que l’eau.'},
+  {p:3, q:'La plupart des métaux…', c:['Coulent','Flottent'], a:0, e:'Ils sont plus lourds que l’eau.'},
+  {p:3, q:'Pourquoi un énorme paquebot ne coule pas ?', c:['Sa coque déplace beaucoup d’eau qui le porte','Il est en bois','Il est vide'], a:0, e:'Plus il déplace d’eau, plus l’eau le pousse vers le haut.'},
+  {p:3, q:'Une péniche sert à…', c:['Transporter des marchandises sur les rivières et canaux','Voler','Pêcher en haute mer'], a:0, e:'Sur les voies fluviales.'},
+  {p:3, q:'Autrefois, les péniches étaient…', c:['Tirées par des hommes ou des animaux','Poussées par le vent seulement','Portées par des grues'], a:0, e:'Le long des chemins de halage.'},
+  {p:3, q:'La coque de la Vorgine est en…', c:['Acier','Bois','Plastique'], a:0, e:'Une coque en acier.'},
+  {p:3, q:'La Vorgine peut transporter…', c:['250 tonnes, soit 13 camions','2 tonnes','1 camion'], a:0, e:'250 tonnes = 13 camions ou 6 trains.'},
+  {p:3, q:'Qu’est-ce qui dirige la péniche ?', c:['Le gouvernail','L’hélice','Le moteur'], a:0, e:'L’hélice la fait avancer, le gouvernail la dirige.'},
+  {p:4, q:'La roue répond au besoin…', c:['Se déplacer','Se nourrir','S’informer'], a:0, e:'Elle sert à se déplacer.'},
+  {p:4, q:'La radio répond au besoin…', c:['S’informer','Se vêtir','Se chauffer'], a:0, e:'Elle donne les nouvelles.'},
+  {p:4, q:'L’imprimerie de Gutenberg répond au besoin…', c:['S’instruire','S’amuser','Se protéger'], a:0, e:'Elle imprime des livres.'},
+  {p:4, q:'Le harpon en os répond au besoin…', c:['Se nourrir','Se déplacer','Se soigner'], a:0, e:'Il sert à pêcher.'},
+  {p:4, q:'L’appareil à rayons X répond au besoin…', c:['Se soigner','S’amuser','Se vêtir'], a:0, e:'Il permet de voir l’intérieur du corps.'}
+];
+(function(){
+  const t = document.getElementById('cardtable'), lab = ['','S1','S2','S3','Besoins'];
+  Q.forEach(x => { const tr = document.createElement('tr'); tr.innerHTML = '<td class="q"><span class="tag t'+x.p+'">'+lab[x.p]+'</span><br>'+x.q+'</td><td>'+x.c[x.a]+' — '+x.e+'</td>'; t.appendChild(tr); });
+})();
+let queue = [], total = 0, done = 0, firstTry = 0, missed = new Set();
+const qbox = document.getElementById('quiz'), LAB = ['','🔧 S1 · Objet technique','🧱 S2 · Matière et matériaux','⛵ S3 · Flotter, la péniche','🧺 Les besoins'];
+document.getElementById('start').onclick = () => {
+  const part = document.getElementById('part').value;
+  queue = shuffle(Q.filter(x => part==='all' || String(x.p)===part).map(x => ({...x})));
+  total = queue.length; done = 0; firstTry = 0; missed = new Set(); show();
+};
+function show(){
+  if (!queue.length) {
+    const msg = firstTry === total ? 'Tout juste du premier coup, bravo !' : 'Tu as tout retrouvé ! Les questions ratées sont revenues et tu les as réussies : c’est comme ça que la mémoire se construit.';
+    qbox.innerHTML = '<div class="qcard"><div class="qtext">🎉 Terminé !</div><p>'+firstTry+' sur '+total+' du premier coup.</p><p>'+msg+'</p><div class="row"><button class="btn" type="button" id="again">🔁 Recommencer</button></div></div>';
+    document.getElementById('again').onclick = () => document.getElementById('start').click();
+    speak('Terminé ! ' + msg); return;
+  }
+  const x = queue[0], order = shuffle(x.c.map((c,i)=>i));
+  qbox.innerHTML = '<div class="qcard"><div class="progress"><div style="width:'+(100*done/total)+'%"></div></div><span class="tag t'+x.p+'">'+LAB[x.p]+'</span><div class="qtext">'+x.q+'</div><div class="choices">'+order.map(i=>'<button type="button" class="choice" data-i="'+i+'">'+x.c[i]+'</button>').join('')+'</div><div id="fb"></div><div class="row"><button class="btn ghost" type="button" id="listen">🔊 Écouter</button><button class="btn" type="button" id="next" hidden>Suivant ➜</button></div></div>';
+  document.getElementById('listen').onclick = () => speak(x.q + '. ' + order.map((i,k)=>'Réponse ' + (k+1) + ' : ' + x.c[i]).join('. '));
+  qbox.querySelectorAll('.choice').forEach(b => b.onclick = () => answer(b, x));
+}
+function answer(btn, x){
+  const i = +btn.dataset.i, fb = document.getElementById('fb');
+  qbox.querySelectorAll('.choice').forEach(b => { b.disabled = true; if (+b.dataset.i === x.a) b.classList.add('right'); });
+  if (i === x.a) { fb.className = 'feedback ok'; fb.textContent = '✅ Oui ! ' + x.e; if (!missed.has(x.q)) firstTry++; queue.shift(); done++; }
+  else { btn.classList.add('wrong'); fb.className = 'feedback no'; fb.textContent = '🔁 Pas encore. La bonne réponse : ' + x.c[x.a] + '. ' + x.e + ' Cette question reviendra.'; missed.add(x.q); queue.push(queue.shift()); }
+  speak(fb.textContent);
+  const n = document.getElementById('next'); n.hidden = false; n.onclick = show; n.focus();
+}
+</script>
+</body>
+</html>

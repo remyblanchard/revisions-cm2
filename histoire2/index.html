@@ -422,7 +422,7 @@ Object.keys(DEFS).forEach(id => {
       let html = '<p>'+(step===4 ? 'Retrouve <b>tous</b> les mots qui manquent.' : 'Retrouve le mot qui manque.')+' Les accents ne comptent pas.</p><div class="gapline">';
       d.chunks.forEach(c => {
         let txt = c[1];
-        hide.forEach(w => { const re = new RegExp("(^|[\\s'’])(" + w + ")(?=[\\s,.:]|$)"); txt = txt.replace(re, (m,a,b)=> a+'§'+b+'§'); });
+        hide.forEach(w => { const re = new RegExp("(^|[\\s'’])(" + w + ")(?=[\\s,.:)]|$)"); txt = txt.replace(re, (m,a,b)=> a+'§'+b+'§'); });
         txt = txt.replace(/§([^§]+)§/g, (m,w)=>'<input class="gap" data-w="'+w+'" aria-label="mot manquant" autocomplete="off" autocorrect="off" autocapitalize="none" spellcheck="false">');
         html += '<span>'+c[0]+'</span> '+txt+' ';
       });

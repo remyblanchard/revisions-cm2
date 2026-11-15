@@ -1,0 +1,529 @@
+<!DOCTYPE html>
+<html lang="fr">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Réviser Commune laïcité suffrage</title>
+<style>
+  :root {
+    --bg: #fbfaf7; --card: #ffffff; --ink: #1d2433; --muted: #5a6478; --line: #dcdfe6;
+    --s1: #c0392b; --s1-bg: #fbeae8;
+    --s2: #2f6fd0; --s2-bg: #e9f1fd;
+    --s3: #2e8540; --s3-bg: #e8f5ea;
+    --s4: #8a4fc4; --s4-bg: #f1eafb;
+    --ok: #1f7a4d; --ok-bg: #e3f4ea; --no: #b3261e; --no-bg: #fbe9e7;
+    --accent: #5b4bc4;
+  }
+  @media (prefers-color-scheme: dark) {
+    :root:not([data-theme="light"]) {
+      --bg: #14181f; --card: #1c222c; --ink: #e9edf3; --muted: #a5aec0; --line: #2f3746;
+      --s1: #f28b82; --s1-bg: #3a1d1b; --s2: #7fb0f5; --s2-bg: #1a2a42; --s3: #79d18a; --s3-bg: #1a3322; --s4: #c3a3f5; --s4-bg: #2a2342;
+      --ok: #73d39f; --ok-bg: #173126; --no: #f28b82; --no-bg: #3a1d1b; --accent: #a99cf5;
+      color-scheme: dark;
+    }
+  }
+  :root[data-theme="dark"] {
+    --bg: #14181f; --card: #1c222c; --ink: #e9edf3; --muted: #a5aec0; --line: #2f3746;
+    --s1: #f28b82; --s1-bg: #3a1d1b; --s2: #7fb0f5; --s2-bg: #1a2a42; --s3: #79d18a; --s3-bg: #1a3322; --s4: #c3a3f5; --s4-bg: #2a2342;
+    --ok: #73d39f; --ok-bg: #173126; --no: #f28b82; --no-bg: #3a1d1b; --accent: #a99cf5;
+    color-scheme: dark;
+  }
+  * { box-sizing: border-box; }
+  [hidden] { display: none !important; }
+  button, input, textarea, select, .bin, [role="button"] { touch-action: manipulation; }
+  body { margin: 0; background: var(--bg); color: var(--ink); font: 17px/1.65 Arial, Helvetica, sans-serif; letter-spacing: .01em; }
+  main { max-width: 900px; margin: 0 auto; padding: 20px 16px 60px; }
+  h1 { font-size: 28px; margin: 0 0 4px; }
+  h2 { font-size: 22px; margin: 36px 0 12px; padding-top: 8px; border-top: 3px solid var(--line); }
+  h3 { font-size: 19px; margin: 0 0 8px; }
+  p { margin: 6px 0; } ul, ol { margin: 6px 0; padding-left: 22px; } li { margin: 4px 0; }
+  .sub { color: var(--muted); margin: 0 0 16px; }
+  nav { display: flex; flex-wrap: wrap; gap: 8px; margin: 14px 0 6px; }
+  nav a { text-decoration: none; color: var(--ink); background: var(--card); border: 1px solid var(--line); border-radius: 999px; padding: 6px 14px; font-size: 15px; }
+  .box { background: var(--card); border: 1px solid var(--line); border-radius: 12px; padding: 14px 16px; margin: 12px 0; }
+  .tip { border-left: 8px solid var(--accent); }
+  .warn { background: var(--no-bg); border-left: 8px solid var(--no); }
+  .c1 { background: var(--s1-bg); border-left: 8px solid var(--s1); } .c1 h3 { color: var(--s1); }
+  .c2 { background: var(--s2-bg); border-left: 8px solid var(--s2); } .c2 h3 { color: var(--s2); }
+  .c3 { background: var(--s3-bg); border-left: 8px solid var(--s3); } .c3 h3 { color: var(--s3); }
+  .c4 { background: var(--s4-bg); border-left: 8px solid var(--s4); } .c4 h3 { color: var(--s4); }
+  table { width: 100%; border-collapse: collapse; margin: 8px 0; background: var(--card); }
+  th, td { border: 1px solid var(--line); padding: 8px 10px; text-align: left; vertical-align: top; }
+  th { background: var(--bg); }
+  .grid3 { display: grid; grid-template-columns: repeat(3, 1fr); gap: 12px; }
+  .grid4 { display: grid; grid-template-columns: repeat(4, 1fr); gap: 10px; }
+  .memo { display: inline-block; font-size: 21px; font-weight: 700; letter-spacing: .06em; padding: 2px 12px; border-radius: 10px; background: var(--card); border: 2px solid var(--line); }
+  .row { display: flex; flex-wrap: wrap; gap: 10px; align-items: center; margin-top: 12px; }
+  .btn { font: inherit; font-size: 16px; padding: 10px 16px; border-radius: 10px; border: none; background: var(--accent); color: #fff; cursor: pointer; }
+  .btn.ghost { background: transparent; color: var(--ink); border: 2px solid var(--line); }
+  button:focus-visible, [role="button"]:focus-visible { outline: 3px solid var(--accent); outline-offset: 2px; }
+  .msg { margin-top: 10px; font-weight: 700; min-height: 1.4em; }
+  .tag { display: inline-block; font-size: 12px; font-weight: 700; padding: 1px 8px; border-radius: 999px; color: #fff; }
+  .t1 { background: var(--s1); } .t2 { background: var(--s2); } .t3 { background: var(--s3); } .t4 { background: var(--s4); }
+  /* Exercices au doigt */
+  .nx .item { font-size: 21px; font-weight: 700; margin: 6px 0 10px; line-height: 1.5; }
+  .nx .opts { display: flex; flex-wrap: wrap; gap: 8px; margin: 6px 0; }
+  .nx .opt { font: inherit; font-size: 18px; padding: 10px 16px; border-radius: 12px; border: 2px solid var(--line); background: var(--bg); color: var(--ink); cursor: pointer; }
+  .nx .opt.right { background: var(--ok-bg); border-color: var(--ok); }
+  .nx .opt.wrong { background: var(--no-bg); border-color: var(--no); }
+  .nx .fbk { margin-top: 8px; padding: 8px 12px; border-radius: 10px; min-height: 1.4em; }
+  .nx .fbk.ok { background: var(--ok-bg); } .nx .fbk.no { background: var(--no-bg); }
+  .nx .count { color: var(--muted); font-size: 15px; font-variant-numeric: tabular-nums; }
+  .nx .built2 { min-height: 2.6em; font-size: 19px; padding: 8px 12px; border: 2px dashed var(--line); border-radius: 12px; margin: 8px 0; }
+  .nx .tile { font: inherit; font-size: 18px; padding: 8px 12px; border-radius: 10px; border: 2px solid var(--accent); background: var(--card); color: var(--ink); cursor: pointer; }
+  .nx .tile:disabled { opacity: .25; }
+  .pool { display: flex; flex-wrap: wrap; gap: 8px; margin-top: 8px; }
+  .pool button { font: inherit; font-size: 17px; padding: 8px 12px; border-radius: 12px; border: 2px solid var(--line); background: var(--card); color: var(--ink); cursor: pointer; }
+  .pool button[aria-pressed="true"] { border-color: var(--accent); background: var(--accent); color: #fff; }
+  .bins { display: grid; grid-template-columns: repeat(auto-fit, minmax(150px, 1fr)); gap: 10px; margin-top: 10px; }
+  .bin { border: 2px dashed var(--line); border-radius: 12px; padding: 8px; min-height: 90px; background: var(--bg); cursor: pointer; }
+  .bin h4 { margin: 0 0 6px; font-size: 16px; }
+  .bin .chip2 { display: inline-block; margin: 3px; padding: 3px 9px; border-radius: 999px; background: var(--ok-bg); border: 1px solid var(--ok); font-size: 15px; }
+  /* Atelier */
+  .atl { background: var(--card); border: 1px solid var(--line); border-radius: 14px; padding: 16px; margin: 14px 0; }
+  .steps { display: flex; flex-wrap: wrap; gap: 6px; margin: 8px 0 12px; }
+  .steps button { font: inherit; font-size: 15px; padding: 6px 12px; border-radius: 999px; border: 2px solid var(--line); background: var(--bg); color: var(--ink); cursor: pointer; }
+  .steps button[aria-pressed="true"] { background: var(--ink); color: var(--bg); border-color: var(--ink); }
+  .chunks { display: flex; flex-wrap: wrap; gap: 8px; }
+  .chunk { font: inherit; font-size: 18px; padding: 10px 12px; border-radius: 12px; border: 2px solid var(--line); background: var(--bg); color: var(--ink); text-align: center; min-width: 96px; }
+  .chunk .ic { display: block; font-size: 26px; line-height: 1.2; }
+  button.chunk { cursor: pointer; }
+  .chunk.done { border-color: var(--ok); background: var(--ok-bg); } .chunk.oops { border-color: var(--no); background: var(--no-bg); }
+  .built { min-height: 3em; margin: 10px 0; padding: 10px 12px; border: 2px dashed var(--line); border-radius: 12px; font-size: 19px; }
+  .gapline { font-size: 20px; line-height: 2.4; }
+  .gap { font: inherit; font-size: 19px; width: 9em; padding: 2px 8px; border: 2px solid var(--line); border-radius: 8px; background: var(--bg); color: var(--ink); }
+  .gap.ok { border-color: var(--ok); background: var(--ok-bg); } .gap.no { border-color: var(--no); background: var(--no-bg); }
+  .wchips { margin-top: 6px; } .wchip { font: inherit; font-size: 18px; margin: 4px; padding: 8px 14px; border-radius: 999px; border: 2px solid var(--accent); background: var(--card); color: var(--ink); cursor: pointer; }
+  /* Quiz */
+  #quiz .qcard { background: var(--card); border: 1px solid var(--line); border-radius: 12px; padding: 16px; }
+  #quiz .qtext { font-size: 20px; font-weight: 700; margin: 6px 0 12px; }
+  .choices { display: grid; gap: 10px; }
+  .choice { text-align: left; font: inherit; font-size: 18px; padding: 12px 14px; border-radius: 10px; border: 2px solid var(--line); background: var(--bg); color: var(--ink); cursor: pointer; }
+  .choice.right { background: var(--ok-bg); border-color: var(--ok); } .choice.wrong { background: var(--no-bg); border-color: var(--no); }
+  .feedback { margin-top: 12px; padding: 10px 12px; border-radius: 10px; }
+  .feedback.ok { background: var(--ok-bg); } .feedback.no { background: var(--no-bg); }
+  .progress { height: 10px; background: var(--line); border-radius: 999px; overflow: hidden; margin: 8px 0 12px; }
+  .progress > div { height: 100%; background: var(--accent); width: 0; transition: width .3s; }
+  select { font: inherit; font-size: 16px; padding: 8px; border-radius: 8px; border: 1px solid var(--line); background: var(--card); color: var(--ink); }
+  .cards { width: 100%; border-collapse: collapse; }
+  .cards td { width: 50%; height: 90px; border: 2px dashed var(--muted); padding: 10px 12px; font-size: 17px; }
+  .cards td.q { font-weight: 700; }
+  @media (max-width: 680px) { .grid3, .grid4 { grid-template-columns: 1fr 1fr; } body { font-size: 16px; } }
+  @media (max-width: 440px) { .grid3, .grid4 { grid-template-columns: 1fr; } }
+  @media print {
+    body { background: #fff; color: #000; font-size: 13.5px; }
+    nav, .noprint, #quiz-section, #quiz { display: none !important; }
+    h2 { break-before: page; border-top: none; margin-top: 0; } h2.first { break-before: auto; }
+    .box, tr, .atl { break-inside: avoid; }
+    .c1, .c2, .c3, .c4, .tag { -webkit-print-color-adjust: exact; print-color-adjust: exact; }
+    @page { size: A4; margin: 12mm; }
+  }
+  @media (prefers-reduced-motion: reduce) { .progress > div { transition: none; } }
+  .frise2 { display: grid; gap: 6px; margin: 10px 0; }
+  .fr { display: grid; grid-template-columns: 5.5em 1fr; gap: 10px; align-items: center; padding: 8px 12px; border-radius: 10px; border: 2px solid var(--line); background: var(--card); }
+  .fr b.y { font-size: 20px; font-variant-numeric: tabular-nums; }
+  .fr.cens { border-left: 10px solid var(--no); } .fr.univ { border-left: 10px solid var(--ok); } .fr.all { border-left: 10px solid var(--accent); background: var(--ok-bg); }
+  .vs { display: grid; grid-template-columns: 1fr auto 1fr; gap: 10px; align-items: center; text-align: center; }
+  .vs .box { margin: 0; } .vs .x { font-size: 28px; font-weight: 700; }
+</style>
+</head>
+<body>
+<main>
+  <p class="noprint" style="margin:0 0 10px"><a href="../" style="color:var(--accent)">← Toutes les leçons</a></p>
+  <h1>🇫🇷 Histoire : Commune, laïcité, suffrage universel</h1>
+  <p class="sub">leçons 4, 5 et 6 du « Temps de la République », d'après le document de la classe uniquement</p>
+
+  <nav class="noprint">
+    <a href="#resume">📄 Fiche résumé</a>
+    <a href="#exos">👆 Exercices au doigt</a>
+    <a href="#atelier">🧩 Définitions</a>
+    <a href="#quiz-section">🎯 Quiz qui parle</a>
+    <a href="#cartes">✂️ Cartes</a>
+  </nav>
+
+  
+
+  <div class="box tip">
+    <h3>🎯 Ce que la fiche de révision demande</h3>
+    <ul>
+      <li>🔴 Savoir <b>qui s'oppose</b> lors de la Commune de Paris. Comprendre qui sont les <b>Versaillais</b> et les <b>Communards</b>. Savoir <b>ce que réclame le peuple</b>.</li>
+      <li>🔵 Connaître la <b>date</b> de la loi de séparation des Églises et de l'État. Connaître la définition de « <b>laïcité</b> ».</li>
+      <li>🟢 Connaître la définition de « <b>suffrage universel</b> ».</li>
+    </ul>
+  </div>
+
+  <!-- ===================== RÉSUMÉ ===================== -->
+  <h2 id="resume" class="first">📄 1. La fiche résumé</h2>
+
+  <div class="box c1">
+    <h3>🔴 4 · La Commune de Paris (1871)</h3>
+    <ul>
+      <li>En <b>1870</b>, la IIIᵉ République est proclamée. Les Républicains signent la <b>paix avec la Prusse</b>.</li>
+      <li>Mais le <b>peuple de Paris</b> veut <b>continuer le combat</b>, contre l'avis du gouvernement installé à <b>Versailles</b>.</li>
+      <li>Le <b>18 mars 1871</b>, à <b>Paris</b>, ils se révoltent et dressent des <b>barricades</b>.</li>
+    </ul>
+    <div class="vs">
+      <div class="box">🏛️ <b>Les Versaillais</b><br>les troupes du <b>gouvernement</b>, installé à Versailles</div>
+      <div class="x">⚔️</div>
+      <div class="box">🧱 <b>Les Communards</b><br>le <b>petit peuple de Paris</b>, ceux et celles qui participent à la Commune</div>
+    </div>
+    <p>⭐ <b>Ce que réclame le peuple</b> : 🍞 <b>du pain</b> · 🏠 <b>un toit pour tous</b> · ⚖️ <b>la justice</b> · 🤝 <b>la solidarité</b> · 🕊️ <b>la liberté</b>. Et aussi la République et la victoire contre les Prussiens.</p>
+    <p>Le <b>manifeste de la Commune</b> (26 mars 1871) demande aussi : la liberté de parler, d'écrire, de se réunir, le <b>suffrage universel</b>, l'<b>enseignement laïque</b>, une assurance contre le chômage, la fin de la pauvreté.</p>
+    <table>
+      <tr><th>Qui ?</th><td>Le peuple de Paris, les Communards, <b>Louise Michel</b> (une institutrice, grande figure de la Commune, qui s'est battue pour les droits des femmes et des ouvriers)</td></tr>
+      <tr><th>Où ?</th><td>À <b>Paris</b></td></tr>
+      <tr><th>Quand ?</th><td><b>Mars à mai 1871</b></td></tr>
+      <tr><th>Pourquoi ?</th><td>Améliorer la vie des travailleurs, lutter contre la pauvreté, défendre la liberté</td></tr>
+      <tr><th>Comment ?</th><td>La révolte, les barricades</td></tr>
+    </table>
+    <p><b>La fin</b> : la <b>semaine sanglante</b> (21-28 mai 1871). Les Versaillais écrasent les Communards et en fusillent beaucoup (au mur des Fédérés). C'est une <b>guerre civile</b> : des Français contre des Français.</p>
+  </div>
+
+  <div class="box c2">
+    <h3>🔵 5 · La loi de séparation des Églises et de l'État (1905)</h3>
+    <ul>
+      <li>⭐ <b>La date : 1905</b> (publiée au Journal officiel le 11 décembre 1905).</li>
+      <li><b>Article 1</b> : la République assure la <b>liberté de conscience</b> et garantit le libre exercice des <b>cultes</b>.</li>
+      <li><b>Article 2</b> : la République <b>ne paie plus aucun culte</b> (aucune religion).</li>
+      <li><b>Article 28</b> : interdit de mettre des signes religieux sur les monuments publics (sauf les lieux de culte et les tombes).</li>
+      <li><b>Pourquoi ?</b> Le député <b>Aristide Briand</b> explique que l'État payait l'Église, mais que le <b>clergé s'est dressé contre la République en ennemi</b>.</li>
+      <li><b>La caricature</b> : Voltaire (le siècle des Lumières) coupe le lien entre <b>Marianne</b> (la République) et <b>le pape</b> (l'Église).</li>
+      <li><b>Le manuel scolaire</b> « Le Tour de France de deux enfants » : en 1877, beaucoup de références à Dieu ; en 1906, elles sont <b>supprimées</b>. L'école devient <b>laïque</b>.</li>
+    </ul>
+    <p>⭐ <b>La laïcité</b> : l'État est <b>neutre</b> et <b>indépendant</b> à l'égard des religions. Cette loi est le <b>fondement de la laïcité</b>.</p>
+    <div class="vs">
+      <div class="box">💭 <b>Liberté de conscience</b><br>croire en ce qu'on veut</div>
+      <div class="x">≠</div>
+      <div class="box">🙏 <b>Liberté de culte</b><br>pratiquer sa religion</div>
+    </div>
+  </div>
+
+  <div class="box c3">
+    <h3>🟢 6 · Vers le suffrage universel</h3>
+    <p>⭐ <b>Le suffrage universel</b> : le droit de vote <b>pour toutes et tous</b>.</p>
+    <p><b>Suffrage censitaire</b> : un vote réservé aux <b>hommes qui paient un impôt</b> (le cens). Les pauvres ne votent pas. <b>Démocratie</b> : le peuple a le pouvoir.</p>
+    <div class="frise2">
+      <div class="fr cens"><b class="y">1789</b><span>Suffrage <b>censitaire</b> : les hommes de plus de 25 ans qui paient le cens</span></div>
+      <div class="fr univ"><b class="y">1792</b><span>Suffrage <b>universel masculin</b> : 1,9 million d'électeurs</span></div>
+      <div class="fr cens"><b class="y">1795</b><span>Retour du suffrage censitaire : 30 000 électeurs</span></div>
+      <div class="fr univ"><b class="y">1799</b><span>Napoléon Bonaparte impose le suffrage universel masculin</span></div>
+      <div class="fr cens"><b class="y">1815</b><span><b>Louis XVIII</b> rétablit le suffrage censitaire : 90 000 électeurs</span></div>
+      <div class="fr cens"><b class="y">1831</b><span>Louis-Philippe baisse le cens : 240 000 électeurs</span></div>
+      <div class="fr univ"><b class="y">1848</b><span>Après la <b>révolution</b> : suffrage <b>universel masculin</b>, hommes de plus de 21 ans, 9,4 millions d'électeurs</span></div>
+      <div class="fr all"><b class="y">1944</b><span>🗳️ Les <b>femmes</b> obtiennent le droit de vote : c'est vraiment le suffrage <b>universel</b></span></div>
+    </div>
+    <p>💡 <b>Rouge</b> = seuls les riches votent. <b>Vert</b> = tous les hommes votent. <b>Violet</b> = toutes et tous votent. De 1789 à 1944, il a fallu <b>155 ans</b>.</p>
+    <p>Dans les années 1920, les <b>femmes</b> manifestent et font des <b>affiches</b> pour <b>exiger</b> le droit de vote.</p>
+  </div>
+
+  <!-- ===================== EXERCICES ===================== -->
+  <h2 id="exos">👆 2. Les exercices au doigt</h2>
+  <p class="noprint">Si tu te trompes, un indice t'aide et tu réessaies.</p>
+  <div class="box c1 noprint"><h3>1 · Versaillais ou Communards ?</h3><div class="sort" data-bins='["🏛️ Les Versaillais","🧱 Les Communards"]' data-items='[["les troupes du gouvernement",0],["installés à Versailles",0],["ils ont signé la paix avec la Prusse",0],["ils écrasent la Commune pendant la semaine sanglante",0],["le petit peuple de Paris",1],["ils dressent des barricades",1],["Louise Michel",1],["ils veulent continuer le combat contre la Prusse",1]]'></div></div>
+  <div class="box c1 noprint"><h3>2 · Que réclame le peuple de Paris ?</h3><div class="sort" data-bins='["✅ Le peuple le réclame","❌ Il ne le réclame pas"]' data-items='[["du pain",0],["un toit pour tous",0],["la justice",0],["la solidarité",0],["la liberté",0],["l&#39;enseignement laïque",0],["le retour du roi",1],["la paix avec la Prusse",1],["moins de liberté de la presse",1]]'></div></div>
+  <div class="box c2 noprint"><h3>3 · La loi de 1905 : vrai ou faux ?</h3><div class="nx" id="nx-1905"></div></div>
+  <div class="box c2 noprint"><h3>4 · Liberté de conscience ou liberté de culte ?</h3><div class="nx" id="nx-lib"></div></div>
+  <div class="box c3 noprint"><h3>5 · Censitaire ou universel ?</h3><div class="nx" id="nx-suf"></div></div>
+  <div class="box c3 noprint"><h3>6 · La frise du droit de vote dans l'ordre</h3><div class="nx" id="nx-frise"></div></div>
+
+  <!-- ===================== ATELIER ===================== -->
+  <h2 id="atelier">🧩 3. Les définitions</h2>
+  <div class="box tip noprint"><p>Fais les étapes dans l'ordre : <b>① Écoute → ② Remets en ordre → ③ Les trous → ④ Sans regarder</b>. Pour les trous, tu peux <b>taper sur un mot</b>. ⭐ = demandé par la fiche de révision.</p></div>
+  <div class="atl" id="atl-lai"></div>
+  <div class="atl" id="atl-su"></div>
+  <div class="atl" id="atl-gc"></div>
+  <div class="atl" id="atl-sc"></div>
+
+  <!-- ===================== QUIZ ===================== -->
+  <h2 id="quiz-section">🎯 4. Le quiz qui parle</h2>
+  <div class="box tip">
+    <p>Appuie sur <b>🔊 Écouter</b> pour entendre la question. Si tu te trompes, la question <b>revient à la fin</b>.</p>
+    <div class="row">
+      <label for="part">Je révise :</label>
+      <select id="part">
+        <option value="all">Tout</option>
+        <option value="1">🔴 La Commune de Paris</option>
+        <option value="2">🔵 La loi de 1905, la laïcité</option>
+        <option value="3">🟢 Le suffrage universel</option>
+      </select>
+      <button class="btn" id="start">▶️ Commencer</button>
+    </div>
+  </div>
+  <div id="quiz"></div>
+
+  <!-- ===================== CARTES ===================== -->
+  <h2 id="cartes">✂️ 5. Les cartes à découper</h2>
+  <p>Découpez chaque ligne et pliez-la : la question devant, la réponse derrière.</p>
+  <table class="cards" id="cardtable"></table>
+</main>
+
+<script>
+function shuffle(a){ for(let i=a.length-1;i>0;i--){const j=Math.floor(Math.random()*(i+1));[a[i],a[j]]=[a[j],a[i]];} return a; }
+function speak(text){
+  try {
+    if (!('speechSynthesis' in window)) return;
+    speechSynthesis.cancel();
+    const u = new SpeechSynthesisUtterance(text.replace(/1ʳᵉ/g,'première'));
+    u.lang = 'fr-FR'; u.rate = 0.9;
+    const v = speechSynthesis.getVoices().find(v => v.lang && v.lang.startsWith('fr'));
+    if (v) u.voice = v;
+    speechSynthesis.speak(u);
+  } catch(e) {}
+}
+const nz = t => (t||'').toLowerCase().normalize('NFD').replace(/[̀-ͯ]/g,'').replace(/[’]/g,"'").trim();
+
+/* ---------- Tri : étiquette puis case ---------- */
+document.querySelectorAll('.sort').forEach(box => {
+  const bins = JSON.parse(box.dataset.bins), items = shuffle(JSON.parse(box.dataset.items));
+  let sel = null, placed = 0;
+  box.innerHTML = '<p style="color:var(--muted)">Tape sur une étiquette, puis sur la bonne case.</p><div class="pool"></div><div class="bins"></div><div class="msg"></div>';
+  const pool = box.querySelector('.pool'), binsEl = box.querySelector('.bins'), msg = box.querySelector('.msg');
+  items.forEach(([label, b]) => { const bt = document.createElement('button'); bt.type = 'button'; bt.textContent = label; bt.dataset.b = b; bt.setAttribute('aria-pressed','false');
+    bt.onclick = () => { pool.querySelectorAll('button').forEach(x => x.setAttribute('aria-pressed','false')); bt.setAttribute('aria-pressed','true'); sel = bt; speak(label); };
+    pool.appendChild(bt); });
+  bins.forEach((name, i) => {
+    const d = document.createElement('div'); d.className = 'bin'; d.tabIndex = 0; d.setAttribute('role','button'); d.innerHTML = '<h4>' + name + '</h4>';
+    const drop = () => {
+      if (!sel) { msg.textContent = "👆 Choisis d'abord une étiquette."; return; }
+      if (+sel.dataset.b === i) { const c = document.createElement('span'); c.className = 'chip2'; c.textContent = sel.textContent; d.appendChild(c); sel.remove(); sel = null; placed++;
+        msg.textContent = placed === items.length ? '🎉 Tout est bien rangé !' : '✅ Oui !'; if (placed === items.length) speak('Tout est bien rangé !'); }
+      else msg.textContent = '🔁 Pas cette case. Regarde la fiche résumé si tu hésites.';
+    };
+    d.onclick = drop; d.onkeydown = e => { if (e.key === 'Enter' || e.key === ' ') { e.preventDefault(); drop(); } };
+    binsEl.appendChild(d);
+  });
+});
+
+/* ---------- Questions au doigt ---------- */
+function stepper(rootId, items){
+  const root = document.getElementById(rootId); if (!root) return;
+  let order = shuffle(items.map((x,i)=>i)), k = 0, first = 0, err = false;
+  function end(){
+    root.innerHTML = '<div class="item">🎉 Terminé ! ' + first + ' sur ' + items.length + ' du premier coup.</div><div class="row"><button class="btn" type="button">🔁 Recommencer</button></div>';
+    root.querySelector('button').onclick = () => { order = shuffle(items.map((x,i)=>i)); k = 0; first = 0; show(); };
+    speak('Terminé ! Bravo !');
+  }
+  function show(){
+    if (k >= items.length) return end();
+    const it = items[order[k]]; err = false;
+    root.innerHTML = '<div class="count">' + (k+1) + ' / ' + items.length + '</div><div class="item">' + it.q + '</div><div class="opts">' +
+      it.o.map((o,i)=>'<button type="button" class="opt" data-i="'+i+'">'+o+'</button>').join('') + '</div><div class="fbk"></div>' +
+      '<div class="row"><button class="btn ghost" type="button" data-l>🔊 Écouter</button><button class="btn" type="button" data-n hidden>Suivant ➜</button></div>';
+    const fb = root.querySelector('.fbk'), nb = root.querySelector('[data-n]');
+    root.querySelector('[data-l]').onclick = () => speak(it.q.replace(/<[^>]+>/g,'') + '. ' + it.o.join('. '));
+    root.querySelectorAll('.opt').forEach(b => b.onclick = () => {
+      const i = +b.dataset.i;
+      if ([].concat(it.a).includes(i)) {
+        root.querySelectorAll('.opt').forEach(x => x.disabled = true); b.classList.add('right');
+        fb.className = 'fbk ok'; fb.textContent = '✅ ' + it.e; if (!err) first++; nb.hidden = false; nb.focus(); speak(fb.textContent);
+      } else { err = true; b.classList.add('wrong'); setTimeout(()=>b.classList.remove('wrong'), 800); fb.className = 'fbk no'; fb.textContent = '🔁 ' + (it.h || 'Pas encore, réessaie.'); }
+    });
+    nb.onclick = () => { k++; show(); };
+  }
+  show();
+}
+
+const VF = ['✅ Vrai','❌ Faux'];
+stepper('nx-1905', [
+  {q:'La loi de séparation des Églises et de l’État date de 1905.', o:VF, a:0, e:'Vrai : 1905, publiée le 11 décembre 1905.'},
+  {q:'Avec cette loi, l’État paie les prêtres et les églises.', o:VF, a:1, e:'Faux : article 2, la République ne paie plus aucun culte.'},
+  {q:'La République garantit la liberté de conscience.', o:VF, a:0, e:'Vrai : article 1.'},
+  {q:'On peut mettre un signe religieux sur une mairie.', o:VF, a:1, e:'Faux : article 28, c’est interdit sur les monuments publics.'},
+  {q:'La laïcité, c’est : l’État est neutre et indépendant à l’égard des religions.', o:VF, a:0, e:'Vrai : à savoir par cœur.'},
+  {q:'Aristide Briand explique que le clergé s’est dressé contre la République.', o:VF, a:0, e:'Vrai : c’est pour ça que la loi est votée.'},
+  {q:'Sur la caricature, Marianne représente l’Église.', o:VF, a:1, e:'Faux : Marianne représente la République. Le pape représente l’Église.'},
+  {q:'Après 1905, le manuel scolaire garde toutes les références à Dieu.', o:VF, a:1, e:'Faux : en 1906, elles sont supprimées, car l’école devient laïque.'},
+  {q:'Cette loi est le fondement de la laïcité.', o:VF, a:0, e:'Vrai.'}
+]);
+const L2 = ['💭 Liberté de conscience','🙏 Liberté de culte'];
+stepper('nx-lib', [
+  {q:'Léa a le droit de croire en Dieu, ou de ne pas y croire.', o:L2, a:0, e:'Croire en ce qu’on veut : liberté de conscience.'},
+  {q:'Tom a le droit d’aller prier à la mosquée.', o:L2, a:1, e:'Pratiquer sa religion : liberté de culte.'},
+  {q:'Chacun peut penser ce qu’il veut sur la religion.', o:L2, a:0, e:'Liberté de conscience.'},
+  {q:'Une famille va à la messe le dimanche.', o:L2, a:1, e:'Pratiquer sa religion : liberté de culte.'},
+  {q:'Sarah fête Hanoukka à la synagogue.', o:L2, a:1, e:'Liberté de culte.'},
+  {q:'Personne ne peut obliger quelqu’un à croire.', o:L2, a:0, e:'Liberté de conscience.'}
+]);
+const S2 = ['💰 Censitaire','🗳️ Universel'];
+stepper('nx-suf', [
+  {q:'Seuls les hommes qui paient un impôt (le cens) peuvent voter.', o:S2, a:0, e:'C’est le suffrage censitaire.'},
+  {q:'Toutes et tous ont le droit de voter.', o:S2, a:1, e:'C’est le suffrage universel.'},
+  {q:'En 1815, Louis XVIII : 90 000 électeurs.', o:S2, a:0, e:'Suffrage censitaire rétabli par Louis XVIII.'},
+  {q:'En 1848 : tous les hommes de plus de 21 ans votent.', o:S2, a:1, e:'Suffrage universel masculin (seulement les hommes).'},
+  {q:'En 1789 : les hommes de plus de 25 ans qui paient le cens.', o:S2, a:0, e:'Suffrage censitaire.'},
+  {q:'Pourquoi le suffrage censitaire est-il combattu ?', o:['Parce que le peuple pauvre ne peut pas voter','Parce que tout le monde vote'], a:0, e:'Seuls les plus riches votent : le peuple ne participe pas.'},
+  {q:'En quelle année les femmes obtiennent-elles le droit de vote ?', o:['1848','1905','1944'], a:2, e:'En 1944 : enfin le vrai suffrage universel.'}
+]);
+
+/* Frise dans l'ordre */
+(function(){
+  const root = document.getElementById('nx-frise'); if (!root) return;
+  const W = ['1789 · censitaire','1792 · universel masculin','1815 · censitaire (Louis XVIII)','1848 · universel masculin','1944 · les femmes votent'];
+  function show(){
+    let pos = 0;
+    root.innerHTML = '<div class="item">Tape sur les étapes dans l’ordre des dates.</div><div class="built2"></div><div class="opts">' +
+      shuffle(W.map((w,i)=>i)).map(i=>'<button type="button" class="tile" data-i="'+i+'">'+W[i]+'</button>').join('') + '</div><div class="fbk"></div><div class="row"><button class="btn" type="button" data-n hidden>🔁 Recommencer</button></div>';
+    const built = root.querySelector('.built2'), fb = root.querySelector('.fbk'), nb = root.querySelector('[data-n]');
+    root.querySelectorAll('.tile').forEach(b => b.onclick = () => {
+      if (+b.dataset.i === pos) { b.disabled = true; built.textContent += (pos ? '  →  ' : '') + W[pos]; pos++; fb.className = 'fbk'; fb.textContent = '';
+        if (pos === W.length) { fb.className = 'fbk ok'; fb.textContent = '✅ Bravo ! De 1789 à 1944, il a fallu 155 ans.'; speak('Bravo !'); nb.hidden = false; } }
+      else { fb.className = 'fbk no'; fb.textContent = '🔁 Regarde les années : la plus petite vient d’abord.'; }
+    });
+    nb.onclick = show;
+  }
+  show();
+})();
+
+const DEFS = {
+  'atl-lai': { title: '⭐ La laïcité', color: 'var(--s2)',
+    chunks: [['🏛️','L’État est neutre'],['🔓','et indépendant'],['⛪🕌🕍','à l’égard des religions.']],
+    gaps: ['État','neutre','indépendant','religions'] },
+  'atl-su': { title: '⭐ Le suffrage universel', color: 'var(--s3)',
+    chunks: [['🗳️','Le droit de vote'],['👩👨','pour toutes et tous.']],
+    gaps: ['droit','vote','toutes','tous'] },
+  'atl-gc': { title: 'La guerre civile', color: 'var(--s1)',
+    chunks: [['⚔️','Une guerre qui se déroule'],['🏠','à l’intérieur d’un pays'],['👥','et qui oppose au moins deux parties'],['🇫🇷','de la population de ce pays.']],
+    gaps: ['guerre','intérieur','oppose','deux','population'] },
+  'atl-sc': { title: 'Le suffrage censitaire', color: 'var(--s3)',
+    chunks: [['🗳️','Un suffrage réservé'],['👨','aux hommes'],['💰','payant un impôt (le cens).']],
+    gaps: ['réservé','hommes','impôt','cens'] }
+};
+
+/* ---------- Atelier ---------- */
+const fullText = d => d.chunks.map(c=>c[1]).join(' ');
+Object.keys(DEFS).forEach(id => {
+  const d = DEFS[id], root = document.getElementById(id); if (!root) return;
+  const names = ['① Écoute','② Remets en ordre','③ Trous : 1 mot','③ Trous : 3 mots','③ Tous les mots','④ Sans regarder'];
+  root.innerHTML = '<h3 style="color:'+d.color+'">'+d.title+'</h3><div class="steps noprint" role="group" aria-label="Étapes">'+names.map((n,i)=>'<button type="button" data-s="'+i+'">'+n+'</button>').join('')+'</div><div class="body"></div>';
+  const stepsEl = root.querySelector('.steps'), body = root.querySelector('.body');
+  stepsEl.querySelectorAll('button').forEach(b => b.onclick = () => go(+b.dataset.s));
+  const next = i => '<div class="row noprint"><button class="btn" type="button" data-next="'+i+'">Étape suivante ➜</button></div>';
+  const wire = () => { const n = body.querySelector('[data-next]'); if (n) n.onclick = () => go(+n.dataset.next); };
+  function go(step){
+    stepsEl.querySelectorAll('button').forEach(b => b.setAttribute('aria-pressed', +b.dataset.s === step));
+    if (step === 0) {
+      body.innerHTML = '<p>Regarde chaque morceau et son image. Écoute, puis <b>répète à voix haute</b>.</p><div class="chunks">'+d.chunks.map(c=>'<div class="chunk"><span class="ic">'+c[0]+'</span>'+c[1]+'</div>').join('')+'</div><div class="row noprint"><button class="btn ghost" type="button" data-a="l">🔊 Écouter</button></div>'+next(1);
+      body.querySelector('[data-a="l"]').onclick = () => speak(fullText(d)); wire();
+    }
+    if (step === 1) {
+      let k = 0; const order = shuffle(d.chunks.map((c,i)=>i));
+      body.innerHTML = '<p>Tape sur les morceaux <b>dans le bon ordre</b>.</p><div class="built"></div><div class="chunks">'+order.map(i=>'<button type="button" class="chunk" data-i="'+i+'"><span class="ic">'+d.chunks[i][0]+'</span>'+d.chunks[i][1]+'</button>').join('')+'</div><div class="msg"></div>';
+      const built = body.querySelector('.built'), msg = body.querySelector('.msg');
+      body.querySelectorAll('button.chunk').forEach(b => b.onclick = () => {
+        if (b.disabled) return;
+        if (+b.dataset.i === k) { b.classList.add('done'); b.disabled = true; built.textContent += (k ? ' ' : '') + d.chunks[k][1]; k++;
+          if (k === d.chunks.length) { msg.textContent = '🎉 Bravo !'; speak(fullText(d)); body.insertAdjacentHTML('beforeend', next(2)); wire(); } }
+        else { b.classList.add('oops'); msg.textContent = '🔁 Pas encore : quel morceau vient juste après ?'; setTimeout(()=>b.classList.remove('oops'), 700); }
+      });
+    }
+    if (step >= 2 && step <= 4) {
+      const n = step === 2 ? 1 : step === 3 ? Math.min(3, d.gaps.length) : d.gaps.length;
+      const hide = new Set(shuffle(d.gaps.slice()).slice(0, n));
+      let html = '<p>'+(step===4 ? 'Retrouve <b>tous</b> les mots qui manquent.' : 'Retrouve le mot qui manque.')+' Les accents ne comptent pas.</p><div class="gapline">';
+      d.chunks.forEach(c => {
+        let txt = c[1];
+        hide.forEach(w => { const re = new RegExp("(^|[\\s'’])(" + w + ")(?=[\\s,.:]|$)"); txt = txt.replace(re, (m,a,b)=> a+'§'+b+'§'); });
+        txt = txt.replace(/§([^§]+)§/g, (m,w)=>'<input class="gap" data-w="'+w+'" aria-label="mot manquant" autocomplete="off" autocorrect="off" autocapitalize="none" spellcheck="false">');
+        html += '<span>'+c[0]+'</span> '+txt+' ';
+      });
+      html += '</div><div class="row noprint"><button class="btn" type="button" data-a="ck">✔️ Vérifier</button><button class="btn ghost" type="button" data-a="hint">💡 Indice</button></div><div class="msg"></div>';
+      body.innerHTML = html;
+      const msg = body.querySelector('.msg'), inputs = [...body.querySelectorAll('.gap')];
+      let focusGap = null;
+      inputs.forEach(x => x.addEventListener('focus', () => { focusGap = x; }));
+      const pool = [...new Set(Object.values(DEFS).flatMap(dd => dd.gaps))].filter(w => !inputs.some(x => x.dataset.w === w));
+      const words = shuffle(inputs.map(x => x.dataset.w).concat(shuffle(pool).slice(0, 2)));
+      const chipRow = document.createElement('div'); chipRow.className = 'wchips noprint';
+      chipRow.innerHTML = '<p style="margin:8px 0 4px">👆 <b>Tape sur un mot</b> pour le mettre dans la case, ou écris-le toi-même.</p>' + words.map(w => '<button type="button" class="wchip">' + w + '</button>').join('');
+      body.querySelector('.gapline').after(chipRow);
+      chipRow.querySelectorAll('.wchip').forEach(c => c.addEventListener('click', e => {
+        e.preventDefault();
+        let target = (focusGap && !focusGap.classList.contains('ok') && !focusGap.value) ? focusGap : inputs.find(x => !x.value);
+        if (!target) target = inputs.find(x => !x.classList.contains('ok')) || inputs[0];
+        target.value = c.textContent; target.classList.remove('no');
+        focusGap = inputs.find(x => !x.value) || null;
+      }));
+      body.querySelector('[data-a="hint"]').onclick = () => { const f = inputs.find(x => nz(x.value) !== nz(x.dataset.w)); if (f) { f.value = f.dataset.w.slice(0, Math.min(f.dataset.w.length, f.value.length + 1)); } };
+      body.querySelector('[data-a="ck"]').onclick = () => {
+        let all = true; inputs.forEach(x => { const ok = nz(x.value) === nz(x.dataset.w); x.classList.toggle('ok', ok); x.classList.toggle('no', !ok); if (!ok) all = false; });
+        if (all) { msg.textContent = '🎉 Tout est juste !'; speak('Tout est juste ! ' + fullText(d)); body.insertAdjacentHTML('beforeend', next(step+1)); wire(); }
+        else msg.textContent = '🔁 Les cases rouges ne sont pas encore justes. Tu peux demander un indice.';
+      };
+    }
+    if (step === 5) {
+      body.innerHTML = '<p><b>Cache l’écran</b> et dis la définition à voix haute. Puis tape pour vérifier.</p><div class="row noprint"><button class="btn" type="button" data-a="show">👀 Montrer pour vérifier</button></div><div class="built" hidden></div><div class="row noprint" hidden data-r><button class="btn" type="button" data-a="yes">✅ Je l’ai dite juste</button><button class="btn ghost" type="button" data-a="again">🔁 Je refais les trous</button></div><div class="msg"></div>';
+      const built = body.querySelector('.built'), row = body.querySelector('[data-r]'), msg = body.querySelector('.msg');
+      body.querySelector('[data-a="show"]').onclick = () => { built.hidden = false; built.textContent = fullText(d); row.hidden = false; };
+      body.querySelector('[data-a="yes"]').onclick = () => { msg.textContent = '🌟 Bravo ! Redis-la ce soir au coucher.'; speak('Bravo !'); };
+      body.querySelector('[data-a="again"]').onclick = () => go(4);
+    }
+  }
+  go(0);
+});
+
+
+/* ---------- Quiz ---------- */
+const Q = [
+  {p:1, q:'Qui s’oppose lors de la Commune de Paris ?', c:['Les Versaillais et les Communards','Les Français et les Anglais','Le roi et l’empereur'], a:0, e:'Les troupes du gouvernement contre le peuple de Paris.'},
+  {p:1, q:'Qui sont les Versaillais ?', c:['Les troupes du gouvernement installé à Versailles','Le peuple de Paris','Les Prussiens'], a:0, e:'Le gouvernement est installé à Versailles.'},
+  {p:1, q:'Qui sont les Communards ?', c:['Le petit peuple de Paris qui participe à la Commune','Les soldats du gouvernement','Les habitants de Versailles'], a:0, e:'Ceux et celles qui participent à la Commune.'},
+  {p:1, q:'Quand a lieu la Commune de Paris ?', c:['De mars à mai 1871','En 1905','En 1789'], a:0, e:'Elle commence le 18 mars 1871.'},
+  {p:1, q:'Que réclame le peuple de Paris ?', c:['Du pain, un toit pour tous, la justice, la solidarité et la liberté','Le retour du roi','La paix avec la Prusse'], a:0, e:'D’après le document 2.'},
+  {p:1, q:'Pourquoi le peuple de Paris se révolte-t-il ?', c:['À cause de la misère et de la guerre contre les Prussiens','Parce qu’il aime le roi','Pour fêter la paix'], a:0, e:'La misère et les souffrances de la guerre.'},
+  {p:1, q:'Que montre la photo du 18 mars 1871 ?', c:['Des barricades et des personnes armées','Une fête','Un défilé de soldats'], a:0, e:'Ce sont les signes d’une révolte.'},
+  {p:1, q:'Qui est Louise Michel ?', c:['Une institutrice, grande figure de la Commune','La reine de France','Une soldate versaillaise'], a:0, e:'Elle s’est battue pour les droits des femmes et des ouvriers.'},
+  {p:1, q:'Comment se termine la Commune ?', c:['Par la semaine sanglante : les Versaillais écrasent les Communards','Par une fête','Par la victoire des Communards'], a:0, e:'Du 21 au 28 mai 1871.'},
+  {p:1, q:'Pourquoi parle-t-on de « guerre civile » ?', c:['Des Français se battent contre des Français, dans le même pays','Deux pays se battent','Il n’y a pas de combat'], a:0, e:'Une guerre à l’intérieur d’un pays, entre deux parties de sa population.'},
+  {p:2, q:'En quelle année est votée la loi de séparation des Églises et de l’État ?', c:['1905','1871','1944'], a:0, e:'À savoir par cœur : 1905.'},
+  {p:2, q:'La laïcité, c’est…', c:['L’État est neutre et indépendant à l’égard des religions','L’État choisit une religion','Il est interdit de croire'], a:0, e:'À savoir par cœur.'},
+  {p:2, q:'Après 1905, l’État…', c:['Ne paie plus aucun culte','Paie toutes les religions','Interdit les religions'], a:0, e:'Article 2 de la loi.'},
+  {p:2, q:'La liberté de conscience, c’est…', c:['La liberté de croire en ce qu’on veut','La liberté de voter','La liberté de voyager'], a:0, e:'Article 1 de la loi.'},
+  {p:2, q:'La liberté de culte, c’est…', c:['La liberté de pratiquer sa religion','La liberté de ne pas aller à l’école','La liberté d’écrire'], a:0, e:'Le libre exercice des cultes.'},
+  {p:2, q:'Pourquoi la loi de 1905 est-elle votée, d’après Aristide Briand ?', c:['Le clergé s’est dressé contre la République','L’Église voulait être payée plus','Le roi l’a demandé'], a:0, e:'L’État payait l’Église, mais le clergé était contre la République.'},
+  {p:2, q:'Sur la caricature, que représente Marianne ?', c:['La République','L’Église','Le siècle des Lumières'], a:0, e:'Le pape représente l’Église, Voltaire le siècle des Lumières.'},
+  {p:2, q:'Pourquoi le manuel scolaire a-t-il été modifié en 1906 ?', c:['L’école devient laïque : on enlève les références à Dieu','Pour faire une fête','Pour ajouter des prières'], a:0, e:'Suite à la loi de 1905.'},
+  {p:2, q:'Le clergé, c’est…', c:['Les responsables de la religion catholique (évêques, prêtres…)','Les députés','Les Communards'], a:0, e:'D’après le petit dico.'},
+  {p:3, q:'Le suffrage universel, c’est…', c:['Le droit de vote pour toutes et tous','Le vote des riches seulement','Le vote des hommes seulement'], a:0, e:'À savoir par cœur.'},
+  {p:3, q:'Le suffrage censitaire, c’est…', c:['Un vote réservé aux hommes qui paient un impôt (le cens)','Le vote de tout le monde','Le vote des femmes'], a:0, e:'Les pauvres ne peuvent pas voter.'},
+  {p:3, q:'En 1792, qui a le droit de voter ?', c:['Les hommes','Les femmes','Les hommes et les femmes'], a:0, e:'Le suffrage universel masculin : 1,9 million d’électeurs.'},
+  {p:3, q:'Que se passe-t-il en 1815 ?', c:['Louis XVIII rétablit le suffrage censitaire','Les femmes votent','La Commune de Paris'], a:0, e:'Il n’y a plus que 90 000 électeurs.'},
+  {p:3, q:'Que se passe-t-il en France en 1848 ?', c:['Une révolution, puis le suffrage universel masculin','La loi de 1905','La Commune de Paris'], a:0, e:'Tous les hommes de plus de 21 ans votent.'},
+  {p:3, q:'En quelle année les femmes obtiennent-elles le droit de vote ?', c:['1944','1848','1792'], a:0, e:'Enfin, le vrai suffrage universel.'},
+  {p:3, q:'Combien de temps a-t-il fallu de 1789 à 1944 ?', c:['155 ans','55 ans','15 ans'], a:0, e:'1944 − 1789 = 155 ans.'},
+  {p:3, q:'Dans les années 1920, comment les femmes réclament-elles le droit de vote ?', c:['Elles manifestent et font des affiches','Elles dressent des barricades','Elles écrivent au roi'], a:0, e:'Elles demandent, expliquent et exigent.'},
+  {p:3, q:'La démocratie, c’est…', c:['Un régime où le peuple a le pouvoir','Un régime avec un roi','Un impôt'], a:0, e:'D’après le petit dico.'}
+];
+(function(){
+  const t = document.getElementById('cardtable'), lab = ['','Commune','Laïcité','Suffrage'];
+  Q.forEach(x => { const tr = document.createElement('tr'); tr.innerHTML = '<td class="q"><span class="tag t'+x.p+'">'+lab[x.p]+'</span><br>'+x.q+'</td><td>'+x.c[x.a]+' — '+x.e+'</td>'; t.appendChild(tr); });
+})();
+let queue = [], total = 0, done = 0, firstTry = 0, missed = new Set();
+const qbox = document.getElementById('quiz'), LAB = ['','🔴 La Commune','🔵 La laïcité','🟢 Le suffrage'];
+document.getElementById('start').onclick = () => {
+  const part = document.getElementById('part').value;
+  queue = shuffle(Q.filter(x => part==='all' || String(x.p)===part).map(x => ({...x})));
+  total = queue.length; done = 0; firstTry = 0; missed = new Set(); show();
+};
+function show(){
+  if (!queue.length) {
+    const msg = firstTry === total ? 'Tout juste du premier coup, bravo !' : 'Tu as tout retrouvé ! Les questions ratées sont revenues et tu les as réussies : c’est comme ça que la mémoire se construit.';
+    qbox.innerHTML = '<div class="qcard"><div class="qtext">🎉 Terminé !</div><p>'+firstTry+' sur '+total+' du premier coup.</p><p>'+msg+'</p><div class="row"><button class="btn" type="button" id="again">🔁 Recommencer</button></div></div>';
+    document.getElementById('again').onclick = () => document.getElementById('start').click();
+    speak('Terminé ! ' + msg); return;
+  }
+  const x = queue[0], order = shuffle(x.c.map((c,i)=>i));
+  qbox.innerHTML = '<div class="qcard"><div class="progress"><div style="width:'+(100*done/total)+'%"></div></div><span class="tag t'+x.p+'">'+LAB[x.p]+'</span><div class="qtext">'+x.q+'</div><div class="choices">'+order.map(i=>'<button type="button" class="choice" data-i="'+i+'">'+x.c[i]+'</button>').join('')+'</div><div id="fb"></div><div class="row"><button class="btn ghost" type="button" id="listen">🔊 Écouter</button><button class="btn" type="button" id="next" hidden>Suivant ➜</button></div></div>';
+  document.getElementById('listen').onclick = () => speak(x.q + '. ' + order.map((i,k)=>'Réponse ' + (k+1) + ' : ' + x.c[i]).join('. '));
+  qbox.querySelectorAll('.choice').forEach(b => b.onclick = () => answer(b, x));
+}
+function answer(btn, x){
+  const i = +btn.dataset.i, fb = document.getElementById('fb');
+  qbox.querySelectorAll('.choice').forEach(b => { b.disabled = true; if (+b.dataset.i === x.a) b.classList.add('right'); });
+  if (i === x.a) { fb.className = 'feedback ok'; fb.textContent = '✅ Oui ! ' + x.e; if (!missed.has(x.q)) firstTry++; queue.shift(); done++; }
+  else { btn.classList.add('wrong'); fb.className = 'feedback no'; fb.textContent = '🔁 Pas encore. La bonne réponse : ' + x.c[x.a] + '. ' + x.e + ' Cette question reviendra.'; missed.add(x.q); queue.push(queue.shift()); }
+  speak(fb.textContent);
+  const n = document.getElementById('next'); n.hidden = false; n.onclick = show; n.focus();
+}
+</script>
+</body>
+</html>
